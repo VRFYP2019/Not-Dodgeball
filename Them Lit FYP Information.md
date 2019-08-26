@@ -26,15 +26,15 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 # Not Dodgeball VR the game 2020
 
 **Core mechanics:**
-- Two players (A and B)
-- Goal for A is behind B and vice versa
-- Goal follows rotation of player
+- Two players (A and B).
+- Goal for A is behind B and vice versa.
+- Player's Goal is attached to the player and will move as th player moves, following behind at a set distance.
 - Game starts with each player owning 1 ball
-- Players try to score into their respective goals (which are behind the opponent)
-- Points awarded for goals
-- Ball can bounce off every surface with physics matching ball material
-- Ball belongs to player who last touched it
-- Every ball that is scored causes 2 balls to spawn (TBC)
+- Players try to score into their respective goals.
+- Points awarded for goals.
+- Ball can bounce off every surface with physics matching ball material, and wall material.
+- Ball belongs to player who last touched it, and players can own goal.
+- Every ball that is scored causes 2 balls to spawn (TBC).
 - The maximum number of balls allowed in the game is decided by the game host.
 - The duration of a match, as well as the number of matches to count as a game, are also decided by the host.
 - In case of the ball coming to a stop, destroy and spawn back in players hand.
@@ -43,11 +43,11 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 
 
 **Fitness involvement:**
-- Requires a lot of movement. Kicking and smacking balls are allowed, hence it can be a full body workout
+- Requires a lot of movement. Kicking(TBC) and smacking balls are allowed, hence it can be a full body workout
 
 **Projected behavioural impact:**
-- It is a game that would be a logistical nightmare to implement in real life due to the number of balls to keep track of, so it is safe to assume there is no viable substitute for this game
-- With gimmicks such as daily rewards and in-game purchases implemented right, we can keep a significant number of players hooked on to the game and play it everyday
+- It is a game that would be a logistical nightmare to implement in real life due to the number of balls to keep track of, so it is safe to assume there is no viable substitute for this game.
+- With gimmicks such as daily rewards and in-game purchases implemented right, we can keep a significant number of players hooked on to the game and play it everyday, allowing them to get excerise through play.
 
 ---
 
@@ -60,7 +60,8 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 
 - This sem just make a simple playable game first, next sem then add the crazy shit
 - Also add marketing?
-- Need some learning value? Demonstration of new hardware? Pure game is ok but no A :( e.g. learn properties of diff materials (rubber vs beach ball vs rugby etc but by developing our own physics engine provided we can prove that existing one is not good enough)
+- Need some learning value? Demonstration of new hardware? Pure game is ok but no A :( e.g. learn properties of diff materials (rubber ball vs styrofoam ball vs leather ball etc but by developing our own physics engine provided we can prove that existing one is not good enough)
+- Possibly also change the shape and size of the ball
 - Let players upload their own materials? Or at least customize existing ones
 - Customize walls and tools too
 - Do it for the KIDZ
