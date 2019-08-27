@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ballspawner : MonoBehaviour
-{
+public class Ballspawner : MonoBehaviour {
     public GameObject obj;
     float timeLastSpawned = 0;
     public float spawnInterval = 3f;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         timeLastSpawned = Time.time;
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         if (Time.time - timeLastSpawned > spawnInterval) {
             Spawn();
             timeLastSpawned = Time.time;

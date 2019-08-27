@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tool : MonoBehaviour
-{
+public class Tool : MonoBehaviour {
     HapticFeedback hapticFeedback;
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         hapticFeedback = GetComponentInParent<HapticFeedback>();
     }
 
