@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Tool : MonoBehaviour {
     HapticFeedback hapticFeedback;
+
     // Start is called before the first frame update
     void Start() {
         hapticFeedback = GetComponentInParent<HapticFeedback>();
