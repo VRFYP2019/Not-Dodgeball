@@ -15,9 +15,4 @@ public class HapticFeedback : MonoBehaviour {
     public void Vibrate(float duration, float frequency, float amplitude) {
         vibration.Execute(0, duration, frequency, amplitude, trackedObj);
     }
-
-    private void OnTriggerEnter(Collider other) {
-        vibration.Execute(0, 1, 150, 75, trackedObj);
-        Debug.Log("collide");
-    }
 }
