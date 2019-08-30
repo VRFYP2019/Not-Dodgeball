@@ -32,7 +32,7 @@ public class SpawnerHand : MonoBehaviour {
 
     void ThrowCurrentBall() {
         currentBall.GetComponent<Rigidbody>().isKinematic = false;
-        currentBall.GetComponent<Rigidbody>().AddRelativeForce(handPose.GetVelocity() * throwingForce);
+        currentBall.GetComponent<Rigidbody>().AddForce(handPose.GetVelocity() * throwingForce);
         currentBall.transform.parent = BallManager.Instance.transform;
         currentBall.GetComponent<Collider>().enabled = true;
     }
