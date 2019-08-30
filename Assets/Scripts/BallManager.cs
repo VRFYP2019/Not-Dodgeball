@@ -18,7 +18,7 @@ public class BallManager : MonoBehaviour {
         for (int i = 0; i < PlayerBallQueues.Length; i++) {
             PlayerBallQueues[i] = new Queue<GameObject>();
             for (int j = 0; j < numberOfStartingBalls; j++) {
-                GameObject newBall = Instantiate(BallTypes[0]);
+                GameObject newBall = Instantiate(BallTypes[0], this.transform);
                 newBall.SetActive(false);
                 PlayerBallQueues[i].Enqueue(newBall);
             }

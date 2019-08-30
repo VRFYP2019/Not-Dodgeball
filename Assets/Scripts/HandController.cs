@@ -25,6 +25,6 @@ public class HandController : MonoBehaviour {
         isSpawning = true;
         tool.gameObject.SetActive(false);
         spawnerHand.gameObject.SetActive(true);
-        spawnerHand.TrySpawn();
+        StartCoroutine(spawnerHand.TrySpawn());
     }
 }

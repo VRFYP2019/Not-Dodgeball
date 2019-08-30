@@ -9,6 +9,8 @@ public class SpawnerHand : MonoBehaviour {
     // A queue of balls that this player should throw. The balls are to be added as children to this GameObject but inactive.
     public Queue<GameObject> ballsToThrow;
     public SteamVR_Action_Boolean click = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
+    public float throwingForce = 100;
+    public float spawnDelay = 0.25f;
     GameObject currentBall;
     HandController handController;
     SteamVR_Behaviour_Pose handPose;
@@ -22,35 +24,34 @@ public class SpawnerHand : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (currentBall) {
-            // TODO: set offset or just set ball as child of this
-            currentBall.transform.position = this.transform.position;
-        }
-
         if (click.GetStateDown(handPose.inputSource)) {
             ThrowCurrentBall();
-            if (ballsToThrow.Count < 1) {
-                FinishThrowing();
-            } else {
-                DequeueNextBall();
-            }
+            StartCoroutine(TrySpawn());
         }
     }
 
     void ThrowCurrentBall() {
-        currentBall.GetComponent<Rigidbody>().velocity = handPose.GetVelocity();
+        currentBall.GetComponent<Rigidbody>().isKinematic = false;
+        currentBall.GetComponent<Rigidbody>().AddRelativeForce(handPose.GetVelocity() * throwingForce);
+        currentBall.transform.parent = BallManager.Instance.transform;
+        currentBall.GetComponent<Collider>().enabled = true;
     }
 
     // Takes the next ball out of the queue and into the hand
     void DequeueNextBall() {
         currentBall = ballsToThrow.Dequeue();
+        currentBall.GetComponent<Collider>().enabled = false;
+        currentBall.transform.parent = this.transform;
+        currentBall.transform.position = this.transform.position;
+        currentBall.GetComponent<Rigidbody>().isKinematic = true;
         currentBall.SetActive(true);
     }
 
-    public void TrySpawn() {
+    public IEnumerator TrySpawn() {
         if (ballsToThrow.Count < 1) {
             FinishThrowing();
         } else {
+            yield return new WaitForSeconds(spawnDelay);
             DequeueNextBall();
         }
     }
