@@ -38,6 +38,7 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 - The maximum number of balls allowed in the game is decided by the game host.
 - The duration of a match, as well as the number of matches to count as a game, are also decided by the host.
 - In case of the ball coming to a stop, destroy and spawn back in players hand.
+- If a player's hand remains stationary, the tool will become transparent and balls will not collide with it.
 
 **Design Sketches:**
 

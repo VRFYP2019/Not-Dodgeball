@@ -8,21 +8,81 @@ public class Tool : MonoBehaviour {
     SteamVR_Behaviour_Pose hand;
     Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
     public float forceMultiplier = 5;
+    List<Material> materials = new List<Material>();
+    readonly Renderer[] renderers;
+    float fadeStartTime;
     readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
+    readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
+    readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
+    readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
+    enum FadeState {
+        faded,
+        fading,
+        unfading,
+        normal
+    }
+    FadeState fadeState = FadeState.normal;
 
     // Start is called before the first frame update
     void Start() {
         hapticFeedback = GetComponentInParent<HapticFeedback>();
         hand = GetComponentInParent<SteamVR_Behaviour_Pose>();
         thisCollider = GetComponent<Collider>();
+        foreach (Renderer r in GetComponents<Renderer>()) {
+            materials.AddRange(r.materials);
+        }
     }
 
     private void Update() {
         float handVelocityMagnitude = hand.GetVelocity().magnitude;
-        if (handVelocityMagnitude < velocityUpperThreshold) {
-            thisCollider.isTrigger = false;
-        } else {
-            thisCollider.isTrigger = true;
+        HandleFade(handVelocityMagnitude);
+        if (hand.GetVelocity().magnitude > velocityLowerThreshold) {
+            if (hand.GetVelocity().magnitude < velocityUpperThreshold) {
+                thisCollider.isTrigger = false;
+            } else {
+                thisCollider.isTrigger = true;
+            }
+        } else if (hand.GetVelocity().magnitude < velocityLowerThreshold) {
+            if (fadeState == FadeState.faded) {
+                thisCollider.isTrigger = true;
+            }
+        }
+    }
+
+    // Fade/unfade based on the state of the tool and the magnitude of valocity
+    private void HandleFade(float magnitude) {
+        print(magnitude);
+        if (magnitude > velocityLowerThreshold && fadeState < FadeState.normal) {
+            foreach (Material m in materials) {
+                float r = m.color.r;
+                float g = m.color.g;
+                float b = m.color.b;
+                float a = Mathf.Clamp(m.color.a + Time.deltaTime, minOpacityValue, 1);
+                m.color = new Color(r, g, b, a);
+            }
+            if (materials[0].color.a > 0.95f) {
+                fadeState = FadeState.normal;
+            } else {
+                fadeState = FadeState.unfading;
+            }
+        } else if (magnitude < velocityLowerThreshold && fadeState > FadeState.faded) {
+            if (fadeState > FadeState.fading) {
+                fadeStartTime = Time.time;
+                fadeState = FadeState.fading;
+            } else if (Time.time - fadeStartTime > fadeDelay) {
+                foreach (Material m in GetComponent<Renderer>().materials) {
+                    float r = m.color.r;
+                    float g = m.color.g;
+                    float b = m.color.b;
+                    float a = Mathf.Clamp(m.color.a - Time.deltaTime, minOpacityValue, 1);
+                    m.color = new Color(r, g, b, a);
+                }
+                if (materials[0].color.a <= minOpacityValue) {
+                    fadeState = FadeState.faded;
+                } else {
+                    fadeState = FadeState.fading;
+                }
+            }
         }
     }
 
@@ -32,11 +92,13 @@ public class Tool : MonoBehaviour {
         ExertForce(collision.collider.GetComponent<Rigidbody>());
     }
 
-    // Used for fast movement
+    // Used for fast movement and no movement
     private void OnTriggerEnter(Collider other) {
-        hapticFeedback.Vibrate(0.1f, 100, 30);
-        // TODO: account for bounce using normal of supposed collision point
-        ExertForce(other.GetComponent<Rigidbody>());
+        if (fadeState > FadeState.faded) {
+            hapticFeedback.Vibrate(0.1f, 100, 30);
+            // TODO: account for bounce using normal of supposed collision point
+            ExertForce(other.GetComponent<Rigidbody>());
+        }
     }
 
     // Exert a force on the other rigidbody
