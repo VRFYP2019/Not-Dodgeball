@@ -7,13 +7,14 @@ public class Tool : MonoBehaviour {
     HapticFeedback hapticFeedback;
     SteamVR_Behaviour_Pose hand;
     Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
-    public float forceMultiplier = 5;
+    float forceMultiplier = 0.4f;
     List<Material> materials = new List<Material>();
     readonly Renderer[] renderers;
     float fadeStartTime;
     readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
     readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
     readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
+    readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
     readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
     enum FadeState {
         faded,
@@ -51,13 +52,12 @@ public class Tool : MonoBehaviour {
 
     // Fade/unfade based on the state of the tool and the magnitude of valocity
     private void HandleFade(float magnitude) {
-        print(magnitude);
         if (magnitude > velocityLowerThreshold && fadeState < FadeState.normal) {
             foreach (Material m in materials) {
                 float r = m.color.r;
                 float g = m.color.g;
                 float b = m.color.b;
-                float a = Mathf.Clamp(m.color.a + Time.deltaTime, minOpacityValue, 1);
+                float a = Mathf.Clamp(m.color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
                 m.color = new Color(r, g, b, a);
             }
             if (materials[0].color.a > 0.95f) {
@@ -104,6 +104,7 @@ public class Tool : MonoBehaviour {
     // Exert a force on the other rigidbody
     private void ExertForce(Rigidbody r) {
         // TODO: Improve accuracy of physics and possibly add spin
-        r.AddForce(hand.GetVelocity() * forceMultiplier, ForceMode.Impulse);
+        hand.GetVelocitiesAtTimeOffset(-0.1f, out Vector3 oldVelocity, out Vector3 a);
+        r.AddForce((hand.GetVelocity() - oldVelocity) / 0.1f * forceMultiplier, ForceMode.Impulse);
     }
 }
