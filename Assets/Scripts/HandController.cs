@@ -21,10 +21,15 @@ public class HandController : MonoBehaviour {
         spawnerHand.gameObject.SetActive(false);
     }
 
-    public void SwitchToSpawnerHand() {
+    public void SwitchToSpawnerHand(GameObject existingBall) {
         isSpawning = true;
         tool.gameObject.SetActive(false);
         spawnerHand.gameObject.SetActive(true);
-        StartCoroutine(spawnerHand.TrySpawn());
+        if (existingBall) {
+            spawnerHand.InheritBall(existingBall);
+        } else {
+            // if no existingBall was passed in, try to spawn a new one
+            StartCoroutine(spawnerHand.TrySpawn());
+        }
     }
 }
