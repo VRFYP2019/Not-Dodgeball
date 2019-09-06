@@ -7,7 +7,8 @@ public class Tool : MonoBehaviour {
     HapticFeedback hapticFeedback;
     SteamVR_Behaviour_Pose hand;
     Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
-    float forceMultiplier = 0.4f;
+    readonly float forceMultiplier = 0.25f;
+    readonly float angularVelocityMultiplier = 0.01f;  // Used to make behaviour more consistent between flicks and full-body swings
     List<Material> materials = new List<Material>();
     readonly Renderer[] renderers;
     float fadeStartTime;
@@ -105,6 +106,6 @@ public class Tool : MonoBehaviour {
     private void ExertForce(Rigidbody r) {
         // TODO: Improve accuracy of physics and possibly add spin
         hand.GetVelocitiesAtTimeOffset(-0.1f, out Vector3 oldVelocity, out Vector3 a);
-        r.AddForce((hand.GetVelocity() - oldVelocity) / 0.1f * forceMultiplier, ForceMode.Impulse);
+        r.AddForce((hand.GetVelocity() - oldVelocity) * (1 + hand.GetAngularVelocity().magnitude * angularVelocityMultiplier) / 0.1f * forceMultiplier, ForceMode.Impulse);
     }
 }
