@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Manages the goalpost and keeps track of score for that player
 public class Goal : MonoBehaviour {
 
     public Transform goalPosition;
