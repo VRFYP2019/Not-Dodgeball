@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 832769044177582611}
   - component: {fileID: 832769044177582608}
   - component: {fileID: 832769044177582609}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Wall Long Side R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 832769044182359400}
   - component: {fileID: 832769044182359401}
   - component: {fileID: 832769044182359190}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Wall Short Side B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 832769044903573914}
   - component: {fileID: 832769044903573915}
   - component: {fileID: 832769044903573912}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Wall Short Side A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -376,7 +376,7 @@ GameObject:
   - component: {fileID: 832769045720853708}
   - component: {fileID: 832769045720853709}
   - component: {fileID: 832769045720853706}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Ceiling
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -467,7 +467,7 @@ GameObject:
   - component: {fileID: 832769045936327058}
   - component: {fileID: 832769045936327059}
   - component: {fileID: 832769045936327056}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Wall Long Side L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -555,7 +555,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8212153540449165712}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Room
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -595,7 +595,7 @@ GameObject:
   - component: {fileID: 2001227986723355329}
   - component: {fileID: 3132549069173711392}
   - component: {fileID: 4050493190859516653}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -641,7 +641,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 07d76fbd0b8f7f247b57ecc9aa25bff8, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
