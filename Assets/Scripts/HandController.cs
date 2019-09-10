@@ -21,6 +21,12 @@ public class HandController : MonoBehaviour {
         spawnerHand.gameObject.SetActive(false);
     }
 
+    // TODO: switch to default controller instead of tool
+    public void ResetSpawnerStateAndSwitchToTool() {
+        spawnerHand.RestartState();
+        SwitchToTool();
+    }
+
     public void SwitchToSpawnerHand(GameObject existingBall) {
         isSpawning = true;
         tool.gameObject.SetActive(false);

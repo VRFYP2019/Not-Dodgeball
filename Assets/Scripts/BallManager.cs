@@ -11,10 +11,20 @@ public class BallManager : MonoBehaviour {
     // For debugging at the current stage of development. Just give the player 10 balls for a start
     static readonly int numberOfStartingBalls = 10;
     // To add a new ball to the queue at fixed intervals
-    static readonly float ballSpawnInterval = 5f;
+    static readonly float ballSpawnInterval = 3f;
+    private IEnumerator spawnCoroutine;
 
     private void Awake() {
         Instance = this;
+        InitPlayerQueues();
+    }
+
+    private void Start() {
+        spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
+        StartCoroutine(spawnCoroutine);
+    }
+
+    private void InitPlayerQueues() {
         // TODO: Set to number of players based on a GameManager or something
         PlayerBallQueues = new Queue<GameObject>[1];
         for (int i = 0; i < PlayerBallQueues.Length; i++) {
@@ -27,8 +37,17 @@ public class BallManager : MonoBehaviour {
         }
     }
 
-    private void Start() {
-        StartCoroutine(AddBallsToQueuePeriodically(3f));
+    public void Restart() {
+        DestroyAllBalls();
+        InitPlayerQueues();
+        StartCoroutine(spawnCoroutine);
+    }
+
+    public void DestroyAllBalls() {
+        StopCoroutine(spawnCoroutine);
+        for (int i = 0; i < transform.childCount; i++) {
+            Destroy(transform.GetChild(i).gameObject);
+        }
     }
 
     IEnumerator AddBallsToQueuePeriodically(float addInterval) {

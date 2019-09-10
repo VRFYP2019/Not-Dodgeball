@@ -64,8 +64,18 @@ public class SpawnerHand : MonoBehaviour {
         SetCurrentBallToFollow();
     }
 
+    public void RestartState() {
+        Destroy(currentBall);
+        currentBall = null;
+        ballsToThrow = null;
+    }
+
     public IEnumerator TrySpawn() {
         yield return new WaitForSeconds(spawnDelay);
+        if (ballsToThrow == null) { // dereferenced due to restart
+            ballsToThrow = BallManager.Instance.PlayerBallQueues[0];
+        }
+ 
         if (ballsToThrow.Count > 0) {
             DequeueNextBall();
         } else if (currentBall == null) {
