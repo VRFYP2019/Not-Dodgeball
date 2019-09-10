@@ -48,8 +48,10 @@ public class Goal : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider col) {
-        AddPlayerScore(1);
-        Destroy(col.gameObject);
+        if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
+            AddPlayerScore(1);
+            BallManager.Instance.PutBallInPool(col.gameObject);
+        }
     }
 
     public void ResetPlayerScore() {
