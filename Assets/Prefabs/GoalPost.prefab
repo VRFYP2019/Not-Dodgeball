@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 741708626}
   - component: {fileID: 741708627}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 5081570392331574589}
   - component: {fileID: 3317214948058823977}
   - component: {fileID: 1309008382189721213}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Topside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,7 +194,7 @@ GameObject:
   - component: {fileID: 8353369191952650050}
   - component: {fileID: 1605739232393628222}
   - component: {fileID: 2217150513019951008}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Rside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -285,7 +285,7 @@ GameObject:
   - component: {fileID: 3024943319246927266}
   - component: {fileID: 2702405626403985830}
   - component: {fileID: 1718616876908641741}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GoalPost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 8855140775397191725}
   - component: {fileID: 6306494174682287699}
   - component: {fileID: 16319477217674056}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Bottomside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -449,7 +449,7 @@ GameObject:
   - component: {fileID: 7929799127159093947}
   - component: {fileID: 1607457052943216811}
   - component: {fileID: 4905011478844252968}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Lside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -540,7 +540,7 @@ GameObject:
   - component: {fileID: 4245568195180612508}
   - component: {fileID: 2633338429227915571}
   - component: {fileID: 1100567665719908650}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Backside
   m_TagString: Untagged
   m_Icon: {fileID: 0}
