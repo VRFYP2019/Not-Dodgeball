@@ -5,10 +5,13 @@ using UnityEngine;
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
 // Goalpost is to follow player's position and Y-axis rotation (Yaw)
-// TODO: Goalpost cannot move outside the bounds of the room
+// Goalpost cannot move outside the bounds of the room
 public class Goal : MonoBehaviour {
     [SerializeField]
     private float offsetX, offsetY, offsetZ;
+    [SerializeField]
+    private float xMin, xMax, yMin, yMax, zMin, zMax;
+    private Vector3 parentPos, newPos;
     private int playerScore;
 
     // Start is called before the first frame update
@@ -18,13 +21,21 @@ public class Goal : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        updateGoalPosition();
+        handleGoalPosition();
+    }
+    
+    private void handleGoalPosition() {
+        parentPos = transform.parent.position;
+        // Prevent goal from exceeding room bounds
+        newPos.x = Mathf.Clamp(parentPos.x + offsetX, xMin, xMax);
+        newPos.y = Mathf.Clamp(parentPos.y + offsetY, yMin, yMax);
+        newPos.z = Mathf.Clamp(parentPos.z + offsetZ, zMin, zMax);
+        updateGoalPosition(newPos);
     }
 
-    private void updateGoalPosition() {
-        Vector3 parentPos = transform.parent.position;
-        transform.position = new Vector3(parentPos.x + offsetX, parentPos.y + offsetY, parentPos.z + offsetZ);
-        transform.rotation = GeneralizedLookRotation(Vector3.up, Vector3.up, Vector3.back, transform.parent.forward); // yaw with parent
+    private void updateGoalPosition(Vector3 pos) {
+        transform.position = pos;
+        transform.rotation = GeneralizedLookRotation(Vector3.up, Vector3.up, Vector3.back, transform.parent.forward);
     }
 
     // Takes a vector in local coordinates, localExactAxis, and rotate it to point exactly along globalExactAxis in world coordinates.
