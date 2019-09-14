@@ -25,17 +25,17 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 # Not Dodgeball VR the game 2020
 
 **Core mechanics:**
-- Two player game with both players put into a rectangular room at opposite sides.
-- Each player has a Goal which the aim is to score points into the opposing players goal.
-    - Player's Goal is attached to the player and will move as the player moves, following behind at a set distance.
-    - The Goal will follow the players yaw (Y-axis) rotation only.
+- Two player game with both players are put into a rectangular room at opposite sides.
+- Each player has a goal which the aim is to score points into the opposing players goal.
+    - Player's goal is attached to the player and will move as the player moves, following behind at a set distance.
+    - The goal will follow the player's yaw (Y-axis) rotation only.
 - Game starts with each player owning 1 ball (TBC).
     - Players can spawn and throw as many balls as they own, with a short cooldown between spawning.
     - Either hand controller can spawn the ball.
     - Ball can bounce off every surface with physics matching ball material, and wall material.
-    - Ball belongs to player who last touched it, and players can own goal.
+    - Ball belongs to player who last touched it, and players can own-goal.
     - Every ball that is scored lets the scorer own 2 balls(TBC).
-    - In case of the ball comes to a complete stop, destroy and spawn back in player's hand.
+    - In case of the ball coming to a complete stop, destroy and spawn back in player's hand.
 - The player can switch between spawning and a tool for each hand.
     - Tools have a wider area of collision and can be used to hit the ball.
     - If a player's hand remains stationary, the tool will become transparent and balls will not collide with it.
