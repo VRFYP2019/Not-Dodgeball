@@ -9,8 +9,7 @@ using UnityEngine;
 public class Goal : MonoBehaviour {
     [SerializeField]
     private float offsetX, offsetY, offsetZ;
-    [SerializeField]
-    private float xMin, xMax, yMin, yMax, zMin, zMax;
+    private static float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private Vector3 parentPos, newPos;
     private int playerScore;
 
@@ -27,9 +26,9 @@ public class Goal : MonoBehaviour {
     private void handleGoalPosition() {
         parentPos = transform.parent.position;
         // Prevent goal from exceeding room bounds
-        newPos.x = Mathf.Clamp(parentPos.x + offsetX, xMin, xMax);
-        newPos.y = Mathf.Clamp(parentPos.y + offsetY, yMin, yMax);
-        newPos.z = Mathf.Clamp(parentPos.z + offsetZ, zMin, zMax);
+        newPos.x = Mathf.Clamp(parentPos.x + offsetX, X_MIN, X_MAX);
+        newPos.y = Mathf.Clamp(parentPos.y + offsetY, Y_MIN, Y_MAX);
+        newPos.z = Mathf.Clamp(parentPos.z + offsetZ, Z_MIN, Z_MAX);
         updateGoalPosition(newPos);
     }
 
