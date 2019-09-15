@@ -4,26 +4,26 @@ using UnityEngine;
 using Valve.VR;
 
 public class Tool : MonoBehaviour {
-    HapticFeedback hapticFeedback;
-    SteamVR_Behaviour_Pose hand;
-    Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
-    readonly float forceMultiplier = 0.25f;
-    readonly float angularVelocityMultiplier = 0.01f;  // Used to make behaviour more consistent between flicks and full-body swings
-    List<Material> materials = new List<Material>();
-    readonly Renderer[] renderers;
-    float fadeStartTime;
-    readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
-    readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
-    readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
-    readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
-    readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
-    enum FadeState {
-        faded,
-        fading,
-        unfading,
-        normal
+    private HapticFeedback hapticFeedback;
+    private SteamVR_Behaviour_Pose hand;
+    private Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
+    private readonly float forceMultiplier = 0.25f;
+    private readonly float angularVelocityMultiplier = 0.01f;  // Used to make behaviour more consistent between flicks and full-body swings
+    private List<Material> materials = new List<Material>();
+    private readonly Renderer[] renderers;
+    private float fadeStartTime;
+    private readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
+    private readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
+    private readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
+    private readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
+    private readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
+    private enum FadeState {
+        FADED,
+        FADING,
+        UNFADING,
+        NORMAL
     }
-    FadeState fadeState = FadeState.normal;
+    private FadeState fadeState = FadeState.NORMAL;
 
     // Start is called before the first frame update
     void Start() {
@@ -45,7 +45,7 @@ public class Tool : MonoBehaviour {
                 thisCollider.isTrigger = true;
             }
         } else if (hand.GetVelocity().magnitude < velocityLowerThreshold) {
-            if (fadeState == FadeState.faded) {
+            if (fadeState == FadeState.FADED) {
                 thisCollider.isTrigger = true;
             }
         }
@@ -53,7 +53,7 @@ public class Tool : MonoBehaviour {
 
     // Fade/unfade based on the state of the tool and the magnitude of valocity
     private void HandleFade(float magnitude) {
-        if (magnitude > velocityLowerThreshold && fadeState < FadeState.normal) {
+        if (magnitude > velocityLowerThreshold && fadeState < FadeState.NORMAL) {
             foreach (Material m in materials) {
                 float r = m.color.r;
                 float g = m.color.g;
@@ -62,14 +62,14 @@ public class Tool : MonoBehaviour {
                 m.color = new Color(r, g, b, a);
             }
             if (materials[0].color.a > 0.95f) {
-                fadeState = FadeState.normal;
+                fadeState = FadeState.NORMAL;
             } else {
-                fadeState = FadeState.unfading;
+                fadeState = FadeState.UNFADING;
             }
-        } else if (magnitude < velocityLowerThreshold && fadeState > FadeState.faded) {
-            if (fadeState > FadeState.fading) {
+        } else if (magnitude < velocityLowerThreshold && fadeState > FadeState.FADED) {
+            if (fadeState > FadeState.FADING) {
                 fadeStartTime = Time.time;
-                fadeState = FadeState.fading;
+                fadeState = FadeState.FADING;
             } else if (Time.time - fadeStartTime > fadeDelay) {
                 foreach (Material m in GetComponent<Renderer>().materials) {
                     float r = m.color.r;
@@ -79,9 +79,9 @@ public class Tool : MonoBehaviour {
                     m.color = new Color(r, g, b, a);
                 }
                 if (materials[0].color.a <= minOpacityValue) {
-                    fadeState = FadeState.faded;
+                    fadeState = FadeState.FADED;
                 } else {
-                    fadeState = FadeState.fading;
+                    fadeState = FadeState.FADING;
                 }
             }
         }
@@ -95,7 +95,7 @@ public class Tool : MonoBehaviour {
 
     // Used for fast movement and no movement
     private void OnTriggerEnter(Collider other) {
-        if (fadeState > FadeState.faded) {
+        if (fadeState > FadeState.FADED) {
             hapticFeedback.Vibrate(0.1f, 100, 30);
             // TODO: account for bounce using normal of supposed collision point
             ExertForce(other.GetComponent<Rigidbody>());

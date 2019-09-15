@@ -12,9 +12,9 @@ public class SpawnerHand : MonoBehaviour {
     public float throwingForce = 100;
     public float spawnDelay = 0.25f;
     public GameObject currentBall;
-    HandController handController;
-    Person person;
-    SteamVR_Behaviour_Pose handPose;
+    private HandController handController;
+    private Person person;
+    private SteamVR_Behaviour_Pose handPose;
 
     // Start is called before the first frame update
     void Start() {
@@ -35,7 +35,7 @@ public class SpawnerHand : MonoBehaviour {
         }
     }
 
-    void ThrowCurrentBall() {
+    private void ThrowCurrentBall() {
         currentBall.GetComponent<Rigidbody>().isKinematic = false;
         currentBall.GetComponent<Rigidbody>().AddForce(handPose.GetVelocity() * throwingForce);
         currentBall.transform.parent = BallManager.Instance.activeBalls;
@@ -44,15 +44,15 @@ public class SpawnerHand : MonoBehaviour {
     }
 
     // Makes currentBall follow this hand
-    void SetCurrentBallToFollow() {
+    private void SetCurrentBallToFollow() {
         currentBall.transform.parent = this.transform;
         currentBall.transform.position = this.transform.position;
     }
 
     // Takes the next ball out of the queue and into the hand
-    void DequeueNextBall() {
+    private void DequeueNextBall() {
         currentBall = ballsToThrow.Dequeue();
-        BallManager.Instance.poolPointer--;
+        BallManager.Instance.DecrementPoolPointer();
         currentBall.GetComponent<Collider>().enabled = false;
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
@@ -85,7 +85,7 @@ public class SpawnerHand : MonoBehaviour {
     }
 
     // To be called when all balls are tossed
-    void FinishThrowing() {
+    private void FinishThrowing() {
         handController.SwitchToTool();
         person.IsSpawning = false;
     }

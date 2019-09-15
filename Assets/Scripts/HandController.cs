@@ -4,8 +4,8 @@ using UnityEngine;
 
 // Controls what the hand  is doing, i.e. spawning or smacking
 public class HandController : MonoBehaviour {
-    Tool tool;
-    SpawnerHand spawnerHand;
+    private Tool tool;
+    private SpawnerHand spawnerHand;
     // true if spawnerHand is supposed to be active, false otherwise
     public bool isSpawning;
 
