@@ -17,10 +17,10 @@ public class ScoreBoard : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        init();
+        Init();
     }
 
-    private void init() {
+    private void Init() {
         blueScoreText.text = "0";
         //orangeScoreText.text = "0";
         timeLeftText.text = timeLeft.ToString();
@@ -33,18 +33,18 @@ public class ScoreBoard : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         if(!isTimeOver) {
-            countdownTime();
-            updateTimeLeft();
-            updateDisplayScores();
+            CountdownTime();
+            UpdateTimeLeft();
+            UpdateDisplayScores();
         }
     }
 
-    private void countdownTime() {
+    private void CountdownTime() {
         timeLeft -= Time.deltaTime;
     }
 
     // Displays time left in minutes and seconds
-    private void updateTimeLeft() {
+    private void UpdateTimeLeft() {
         float minutes = Mathf.Floor(timeLeft / 60);
         float seconds = timeLeft % 60;
         if(seconds > 59){
@@ -60,8 +60,8 @@ public class ScoreBoard : MonoBehaviour {
     }
 
     // Displays scores of both players
-    private void updateDisplayScores() {
-        blueScoreText.text = blueGoalScript.getPlayerScore().ToString();
-        //orangeScoreText.text = orangeGoalScript.getPlayerScore().ToString();
+    private void UpdateDisplayScores() {
+        blueScoreText.text = blueGoalScript.GetPlayerScore().ToString();
+        //orangeScoreText.text = orangeGoalScript.GetPlayerScore().ToString();
     }
 }

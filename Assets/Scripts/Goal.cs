@@ -9,30 +9,30 @@ using UnityEngine;
 public class Goal : MonoBehaviour {
     [SerializeField]
     private float offsetX, offsetY, offsetZ;
-    private static float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
+    static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private Vector3 parentPos, newPos;
     private int playerScore;
 
     // Start is called before the first frame update
     void Start() {
-        resetPlayerScore();
+        ResetPlayerScore();
     }
 
     // Update is called once per frame
     void Update() {
-        handleGoalPosition();
+        HandleGoalPosition();
     }
     
-    private void handleGoalPosition() {
+    private void HandleGoalPosition() {
         parentPos = transform.parent.position;
         // Prevent goal from exceeding room bounds
         newPos.x = Mathf.Clamp(parentPos.x + offsetX, X_MIN, X_MAX);
         newPos.y = Mathf.Clamp(parentPos.y + offsetY, Y_MIN, Y_MAX);
         newPos.z = Mathf.Clamp(parentPos.z + offsetZ, Z_MIN, Z_MAX);
-        updateGoalPosition(newPos);
+        UpdateGoalPosition(newPos);
     }
 
-    private void updateGoalPosition(Vector3 pos) {
+    private void UpdateGoalPosition(Vector3 pos) {
         transform.position = pos;
         transform.rotation = GeneralizedLookRotation(Vector3.up, Vector3.up, Vector3.back, transform.parent.forward);
     }
@@ -48,19 +48,19 @@ public class Goal : MonoBehaviour {
     }
 
     void OnTriggerEnter(Collider col) {
-        addPlayerScore(1);
+        AddPlayerScore(1);
         Destroy(col.gameObject);
     }
 
-    public void resetPlayerScore() {
+    public void ResetPlayerScore() {
         playerScore = 0;
     }
 
-    public void addPlayerScore(int points) {
+    public void AddPlayerScore(int points) {
         playerScore += points;
     }
 
-    public int getPlayerScore() {
+    public int GetPlayerScore() {
         return playerScore;
     }
 }
