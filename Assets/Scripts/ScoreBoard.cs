@@ -13,14 +13,19 @@ public class ScoreBoard : MonoBehaviour {
     [SerializeField]
     private GameObject blueGoal; //, orangeGoal;
     private Goal blueGoalScript; //, orangeGoalScript;
-    private float timeLeft = 60.0f; // 1min TODO: get a set time from another script
+    private float timeLeft;
+    private IEnumerator restartPromptCoroutine;
+    private static readonly string timeOver = "TIME OVER";
+    //private static readonly string pressTriggerToRestart = "PRESS TRIGGER TO RESTART";
 
     // Start is called before the first frame update
     void Start() {
+        restartPromptCoroutine = TimeOverRestartPrompt();
         Init();
     }
 
     private void Init() {
+        timeLeft = GameManager.Instance.gameDuration;
         blueScoreText.text = "0";
         //orangeScoreText.text = "0";
         timeLeftText.text = timeLeft.ToString();
@@ -32,7 +37,7 @@ public class ScoreBoard : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if(!isTimeOver) {
+        if (!isTimeOver) {
             CountdownTime();
             UpdateTimeLeft();
             UpdateDisplayScores();
@@ -47,11 +52,13 @@ public class ScoreBoard : MonoBehaviour {
     private void UpdateTimeLeft() {
         float minutes = Mathf.Floor(timeLeft / 60);
         float seconds = timeLeft % 60;
-        if(seconds > 59){
+        if (seconds > 59){
             seconds = 59;
         }
-        if(minutes < 0) {
+        if (minutes < 0) {
             isTimeOver = true;
+            GameManager.Instance.isGameEnded = true;
+            StartCoroutine(restartPromptCoroutine);
             minutes = 0;
             seconds = 0;
         }
@@ -63,5 +70,23 @@ public class ScoreBoard : MonoBehaviour {
     private void UpdateDisplayScores() {
         blueScoreText.text = blueGoalScript.GetPlayerScore().ToString();
         //orangeScoreText.text = orangeGoalScript.GetPlayerScore().ToString();
+    }
+
+    public void Restart() {
+        StopCoroutine(restartPromptCoroutine);
+        // TODO: remove these lines after moving scoring tracking from Goal to something else
+        blueGoalScript.ResetPlayerScore();
+        //orangeGoalScript.ResetPlayerScore();
+        Init();
+    }
+
+    private IEnumerator TimeOverRestartPrompt() {
+        while (true) {
+            yield return new WaitForSeconds(3f);
+            timeLeftText.text = timeOver;
+            yield return new WaitForSeconds(3f);
+            // uncomment following line after figuring out resizing the text
+            //timeLeftText.text = pressTriggerToRestart;
+        }
     }
 }

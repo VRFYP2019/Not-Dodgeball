@@ -38,7 +38,7 @@ public class SpawnerHand : MonoBehaviour {
     void ThrowCurrentBall() {
         currentBall.GetComponent<Rigidbody>().isKinematic = false;
         currentBall.GetComponent<Rigidbody>().AddForce(handPose.GetVelocity() * throwingForce);
-        currentBall.transform.parent = BallManager.Instance.transform;
+        currentBall.transform.parent = BallManager.Instance.activeBalls;
         currentBall.GetComponent<Collider>().enabled = true;
         currentBall = null;
     }
@@ -52,6 +52,7 @@ public class SpawnerHand : MonoBehaviour {
     // Takes the next ball out of the queue and into the hand
     void DequeueNextBall() {
         currentBall = ballsToThrow.Dequeue();
+        BallManager.Instance.poolPointer--;
         currentBall.GetComponent<Collider>().enabled = false;
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
@@ -64,8 +65,18 @@ public class SpawnerHand : MonoBehaviour {
         SetCurrentBallToFollow();
     }
 
+    public void RestartState() {
+        Destroy(currentBall);
+        currentBall = null;
+        ballsToThrow = null;
+    }
+
     public IEnumerator TrySpawn() {
         yield return new WaitForSeconds(spawnDelay);
+        if (ballsToThrow == null) { // dereferenced due to restart
+            ballsToThrow = BallManager.Instance.PlayerBallQueues[0];
+        }
+ 
         if (ballsToThrow.Count > 0) {
             DequeueNextBall();
         } else if (currentBall == null) {

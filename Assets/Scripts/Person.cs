@@ -6,6 +6,7 @@ using Valve.VR;
 public class Person : MonoBehaviour {
     public bool isRightHandSpawner;
     public SteamVR_Action_Boolean grab = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("GrabGrip");
+    public SteamVR_Action_Boolean trigger = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
     HandController leftHandController;
     HandController rightHandController;
     SpawnerHand currentSpawner = null;
@@ -28,7 +29,18 @@ public class Person : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (BallManager.Instance.PlayerBallQueues[0].Count > 0) {
+        // if game ended and trigger pressed, restart the game
+        if (GameManager.Instance.isGameEnded) {
+            rightHandController.ResetSpawnerStateAndSwitchToTool();
+            leftHandController.ResetSpawnerStateAndSwitchToTool();
+            _isSpawning = false;
+            if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
+                GameManager.Instance.Restart();
+            }
+        }
+
+        // if balls are available for spawning, spawn
+        if (!GameManager.Instance.isGameEnded && BallManager.Instance.PlayerBallQueues[0].Count > 0) {
             if (!_isSpawning) {
                 _isSpawning = true;
                 if (isRightHandSpawner) {
@@ -40,6 +52,10 @@ public class Person : MonoBehaviour {
                 }
             }
         }
+
+        // if grab is pressed, change spawn hand
+        // TODO: grab should cause the hand that pressed it to change to a spawner
+        // instead of immediately changing a hand to spawner upon a ball in queue
         if (grab.GetStateDown(SteamVR_Input_Sources.Any)) {
             isRightHandSpawner = !isRightHandSpawner;
             if (_isSpawning) {
