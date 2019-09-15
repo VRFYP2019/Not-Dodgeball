@@ -7,11 +7,11 @@ public class Person : MonoBehaviour {
     public bool isRightHandSpawner;
     public SteamVR_Action_Boolean grab = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("GrabGrip");
     public SteamVR_Action_Boolean trigger = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
-    HandController leftHandController;
-    HandController rightHandController;
-    SpawnerHand currentSpawner = null;
-    SteamVR_Behaviour_Pose leftHand;
-    SteamVR_Behaviour_Pose rightHand;
+    private HandController leftHandController;
+    private HandController rightHandController;
+    private SpawnerHand currentSpawner = null;
+    private SteamVR_Behaviour_Pose leftHand;
+    private SteamVR_Behaviour_Pose rightHand;
     [SerializeField]
     private bool _isSpawning;
     public bool IsSpawning { get { return _isSpawning; } set { _isSpawning = value; } }

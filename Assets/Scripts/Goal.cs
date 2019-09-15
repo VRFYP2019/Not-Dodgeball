@@ -7,9 +7,8 @@ using UnityEngine;
 // Goalpost is to follow player's position and Y-axis rotation (Yaw)
 // Goalpost cannot move outside the bounds of the room
 public class Goal : MonoBehaviour {
-    [SerializeField]
-    private float offsetX, offsetY, offsetZ;
-    static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
+    private static readonly float offsetX = 0f, offsetY = -0.5f, offsetZ = -1f;
+    private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private Vector3 parentPos, newPos;
     private int playerScore;
 

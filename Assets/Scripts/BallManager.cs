@@ -10,13 +10,13 @@ public class BallManager : MonoBehaviour {
     public Queue<GameObject>[] PlayerBallQueues;
     public Transform ballPool;
     // pointer to keep track of where in the pool the end of the queues are
-    public int poolPointer = 0;
+    private int poolPointer = 0;
     // A transform to be parent of all active balls in the scene
     public Transform activeBalls;
     // For debugging at the current stage of development. Just give the player 10 balls for a start
-    static readonly int numberOfStartingBalls = 10;
+    private static readonly int numberOfStartingBalls = 10;
     // To add a new ball to the queue at fixed intervals
-    static readonly float ballSpawnInterval = 1f;
+    private static readonly float ballSpawnInterval = 1f;
     private IEnumerator spawnCoroutine;
 
     private void Awake() {
@@ -68,7 +68,7 @@ public class BallManager : MonoBehaviour {
         }
     }
 
-    IEnumerator AddBallsToQueuePeriodically(float addInterval) {
+    private IEnumerator AddBallsToQueuePeriodically(float addInterval) {
         while (true) {
             yield return new WaitForSeconds(addInterval);
             // Insufficient balls in the pool, add new balls
@@ -80,5 +80,10 @@ public class BallManager : MonoBehaviour {
                 PlayerBallQueues[i].Enqueue(ballPool.GetChild(poolPointer++).gameObject);
             }
         }
+    }
+
+    // To be called by spawner
+    public void DecrementPoolPointer(int numToDecrement = 1) {
+        poolPointer--;
     }
 }

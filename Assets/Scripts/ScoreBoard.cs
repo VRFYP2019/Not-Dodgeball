@@ -9,9 +9,8 @@ public class ScoreBoard : MonoBehaviour {
 
     public Text blueScoreText, orangeScoreText, timeLeftText;
     public bool isTimeOver;
-
     [SerializeField]
-    private GameObject blueGoal; //, orangeGoal;
+    private GameObject blueGoal = null; //, orangeGoal = null;
     private Goal blueGoalScript; //, orangeGoalScript;
     private float timeLeft;
     private IEnumerator restartPromptCoroutine;
