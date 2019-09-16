@@ -7,10 +7,10 @@ using Valve.VR;
 // be active on the player's hand instead.
 public class SpawnerHand : MonoBehaviour {
     // A queue of balls that this player should throw. The balls are to be added as children to this GameObject but inactive.
-    public Queue<GameObject> ballsToThrow;
-    public SteamVR_Action_Boolean click = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
-    public float throwingForce = 100;
-    public float spawnDelay = 0.25f;
+    private Queue<GameObject> ballsToThrow;
+    private SteamVR_Action_Boolean click = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
+    private readonly float throwingForce = 250;
+    private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
     private Person person;
