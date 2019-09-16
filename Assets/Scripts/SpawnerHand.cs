@@ -59,16 +59,23 @@ public class SpawnerHand : MonoBehaviour {
         currentBall.SetActive(true);
     }
 
-    // Inherits a ball. Used when switching spawning hand while in spawning mode
-    public void InheritBall(GameObject ball) {
-        currentBall = ball;
-        SetCurrentBallToFollow();
+    public void RestartState() {
+        if (currentBall != null) {
+            UnspawnBall();
+        }
+        ballsToThrow = null;
     }
 
-    public void RestartState() {
-        Destroy(currentBall);
+    public void UnspawnBall() {
+        BallManager.Instance.PutBallInPool(currentBall);
         currentBall = null;
-        ballsToThrow = null;
+    }
+
+    public void PutBallBackInQueue() {
+        ballsToThrow.Enqueue(currentBall);
+        BallManager.Instance.PutBallInPool(currentBall);
+        BallManager.Instance.IncrementPoolPointer();
+        currentBall = null;
     }
 
     public IEnumerator TrySpawn() {
@@ -87,6 +94,5 @@ public class SpawnerHand : MonoBehaviour {
     // To be called when all balls are tossed
     private void FinishThrowing() {
         handController.SwitchToTool();
-        person.IsSpawning = false;
     }
 }

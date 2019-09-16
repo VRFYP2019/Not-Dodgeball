@@ -16,7 +16,7 @@ public class BallManager : MonoBehaviour {
     // For debugging at the current stage of development. Just give the player 10 balls for a start
     private static readonly int numberOfStartingBalls = 10;
     // To add a new ball to the queue at fixed intervals
-    private static readonly float ballSpawnInterval = 1f;
+    private static readonly float ballSpawnInterval = 20f;
     private IEnumerator spawnCoroutine;
 
     private void Awake() {
@@ -84,6 +84,11 @@ public class BallManager : MonoBehaviour {
 
     // To be called by spawner
     public void DecrementPoolPointer(int numToDecrement = 1) {
-        poolPointer--;
+        poolPointer -= numToDecrement;
+    }
+
+    // To be called by spawner
+    public void IncrementPoolPointer(int numToIncrement = 1) {
+        poolPointer += numToIncrement;
     }
 }

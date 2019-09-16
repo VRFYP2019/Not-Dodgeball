@@ -15,7 +15,18 @@ public class HandController : MonoBehaviour {
         spawnerHand = GetComponentInChildren<SpawnerHand>();
     }
 
+    public void Switch() {
+        if (tool.gameObject.activeInHierarchy) {
+            SwitchToSpawnerHand();
+        } else {
+            SwitchToTool();
+        }
+    }
+
     public void SwitchToTool() {
+        if (spawnerHand.currentBall != null) {
+            spawnerHand.PutBallBackInQueue();
+        }
         isSpawning = false;
         tool.gameObject.SetActive(true);
         spawnerHand.gameObject.SetActive(false);
@@ -27,15 +38,10 @@ public class HandController : MonoBehaviour {
         SwitchToTool();
     }
 
-    public void SwitchToSpawnerHand(GameObject existingBall) {
+    public void SwitchToSpawnerHand() {
         isSpawning = true;
         tool.gameObject.SetActive(false);
         spawnerHand.gameObject.SetActive(true);
-        if (existingBall) {
-            spawnerHand.InheritBall(existingBall);
-        } else {
-            // if no existingBall was passed in, try to spawn a new one
-            StartCoroutine(spawnerHand.TrySpawn());
-        }
+        StartCoroutine(spawnerHand.TrySpawn());
     }
 }
