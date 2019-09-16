@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Ball : MonoBehaviour {
+    public Transform transformToFollow = null;
     private float lastReadTime = 0f;
     private int listPointer = 0;    // use a pointer instead of shifting the array every update
     private List<Collider> boundsInContact;
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
-
+    
     // Start is called before the first frame update
     void Start() {
         InitLists();
@@ -24,6 +25,15 @@ public class Ball : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (transformToFollow != null) {
+            transform.position = transformToFollow.position;
+            transform.rotation = transformToFollow.rotation;
+        } else {
+            if (IsDead()) {
+                InitLists();
+                BallManager.Instance.PutBallInPool(gameObject);
+            }
+        }
         if (Time.time - lastReadTime > boundListUpdateInterval) {
             boundsLists[listPointer] = new List<Collider>(boundsInContact.ToArray());
             listPointer++;

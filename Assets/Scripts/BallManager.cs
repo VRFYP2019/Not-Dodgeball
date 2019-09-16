@@ -6,11 +6,9 @@ using UnityEngine;
 public class BallManager : MonoBehaviour {
     public static BallManager Instance;
     public GameObject[] BallTypes;
-    // PlayerBallQueues[0] will give the queue of balls for player 1 to spawn, and [1] for player 2
-    public Queue<GameObject>[] PlayerBallQueues;
+    // playerBallQueues[0] will give the parent of balls for player 1 to spawn, and [1] for player 2
+    public Transform[] playerBallQueues;
     public Transform ballPool;
-    // pointer to keep track of where in the pool the end of the queues are
-    private int poolPointer = 0;
     // A transform to be parent of all active balls in the scene
     public Transform activeBalls;
     // For debugging at the current stage of development. Just give the player 10 balls for a start
@@ -30,17 +28,14 @@ public class BallManager : MonoBehaviour {
     }
 
     private void InitPlayerQueues() {
-        PlayerBallQueues = new Queue<GameObject>[GameManager.Instance.numPlayers];
         // Insufficient balls in the pool, add new balls
-        if (PlayerBallQueues.Length * numberOfStartingBalls > ballPool.childCount) {
-            AddNewBallsToPool(PlayerBallQueues.Length * numberOfStartingBalls - ballPool.childCount);
+        if (playerBallQueues.Length * numberOfStartingBalls > ballPool.childCount) {
+            AddNewBallsToPool(playerBallQueues.Length * numberOfStartingBalls - ballPool.childCount);
         }
- 
-        for (int i = 0; i < PlayerBallQueues.Length; i++) {
-            PlayerBallQueues[i] = new Queue<GameObject>();
+
+        for (int i = 0; i < playerBallQueues.Length; i++) {
             for (int j = 0; j < numberOfStartingBalls; j++) {
-                PlayerBallQueues[i].Enqueue(ballPool.GetChild(i * j + j).gameObject);
-                poolPointer += 1;
+                PutBallInQueue(i, ballPool.GetChild(0).gameObject);
             }
         }
     }
@@ -54,11 +49,22 @@ public class BallManager : MonoBehaviour {
         for (int i = activeBalls.childCount - 1; i > -1; i--) {
             PutBallInPool(activeBalls.GetChild(i).gameObject);
         }
+        for (int i = 0; i < playerBallQueues.Length; i++) {
+            for (int j = 0; j < playerBallQueues[i].childCount; j++) {
+                PutBallInPool(playerBallQueues[i].GetChild(j).gameObject);
+            }
+        }
     }
 
     public void PutBallInPool(GameObject ball) {
         ball.SetActive(false);
         ball.transform.parent = ballPool;
+    }
+
+    // Put a ball into a specified queue
+    public void PutBallInQueue(int playerNum, GameObject ball) {
+        ball.SetActive(false);
+        ball.transform.parent = playerBallQueues[playerNum];
     }
 
     public void AddNewBallsToPool(int numBallsToAdd = 1) {
@@ -72,23 +78,13 @@ public class BallManager : MonoBehaviour {
         while (true) {
             yield return new WaitForSeconds(addInterval);
             // Insufficient balls in the pool, add new balls
-            if (poolPointer >= ballPool.childCount) {
-                AddNewBallsToPool(poolPointer - ballPool.childCount + 1);
+            if (ballPool.childCount < playerBallQueues.Length) {
+                AddNewBallsToPool(playerBallQueues.Length - ballPool.childCount);
             }
  
-            for (int i = 0; i < PlayerBallQueues.Length; i++) {
-                PlayerBallQueues[i].Enqueue(ballPool.GetChild(poolPointer++).gameObject);
+            for (int i = 0; i < playerBallQueues.Length; i++) {
+                PutBallInQueue(i, ballPool.GetChild(0).gameObject);
             }
         }
-    }
-
-    // To be called by spawner
-    public void DecrementPoolPointer(int numToDecrement = 1) {
-        poolPointer -= numToDecrement;
-    }
-
-    // To be called by spawner
-    public void IncrementPoolPointer(int numToIncrement = 1) {
-        poolPointer += numToIncrement;
     }
 }
