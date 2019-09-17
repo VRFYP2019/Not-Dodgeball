@@ -6,8 +6,6 @@ using UnityEngine;
 public class HandController : MonoBehaviour {
     private Tool tool;
     private SpawnerHand spawnerHand;
-    // true if spawnerHand is supposed to be active, false otherwise
-    public bool isSpawning;
 
     // Start is called before the first frame update
     void Start() {
@@ -15,8 +13,18 @@ public class HandController : MonoBehaviour {
         spawnerHand = GetComponentInChildren<SpawnerHand>();
     }
 
+    public void Switch() {
+        if (tool.gameObject.activeInHierarchy) {
+            SwitchToSpawnerHand();
+        } else {
+            SwitchToTool();
+        }
+    }
+
     public void SwitchToTool() {
-        isSpawning = false;
+        if (spawnerHand.currentBall != null) {
+            spawnerHand.UnspawnBall();
+        }
         tool.gameObject.SetActive(true);
         spawnerHand.gameObject.SetActive(false);
     }
@@ -27,15 +35,9 @@ public class HandController : MonoBehaviour {
         SwitchToTool();
     }
 
-    public void SwitchToSpawnerHand(GameObject existingBall) {
-        isSpawning = true;
+    public void SwitchToSpawnerHand() {
         tool.gameObject.SetActive(false);
         spawnerHand.gameObject.SetActive(true);
-        if (existingBall) {
-            spawnerHand.InheritBall(existingBall);
-        } else {
-            // if no existingBall was passed in, try to spawn a new one
-            StartCoroutine(spawnerHand.TrySpawn());
-        }
+        StartCoroutine(spawnerHand.TrySpawn());
     }
 }
