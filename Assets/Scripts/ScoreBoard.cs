@@ -10,8 +10,8 @@ public class ScoreBoard : MonoBehaviour {
     public Text blueScoreText, orangeScoreText, timeLeftText;
     public bool isTimeOver;
     [SerializeField]
-    private GameObject blueGoal = null; //, orangeGoal = null;
-    private Goal blueGoalScript; //, orangeGoalScript;
+    private GameObject blueGoal = null, orangeGoal = null;
+    private Goal blueGoalScript, orangeGoalScript;
     private float timeLeft;
     private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
@@ -26,12 +26,12 @@ public class ScoreBoard : MonoBehaviour {
     private void Init() {
         timeLeft = GameManager.Instance.gameDuration;
         blueScoreText.text = "0";
-        //orangeScoreText.text = "0";
+        orangeScoreText.text = "0";
         timeLeftText.text = timeLeft.ToString();
         isTimeOver = false;
 
         blueGoalScript = blueGoal.GetComponentInChildren<Goal>();
-        //orangeGoalScript = orangeGoal.GetComponentsInChildren<Goal>();
+        orangeGoalScript = orangeGoal.GetComponentInChildren<Goal>();
     }
 
     // Update is called once per frame
@@ -68,14 +68,14 @@ public class ScoreBoard : MonoBehaviour {
     // Displays scores of both players
     private void UpdateDisplayScores() {
         blueScoreText.text = blueGoalScript.GetPlayerScore().ToString();
-        //orangeScoreText.text = orangeGoalScript.GetPlayerScore().ToString();
+        orangeScoreText.text = orangeGoalScript.GetPlayerScore().ToString();
     }
 
     public void Restart() {
         StopCoroutine(restartPromptCoroutine);
         // TODO: remove these lines after moving scoring tracking from Goal to something else
         blueGoalScript.ResetPlayerScore();
-        //orangeGoalScript.ResetPlayerScore();
+        orangeGoalScript.ResetPlayerScore();
         Init();
     }
 
