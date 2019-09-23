@@ -462,14 +462,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8870368026426101056, guid: dffd2011fddadf44bb85284de874e4dd,
         type: 3}
-      propertyPath: blueGoal
+      propertyPath: player2Goal
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 8870368026426101056, guid: dffd2011fddadf44bb85284de874e4dd,
-        type: 3}
-      propertyPath: orangeGoal
-      value: 
-      objectReference: {fileID: 1919894850}
+      objectReference: {fileID: 1628075915}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dffd2011fddadf44bb85284de874e4dd, type: 3}
 --- !u!224 &711405198 stripped
@@ -925,6 +920,11 @@ PrefabInstance:
       propertyPath: orangeGoal
       value: 
       objectReference: {fileID: 1919894850}
+    - target: {fileID: 8870368026426101056, guid: dffd2011fddadf44bb85284de874e4dd,
+        type: 3}
+      propertyPath: player2Goal
+      value: 
+      objectReference: {fileID: 1628075915}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dffd2011fddadf44bb85284de874e4dd, type: 3}
 --- !u!224 &1777842403 stripped

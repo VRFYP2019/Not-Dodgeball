@@ -9,33 +9,30 @@ using UnityEngine;
 public class Goal : MonoBehaviour {
     private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET = -1.25f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
-    private static readonly float BLUE_Y_ROTATION = 0f, ORANGE_Y_ROTATION = 180f;
+    private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
     
     private Vector3 parentPos, newPos;
     private int playerScore;
     private float yRotation;
 
-    // TODO: Change how player color is set on init for multiplayer support
-    // Temp solution, we could check for the parent.name or other indicators of player color in future
-    private enum PlayerColor {
-        BLUE,
-        ORANGE
-    }
-
-    [SerializeField]
-    private PlayerColor playerColor = PlayerColor.ORANGE;
+    private PlayerManager.PlayerNumber playerNumber;
 
     // Start is called before the first frame update
     void Start() {
         ResetPlayerScore();
+        if (GetComponentInParent<Player>() != null) {
+            playerNumber = GetComponentInParent<Player>().playerNumber;
+        } else {    // probably a dummy goal
+            playerNumber = PlayerManager.PlayerNumber.TWO;
+        }
         InitRotation();
     }
 
     private void InitRotation() {
-        if (playerColor == PlayerColor.BLUE) {
-            yRotation = BLUE_Y_ROTATION;
+        if (playerNumber == PlayerManager.PlayerNumber.ONE) {
+            yRotation = PLAYER_1_ROTATION;
         } else {
-            yRotation = ORANGE_Y_ROTATION;
+            yRotation = PLAYER_2_ROTATION;
         }
     }
 

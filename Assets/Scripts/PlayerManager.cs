@@ -28,7 +28,10 @@ public class PlayerManager : MonoBehaviour {
     }
 
     // To be called from somewhere else after implementing online multiplayer
+    // Unsure at this point whether the number of players should be updated in GameManager before calling this,
+    // or to let this update that. For now use the latter.
     public void StartGame(int numPlayers) {
+        GameManager.Instance.numPlayers = numPlayers;
         // TODO: Uncomment player 2 lines after implementing bot
         if (!isPlayerInScene) {
             player1 = Instantiate(HumanPrefab, player1SpawnPoint.position, player1SpawnPoint.rotation);
@@ -47,8 +50,8 @@ public class PlayerManager : MonoBehaviour {
             Debug.LogError("invalid number of players");
         }
         foreach (ScoreBoard scoreBoard in scoreBoards) {
-            scoreBoard.blueGoal = player1.GetComponentInChildren<Goal>().gameObject;
-            //scoreBoard.orangeGoal = player2.GetComponentInChildren<Goal>().gameObject;
+            scoreBoard.player1Goal = player1.GetComponentInChildren<Goal>().gameObject;
+            //scoreBoard.player2Goal = player2.GetComponentInChildren<Goal>().gameObject;
             scoreBoard.Init();
         }
     }
