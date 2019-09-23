@@ -13,11 +13,6 @@ public class WallIndicator : MonoBehaviour {
 
     private float distFromLWall, distFromRWall, distFromBWall;
 
-    // Start is called before the first frame update
-    void Start() {
-        
-    }
-
     // Update is called once per frame
     void Update() {
         distFromLWall = playerLocation.position.x - X_MIN;
