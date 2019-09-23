@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Ball : MonoBehaviour {
     public Transform transformToFollow = null;
@@ -10,10 +11,15 @@ public class Ball : MonoBehaviour {
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
+
+    public AudioClip defaultCollisionSound;
+    public AudioClip toolCollisionSound;
+    private AudioSource audioSource;
     
     // Start is called before the first frame update
     void Start() {
         InitLists();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void InitLists() {
@@ -49,6 +55,13 @@ public class Ball : MonoBehaviour {
     private void OnCollisionEnter(Collision collision) {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Bounds")) {
             boundsInContact.Add(collision.collider);
+            audioSource.PlayOneShot(defaultCollisionSound);
+        } else if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Goal")) {
+            audioSource.PlayOneShot(defaultCollisionSound);
+        }
+        
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Tool")) {
+            audioSource.PlayOneShot(toolCollisionSound);
         }
     }
 
