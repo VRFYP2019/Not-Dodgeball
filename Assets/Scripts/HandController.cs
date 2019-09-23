@@ -5,12 +5,12 @@ using UnityEngine;
 // Controls what the hand  is doing, i.e. spawning or smacking
 public class HandController : MonoBehaviour {
     private Tool tool;
-    private SpawnerHand spawnerHand;
+    private Spawner spawnerHand;
 
     // Start is called before the first frame update
     void Start() {
         tool = GetComponentInChildren<Tool>();
-        spawnerHand = GetComponentInChildren<SpawnerHand>();
+        spawnerHand = GetComponentInChildren<Spawner>();
     }
 
     public void Switch() {

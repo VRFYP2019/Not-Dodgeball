@@ -9,8 +9,8 @@ public class ScoreBoard : MonoBehaviour {
 
     public Text blueScoreText, orangeScoreText, timeLeftText;
     public bool isTimeOver;
-    [SerializeField]
-    private GameObject blueGoal = null, orangeGoal = null;
+    // Set to public to allow setting via PlayerManager script
+    public GameObject blueGoal = null, orangeGoal = null;
     private Goal blueGoalScript, orangeGoalScript;
     private float timeLeft;
     private IEnumerator restartPromptCoroutine;
@@ -23,7 +23,7 @@ public class ScoreBoard : MonoBehaviour {
         Init();
     }
 
-    private void Init() {
+    public void Init() {
         timeLeft = GameManager.Instance.gameDuration;
         blueScoreText.text = "0";
         orangeScoreText.text = "0";
