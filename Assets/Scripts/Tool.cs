@@ -4,47 +4,45 @@ using UnityEngine;
 using Valve.VR;
 
 public class Tool : MonoBehaviour {
-    private HapticFeedback hapticFeedback;
-    private SteamVR_Behaviour_Pose hand;
     private Collider thisCollider;  // calling it "collider" triggers a useless warning so it'll be called "thisCollider" instead
-    private readonly float forceMultiplier = 0.25f;
-    private readonly float angularVelocityMultiplier = 0.01f;  // Used to make behaviour more consistent between flicks and full-body swings
+    protected readonly float forceMultiplier = 0.25f;
+    protected readonly float angularVelocityMultiplier = 0.01f;  // Used to make behaviour more consistent between flicks and full-body swings
     private List<Material> materials = new List<Material>();
     private readonly Renderer[] renderers;
+    private ArmSpeed armSpeed;
     private float fadeStartTime;
     private readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
     private readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
     private readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
     private readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
     private readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
-    private enum FadeState {
+    protected enum FadeState {
         FADED,
         FADING,
         UNFADING,
         NORMAL
     }
-    private FadeState fadeState = FadeState.NORMAL;
+    protected FadeState fadeState = FadeState.NORMAL;
 
     // Start is called before the first frame update
-    void Start() {
-        hapticFeedback = GetComponentInParent<HapticFeedback>();
-        hand = GetComponentInParent<SteamVR_Behaviour_Pose>();
+    protected virtual void Start() {
         thisCollider = GetComponent<Collider>();
         foreach (Renderer r in GetComponents<Renderer>()) {
             materials.AddRange(r.materials);
         }
+        armSpeed = GetComponentInParent<ArmSpeed>();
     }
 
     private void Update() {
-        float handVelocityMagnitude = hand.GetVelocity().magnitude;
+        float handVelocityMagnitude = armSpeed.velocity.magnitude;
         HandleFade(handVelocityMagnitude);
-        if (hand.GetVelocity().magnitude > velocityLowerThreshold) {
-            if (hand.GetVelocity().magnitude < velocityUpperThreshold) {
+        if (armSpeed.velocity.magnitude > velocityLowerThreshold) {
+            if (armSpeed.velocity.magnitude < velocityUpperThreshold) {
                 thisCollider.isTrigger = false;
             } else {
                 thisCollider.isTrigger = true;
             }
-        } else if (hand.GetVelocity().magnitude < velocityLowerThreshold) {
+        } else if (armSpeed.velocity.magnitude < velocityLowerThreshold) {
             if (fadeState == FadeState.FADED) {
                 thisCollider.isTrigger = true;
             }
@@ -88,24 +86,22 @@ public class Tool : MonoBehaviour {
     }
 
     // Used for slow movement
-    private void OnCollisionEnter(Collision collision) {
-        hapticFeedback.Vibrate(0.1f, 100, 15);
+    protected virtual void OnCollisionEnter(Collision collision) {
         ExertForce(collision.collider.GetComponent<Rigidbody>());
     }
 
     // Used for fast movement and no movement
-    private void OnTriggerEnter(Collider other) {
+    protected virtual void OnTriggerEnter(Collider other) {
         if (fadeState > FadeState.FADED) {
-            hapticFeedback.Vibrate(0.1f, 100, 30);
             // TODO: account for bounce using normal of supposed collision point
             ExertForce(other.GetComponent<Rigidbody>());
         }
     }
 
     // Exert a force on the other rigidbody
-    private void ExertForce(Rigidbody r) {
-        // TODO: Improve accuracy of physics and possibly add spin
-        hand.GetVelocitiesAtTimeOffset(-0.1f, out Vector3 oldVelocity, out Vector3 a);
-        r.AddForce((hand.GetVelocity() - oldVelocity) * (1 + hand.GetAngularVelocity().magnitude * angularVelocityMultiplier) / 0.1f * forceMultiplier, ForceMode.Impulse);
+    protected virtual void ExertForce(Rigidbody r) {
+        // TODO: update this while implementing bot
+        // Human force is calculated in ToolHuman.cs and overrides this
+        r.AddForce(armSpeed.velocity * forceMultiplier);
     }
 }
