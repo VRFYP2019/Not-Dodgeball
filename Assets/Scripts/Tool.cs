@@ -11,7 +11,7 @@ public class Tool : MonoBehaviour {
     private readonly Renderer[] renderers;
     private ArmSpeed armSpeed;
     private float fadeStartTime;
-    private readonly float velocityUpperThreshold = 1;  // anything above this value will be considered "fast" and treated differently to avoid clipping
+    private readonly float velocityUpperThreshold = 2;  // anything above this value will be considered "fast" and treated differently to avoid clipping
     private readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
     private readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
     private readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
