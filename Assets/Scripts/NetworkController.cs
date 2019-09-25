@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NetworkController : MonoBehaviourPunCallbacks {
-	public GameObject joinGameButton;
 	private string ROOM_NAME = "TestRoomName";
 
 	// Start is called before the first frame update
@@ -19,12 +18,14 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 		Debug.Log("Connected! To server: " + PhotonNetwork.CloudRegion);
 		PhotonNetwork.AutomaticallySyncScene = true;
 
+		PhotonNetwork.JoinLobby(TypedLobby.Default);
+
 		RoomOptions roomOptions = new RoomOptions() { };
 		PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
 	}
 
 	public override void OnCreateRoomFailed(short returnCode, string message) {
-		Debug.Log("Fak Create Failed: " + message);
+		Debug.Log("Create Failed: " + message);
 	}
 
 	public override void OnJoinedLobby() {
@@ -40,6 +41,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 	}
 
 	void OnJoinedRoomFailed(short returnCode, string message) {
-		Debug.Log("Fak Joined Failed: " + message);
+		Debug.Log("Joined Failed: " + message);
 	}
 }
