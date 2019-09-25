@@ -20,8 +20,8 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
 		PhotonNetwork.JoinLobby(TypedLobby.Default);
 
-		RoomOptions roomOptions = new RoomOptions() { };
-		PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
+		//RoomOptions roomOptions = new RoomOptions() { };
+		//PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
 	}
 
 	public override void OnCreateRoomFailed(short returnCode, string message) {
