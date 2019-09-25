@@ -62,6 +62,9 @@ public class Spawner : MonoBehaviour {
 
     public IEnumerator TrySpawn() {
         yield return new WaitForSeconds(spawnDelay);
+        if (gameObject.activeInHierarchy == false) {
+            yield break;
+        }
         if (parentOfBallsToThrow.childCount > 1
             || (parentOfBallsToThrow.childCount == 1 && !parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy)) {
             PutNextBallInHand();
