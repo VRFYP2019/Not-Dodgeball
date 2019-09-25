@@ -7,7 +7,8 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
     private Transform parentOfBallsToThrow;
     private ArmSpeed armSpeed;
-    private readonly float throwingForce = 250;
+    private readonly float throwForceMultiplier = 10;
+    private readonly float maxThrowForce = 1000;
     private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
@@ -21,13 +22,25 @@ public class Spawner : MonoBehaviour {
         armSpeed = GetComponentInParent<ArmSpeed>();
     }
 
-    public void ThrowCurrentBall() {
+    private void ThrowCurrentBall(Vector3 force) {
+        if (force.magnitude > maxThrowForce) {
+            force *= (maxThrowForce / force.magnitude);
+        }
         currentBall.GetComponent<Ball>().transformToFollow = null;
         currentBall.GetComponent<Rigidbody>().isKinematic = false;
-        currentBall.GetComponent<Rigidbody>().AddForce(armSpeed.velocity * throwingForce);
+        currentBall.GetComponent<Rigidbody>().AddForce(force);
         currentBall.transform.parent = BallManager.Instance.activeBalls;
         currentBall.GetComponent<Collider>().enabled = true;
         currentBall = null;
+    }
+
+    // Depends only on instantaneous velocity.
+    public void ThrowCurrentBallWithoutAcceleration() {
+        ThrowCurrentBall(armSpeed.velocity * throwForceMultiplier);
+    }
+
+    public void ThrowCurrentBallWithAcceleration(Vector3 acc) {
+        ThrowCurrentBall(acc * throwForceMultiplier);
     }
 
     // Makes currentBall follow this hand
@@ -65,6 +78,7 @@ public class Spawner : MonoBehaviour {
         if (gameObject.activeInHierarchy == false) {
             yield break;
         }
+
         if (parentOfBallsToThrow.childCount > 1
             || (parentOfBallsToThrow.childCount == 1 && !parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy)) {
             PutNextBallInHand();
