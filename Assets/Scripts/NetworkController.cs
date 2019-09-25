@@ -19,9 +19,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 		PhotonNetwork.AutomaticallySyncScene = true;
 
 		PhotonNetwork.JoinLobby(TypedLobby.Default);
-
-		//RoomOptions roomOptions = new RoomOptions() { };
-		//PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
 	}
 
 	public override void OnCreateRoomFailed(short returnCode, string message) {
@@ -31,12 +28,13 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 	public override void OnJoinedLobby() {
 		Debug.Log("Joined Lobby");
 
-		//RoomOptions roomOptions = new RoomOptions() { };
-		//PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
+		RoomOptions roomOptions = new RoomOptions() { };
+		PhotonNetwork.JoinOrCreateRoom(ROOM_NAME, roomOptions, TypedLobby.Default);
 	}
 
 	public override void OnJoinedRoom() {
 		Debug.Log("Joined Room :)");
+		Debug.Log(PhotonNetwork.CountOfPlayersInRooms);
 		//PhotonNetwork.Instantiate("", Vector3.zero, Quaternion.identity, 0);
 	}
 
