@@ -6,6 +6,7 @@ using UnityEngine;
 public class FollowersParent : MonoBehaviour {
     public static FollowersParent Instance;
     public Transform tools;
+    public Transform balls;
 
     private void Awake() {
         Instance = this;

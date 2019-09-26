@@ -7,8 +7,8 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
     private Transform parentOfBallsToThrow;
     private ArmSpeed armSpeed;
-    private readonly float throwForceMultiplier = 10;
-    private readonly float maxThrowForce = 1000;
+    private readonly float throwForceMultiplier = 25;
+    private readonly float maxThrowForce = 50;
     private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
@@ -22,30 +22,14 @@ public class Spawner : MonoBehaviour {
         armSpeed = GetComponentInParent<ArmSpeed>();
     }
 
-    private void ThrowCurrentBall(Vector3 force) {
-        if (force.magnitude > maxThrowForce) {
-            force *= (maxThrowForce / force.magnitude);
-        }
-        currentBall.GetComponent<Ball>().transformToFollow = null;
-        currentBall.GetComponent<Rigidbody>().isKinematic = false;
-        currentBall.GetComponent<Rigidbody>().AddForce(force);
-        currentBall.transform.parent = BallManager.Instance.activeBalls;
-        currentBall.GetComponent<Collider>().enabled = true;
+    public void ThrowCurrentBall() {
+        currentBall.GetComponent<Ball>().OnDetachFromHand();
         currentBall = null;
-    }
-
-    // Depends only on instantaneous velocity.
-    public void ThrowCurrentBallWithoutAcceleration() {
-        ThrowCurrentBall(armSpeed.velocity * throwForceMultiplier);
-    }
-
-    public void ThrowCurrentBallWithAcceleration(Vector3 acc) {
-        ThrowCurrentBall(acc * throwForceMultiplier);
     }
 
     // Makes currentBall follow this hand
     private void SetCurrentBallToFollow() {
-        currentBall.GetComponent<Ball>().transformToFollow = transform;
+        currentBall.GetComponent<Ball>().OnAttachToHand(transform);
     }
 
     // Takes the next ball out of the queue and into the hand
