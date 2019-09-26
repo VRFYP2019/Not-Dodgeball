@@ -10,7 +10,7 @@ public class ToolFollower : MonoBehaviour {
     private List<Material> materials = new List<Material>();
     private readonly Renderer[] renderers;
     private float fadeStartTime;
-    private readonly float velocityLowerThreshold = 0.1f;   // anything below this value will be considered "stationary" and trigger a fade
+    private readonly float velocityLowerThreshold = 0.15f;   // anything below this value will be considered "stationary" and trigger a fade
     private readonly float fadeDelay = 0.15f;   // delay after tool first turns stationary to start the fade
     private readonly float unfadeSpeed = 5f; // multiplier to speed up the unfading
     private readonly float minOpacityValue = 0.05f;  // minimum alpha for the materials
