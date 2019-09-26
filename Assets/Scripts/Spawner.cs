@@ -6,9 +6,6 @@ using UnityEngine;
 // wants to spawn. Otherwise, a Tool should be active on the player's hand instead.
 public class Spawner : MonoBehaviour {
     private Transform parentOfBallsToThrow;
-    private ArmSpeed armSpeed;
-    private readonly float throwForceMultiplier = 25;
-    private readonly float maxThrowForce = 50;
     private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
@@ -19,7 +16,6 @@ public class Spawner : MonoBehaviour {
         handController = GetComponentInParent<HandController>();
         playerNumber = GetComponentInParent<Player>().playerNumber;
         parentOfBallsToThrow = BallManager.Instance.playerBallQueues[(int)playerNumber];
-        armSpeed = GetComponentInParent<ArmSpeed>();
     }
 
     public void ThrowCurrentBall() {
