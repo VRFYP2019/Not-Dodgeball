@@ -5,12 +5,16 @@ using UnityEngine.Audio;
 
 public class Ball : MonoBehaviour {
     public Transform transformToFollow = null;
+    private Collider col;
+    private Rigidbody rb;
     private float lastReadTime = 0f;
     private int listPointer = 0;    // use a pointer instead of shifting the array every update
     private List<Collider> boundsInContact;
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
+    private readonly static float forceMultiplier = 100;
+    private Vector3 prevPos;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
@@ -20,6 +24,8 @@ public class Ball : MonoBehaviour {
     void Start() {
         InitLists();
         audioSource = GetComponent<AudioSource>();
+        col = GetComponent<Collider>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void InitLists() {
@@ -34,6 +40,7 @@ public class Ball : MonoBehaviour {
         if (transformToFollow != null) {
             transform.position = transformToFollow.position;
             transform.rotation = transformToFollow.rotation;
+            prevPos = transform.position;
         } else {
             if (IsDead()) {
                 InitLists();
@@ -69,6 +76,31 @@ public class Ball : MonoBehaviour {
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Bounds")) {
             boundsInContact.Remove(collision.collider);
         }
+    }
+
+    public void OnAttachToHand(Transform hand) {
+        transform.parent = FollowersParent.Instance.balls;
+        prevPos = hand.position;
+        transformToFollow = hand;
+        // Due to how these balls start as inactive and this is called the moment
+        // it is set active the first time, Start() may not have been called yet
+        if (rb == null) {
+            rb = GetComponent<Rigidbody>();
+        }
+        if (col == null) {
+            col = GetComponent<Collider>();
+        }
+        rb.isKinematic = true;
+        col.enabled = false;
+    }
+
+    public void OnDetachFromHand() {
+        Vector3 throwVecetor = (transformToFollow.position - prevPos) * forceMultiplier;
+        transformToFollow = null;
+        rb.isKinematic = false;
+        col.enabled = true;
+        rb.AddForce(throwVecetor, ForceMode.Impulse);
+        transform.parent = BallManager.Instance.activeBalls;
     }
 
     private bool IsDead() {

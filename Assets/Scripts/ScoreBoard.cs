@@ -7,11 +7,11 @@ using UnityEngine.UI;
 // Display scores will no longer update once time is over
 public class ScoreBoard : MonoBehaviour {
 
-    public Text blueScoreText, orangeScoreText, timeLeftText;
+    public Text player1ScoreText, player2ScoreText, timeLeftText;
     public bool isTimeOver;
-    [SerializeField]
-    private GameObject blueGoal = null, orangeGoal = null;
-    private Goal blueGoalScript, orangeGoalScript;
+    // Set to public to allow setting via PlayerManager script
+    public GameObject player1Goal = null, player2Goal = null;
+    private Goal player1GoalScript, player2GoalScript;
     private float timeLeft;
     private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
@@ -23,15 +23,15 @@ public class ScoreBoard : MonoBehaviour {
         Init();
     }
 
-    private void Init() {
+    public void Init() {
         timeLeft = GameManager.Instance.gameDuration;
-        blueScoreText.text = "0";
-        orangeScoreText.text = "0";
+        player1ScoreText.text = "0";
+        player2ScoreText.text = "0";
         timeLeftText.text = timeLeft.ToString();
         isTimeOver = false;
 
-        blueGoalScript = blueGoal.GetComponentInChildren<Goal>();
-        orangeGoalScript = orangeGoal.GetComponentInChildren<Goal>();
+        player1GoalScript = player1Goal.GetComponentInChildren<Goal>();
+        player2GoalScript = player2Goal.GetComponentInChildren<Goal>();
     }
 
     // Update is called once per frame
@@ -67,15 +67,17 @@ public class ScoreBoard : MonoBehaviour {
 
     // Displays scores of both players
     private void UpdateDisplayScores() {
-        blueScoreText.text = blueGoalScript.GetPlayerScore().ToString();
-        orangeScoreText.text = orangeGoalScript.GetPlayerScore().ToString();
+        // Note: player 1 goal refers to goal attached to player 1.
+        // Hence, player 1's score is dependent on player 2 goal and vice versa.
+        player1ScoreText.text = player2GoalScript.GetPlayerScore().ToString();
+        player2ScoreText.text = player1GoalScript.GetPlayerScore().ToString();
     }
 
     public void Restart() {
         StopCoroutine(restartPromptCoroutine);
         // TODO: remove these lines after moving scoring tracking from Goal to something else
-        blueGoalScript.ResetPlayerScore();
-        orangeGoalScript.ResetPlayerScore();
+        player1GoalScript.ResetPlayerScore();
+        player2GoalScript.ResetPlayerScore();
         Init();
     }
 

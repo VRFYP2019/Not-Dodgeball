@@ -12,9 +12,9 @@ public class BallManager : MonoBehaviour {
     // A transform to be parent of all active balls in the scene
     public Transform activeBalls;
     // For debugging at the current stage of development. Just give the player 10 balls for a start
-    private static readonly int numberOfStartingBalls = 10;
+    private static readonly int numberOfStartingBalls = 20;
     // To add a new ball to the queue at fixed intervals
-    private static readonly float ballSpawnInterval = 20f;
+    private static readonly float ballSpawnInterval = 1f;
     private IEnumerator spawnCoroutine;
 
     private void Awake() {
