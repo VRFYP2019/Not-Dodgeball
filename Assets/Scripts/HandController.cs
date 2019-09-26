@@ -26,6 +26,7 @@ public class HandController : MonoBehaviour {
             spawnerHand.UnspawnBall();
         }
         tool.gameObject.SetActive(true);
+        tool.SetState(true);
         spawnerHand.gameObject.SetActive(false);
     }
 
@@ -36,6 +37,7 @@ public class HandController : MonoBehaviour {
     }
 
     public void SwitchToSpawnerHand() {
+        tool.SetState(false);
         tool.gameObject.SetActive(false);
         spawnerHand.gameObject.SetActive(true);
         StartCoroutine(spawnerHand.TrySpawn());

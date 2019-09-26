@@ -6,8 +6,6 @@ using UnityEngine;
 // wants to spawn. Otherwise, a Tool should be active on the player's hand instead.
 public class Spawner : MonoBehaviour {
     private Transform parentOfBallsToThrow;
-    private ArmSpeed armSpeed;
-    private readonly float throwingForce = 250;
     private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
@@ -18,21 +16,16 @@ public class Spawner : MonoBehaviour {
         handController = GetComponentInParent<HandController>();
         playerNumber = GetComponentInParent<Player>().playerNumber;
         parentOfBallsToThrow = BallManager.Instance.playerBallQueues[(int)playerNumber];
-        armSpeed = GetComponentInParent<ArmSpeed>();
     }
 
     public void ThrowCurrentBall() {
-        currentBall.GetComponent<Ball>().transformToFollow = null;
-        currentBall.GetComponent<Rigidbody>().isKinematic = false;
-        currentBall.GetComponent<Rigidbody>().AddForce(armSpeed.velocity * throwingForce);
-        currentBall.transform.parent = BallManager.Instance.activeBalls;
-        currentBall.GetComponent<Collider>().enabled = true;
+        currentBall.GetComponent<Ball>().OnDetachFromHand();
         currentBall = null;
     }
 
     // Makes currentBall follow this hand
     private void SetCurrentBallToFollow() {
-        currentBall.GetComponent<Ball>().transformToFollow = transform;
+        currentBall.GetComponent<Ball>().OnAttachToHand(transform);
     }
 
     // Takes the next ball out of the queue and into the hand
@@ -62,6 +55,10 @@ public class Spawner : MonoBehaviour {
 
     public IEnumerator TrySpawn() {
         yield return new WaitForSeconds(spawnDelay);
+        if (gameObject.activeInHierarchy == false) {
+            yield break;
+        }
+
         if (parentOfBallsToThrow.childCount > 1
             || (parentOfBallsToThrow.childCount == 1 && !parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy)) {
             PutNextBallInHand();
