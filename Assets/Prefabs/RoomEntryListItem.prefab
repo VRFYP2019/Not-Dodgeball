@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 1009427977178065924}
   - component: {fileID: 8875552041970042565}
   - component: {fileID: 2893743487972656979}
+  - component: {fileID: 147631422251619761}
   m_Layer: 5
   m_Name: RoomNameText
   m_TagString: Untagged
@@ -275,13 +276,33 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 4
+    m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Room Name
+--- !u!114 &147631422251619761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3566165647636966546}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1679637790, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: 0
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &5106122174682597664
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,7 +458,7 @@ GameObject:
   - component: {fileID: 6799109984623030080}
   - component: {fileID: 3893595053017412300}
   m_Layer: 5
-  m_Name: Text
+  m_Name: SpaceFiller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
