@@ -1,13 +1,18 @@
-﻿using ExitGames.Client.Photon;
-using Photon.Pun;
-using Photon.Realtime;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
+
 public class NetworkController : MonoBehaviourPunCallbacks {
+	public static NetworkController Instance;
+
 	public Text ConnectionStatusText;
+	public GameObject LobbyInfoPanel;
+	public GameObject RoomInfoPanel;
 
 	[Header("Login Panel")]
 	public InputField PlayerNameInput;
@@ -26,26 +31,38 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 	public Button LeaveRoomButton;
 	public GameObject PlayerListEntryPrefab;
 
-	//private Dictionary<string, RoomInfo> cachedRoomList;
-	//private Dictionary<string, GameObject> roomListEntries;
-	//private Dictionary<int, GameObject> playerListEntries;
+	private Dictionary<string, RoomInfo> cachedRoomList;
+	private Dictionary<string, GameObject> roomListEntries;
+	private Dictionary<int, GameObject> playerListEntries;
 
 	void Awake() {
+		InitInstance();
+
 		PhotonNetwork.AutomaticallySyncScene = true;
 
-		//cachedRoomList = new Dictionary<string, RoomInfo>();
-		//roomListEntries = new Dictionary<string, GameObject>();
+		cachedRoomList = new Dictionary<string, RoomInfo>();
+		roomListEntries = new Dictionary<string, GameObject>();
 
 		PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
 		ConnectionStatusText.text = "Connecting";
 	}
+
+	void InitInstance() {
+		if (Instance == null) {
+            Instance = this;
+            DontDestroyOnLoad (gameObject);
+        }
+        else if (Instance != this)
+            Destroy (gameObject);
+	}
 		
 	void Start() {
-		Debug.Log("Connecting to Photon . . .");
 		PhotonNetwork.ConnectUsingSettings();
+		LobbyInfoPanel.SetActive(false);
+		RoomInfoPanel.SetActive(false);
 	}
 
-	// --------------------------START OF PHOTON CALLBACKS---------------------------- //
+	#region PUN CALLBACKS
 
 	public override void OnConnectedToMaster() {
 		Debug.Log("Connected! To server: " + PhotonNetwork.CloudRegion);
@@ -55,72 +72,138 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 		PhotonNetwork.JoinLobby(TypedLobby.Default);
 	}
 
-	public override void OnCreateRoomFailed(short returnCode, string message) {
-		Debug.Log("Create Room Failed: " + message);
+	public override void OnJoinedLobby() {
+		ConnectionStatusText.text = "In Lobby";
+		LobbyInfoPanel.SetActive(true);
+		RoomInfoPanel.SetActive(false);
 	}
 
-	public override void OnJoinedLobby() {
-		Debug.Log("Joined Lobby");
-		ConnectionStatusText.text = "In Lobby";
-	}
+	public override void OnLeftLobby() {
+        cachedRoomList.Clear();
+		ClearRoomListView();
+    }
+
+	public override void OnRoomListUpdate(List<RoomInfo> roomList) {
+        ClearRoomListView();
+        UpdateCachedRoomList(roomList);
+        UpdateRoomListView();
+    }
 
 	public override void OnJoinedRoom() {
-		Debug.Log("Joined Room");
 		ConnectionStatusText.text = "In Room";
-		Debug.Log(PhotonNetwork.CountOfPlayersInRooms);
+		LobbyInfoPanel.SetActive(false);
+		RoomInfoPanel.SetActive(true);
 
+		 if (playerListEntries == null) {
+            playerListEntries = new Dictionary<int, GameObject>();
+        }
+
+		// Create and add PlayerListEntryPrefabs for every player in the room to scrollview
 		foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList) {
 			GameObject entry = Instantiate(PlayerListEntryPrefab);
 			entry.transform.SetParent(RoomInfoContent.transform);
 			entry.transform.localScale = Vector3.one;
-			//entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
-
-			//playerListEntries.Add(p.ActorNumber, entry);
+			entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+			playerListEntries.Add(p.ActorNumber, entry);
 		}
 	}
 
 	public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) {
+		// Add new player to scrollview list
 	    GameObject entry = Instantiate(PlayerListEntryPrefab);
 	    entry.transform.SetParent(RoomInfoContent.transform);
 	    entry.transform.localScale = Vector3.one;
-
-
-	  	//entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
-		//playerListEntries.Add(newPlayer.ActorNumber, entry);
+		entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
+		playerListEntries.Add(newPlayer.ActorNumber, entry);
 		//StartGameButton.gameObject.SetActive(CheckPlayersReady());
+	}
+
+	public override void OnLeftRoom() {
+		foreach (GameObject entry in playerListEntries.Values) {
+            Destroy(entry.gameObject);
+        }
+
+        playerListEntries.Clear();
+        playerListEntries = null;
+	}
+
+	public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer) {
+		Destroy(playerListEntries[otherPlayer.ActorNumber].gameObject);
+        playerListEntries.Remove(otherPlayer.ActorNumber);
+
+        //StartGameButton.gameObject.SetActive(CheckPlayersReady());
 	}
 
 	void OnJoinedRoomFailed(short returnCode, string message) {
 		Debug.Log("Joined Room Failed: " + message);
 	}
 
-	// --------------------------END OF PHOTON CALLBACKS---------------------------- //
+	public override void OnCreateRoomFailed(short returnCode, string message) {
+		Debug.Log("Create Room Failed: " + message);
+	}	
 
-	public void OnCreateOrJoinRoomButtonClicked(){
-	    string roomName = RoomNameInputField.text;
+	#endregion
+
+	public void OnCreateOrJoinRoomButtonClicked() {
+		setLocalPlayerName();
+
+		string roomName = RoomNameInputField.text;
 	    roomName = (roomName.Equals(string.Empty)) ? "Room " + Random.Range(1000, 10000) : roomName;
-	
-//	    byte maxPlayers;
-//	    byte.TryParse(MaxPlayersInputField.text, out maxPlayers);
-//	    maxPlayers = (byte) Mathf.Clamp(maxPlayers, 2, 8);
-//		RoomOptions options = new RoomOptions {MaxPlayers = maxPlayers};
+		//RoomOptions options = new RoomOptions {MaxPlayers = 2};
 
 		RoomOptions roomOptions = new RoomOptions {};
 		PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
+	}
+
+	public void setLocalPlayerName() {
+		string playerName = PlayerNameInput.text;
+		playerName = (playerName.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : playerName;
+		PlayerNameInput.text = playerName;
+		PhotonNetwork.LocalPlayer.NickName = playerName;
+		Debug.Log("Player name " + playerName);
+		Debug.Log("Photon.LocalPlayer.NickName " + PhotonNetwork.LocalPlayer.NickName);
 	}
 		
 	public void OnLeaveGameButtonClicked() {
     	PhotonNetwork.LeaveRoom();
 	}
 
-	//public override void OnRoomListUpdate(List<RoomInfo> roomList) {
-	//	ClearRoomListView();
-	//	UpdateCachedRoomList(roomList);
-	//	UpdateRoomListView();
-	//}
+	private void UpdateCachedRoomList(List<RoomInfo> roomList) {
+        foreach (RoomInfo info in roomList) {
+        	// Remove room from cached room list if it got closed, became invisible or was marked as removed
+            if (!info.IsOpen || !info.IsVisible || info.RemovedFromList) {
+                if (cachedRoomList.ContainsKey(info.Name)) {
+                    cachedRoomList.Remove(info.Name);
+                }
 
-	//public override void OnLeftLobby() {
-	//	cachedRoomList.Clear();
-	//	ClearRoomListView();
-	//}
+                continue;
+            }
+
+            // Update cached room info
+            if (cachedRoomList.ContainsKey(info.Name)) {
+                cachedRoomList[info.Name] = info;
+            } else { // Add new room info to cache
+                cachedRoomList.Add(info.Name, info);
+            }
+        }
+    }
+
+	private void ClearRoomListView() {
+        foreach (GameObject entry in roomListEntries.Values) {
+            Destroy(entry.gameObject);
+        }
+
+        roomListEntries.Clear();
+    }
+
+    private void UpdateRoomListView() {
+        foreach (RoomInfo info in cachedRoomList.Values) {
+            GameObject entry = Instantiate(RoomListEntryPrefab);
+            entry.transform.SetParent(RoomListContent.transform);
+            entry.transform.localScale = Vector3.one;
+            entry.GetComponent<RoomListEntry>().Initialize(info.Name);
+
+            roomListEntries.Add(info.Name, entry);
+        }
+    }
 }
