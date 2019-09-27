@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour {
-    public PlayerManager.PlayerNumber playerNumber;
-    public PlayerManager.PlayerType playerType;
+    public Utils.PlayerNumber playerNumber;
+    public Utils.PlayerType playerType;
     protected HandController leftHandController;
     protected HandController rightHandController;
 

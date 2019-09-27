@@ -31,5 +31,20 @@ MonoBehaviour:
   RpcList:
   - ClickRpc
   - DestroyRpc
+  - SetState
+  - PhotonSetActive
+  - PhotonSetState
+  - PhotonSetParent
+  - SetFollowerActive
+  - PutNextBallInHand
+  - RestartState
+  - SetCurrentBallToFollow
+  - SpawnToolFollower
+  - ThrowCurrentBall
+  - UnspawnBall
+  - AddNewBallsToPool
+  - PhotonAddScore
+  - PhotonResetScores
+  - PhotonRestart
   DisableAutoOpenWizard: 1
   ShowSettings: 1

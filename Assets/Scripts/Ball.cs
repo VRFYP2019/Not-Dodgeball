@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
-public class Ball : MonoBehaviour {
+public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     public Transform transformToFollow = null;
     private Collider col;
     private Rigidbody rb;
@@ -15,17 +16,27 @@ public class Ball : MonoBehaviour {
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
     private readonly static float forceMultiplier = 100;
     private Vector3 prevPos;
+    private PhotonView pView;
+    private bool hasBeenInit = false;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
     private AudioSource audioSource;
     
     // Start is called before the first frame update
-    void Start() {
+    void Awake() {
+        if (!hasBeenInit) {
+            Init();
+        }
+    }
+
+    private void Init() {
         InitLists();
         audioSource = GetComponent<AudioSource>();
         col = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
+        pView = GetComponent<PhotonView>();
+        hasBeenInit = true;
     }
 
     private void InitLists() {
@@ -44,7 +55,7 @@ public class Ball : MonoBehaviour {
         } else {
             if (IsDead()) {
                 InitLists();
-                BallManager.Instance.PutBallInPool(gameObject);
+                BallManager.LocalInstance.PutBallInPool(gameObject);
             }
         }
         if (Time.time - lastReadTime > boundListUpdateInterval) {
@@ -55,8 +66,14 @@ public class Ball : MonoBehaviour {
         }
         if (IsDead()) {
             InitLists();
-            BallManager.Instance.PutBallInPool(gameObject);
+            BallManager.LocalInstance.PutBallInPool(gameObject);
         }
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info) {
+        object[] instantiationData = info.photonView.InstantiationData;
+        SetState((bool)instantiationData[0]);
+        transform.parent = BallManager.LocalInstance.ballPool;
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -79,17 +96,14 @@ public class Ball : MonoBehaviour {
     }
 
     public void OnAttachToHand(Transform hand) {
-        transform.parent = FollowersParent.Instance.balls;
+        if (!hasBeenInit) {
+            Init();
+        }
+        if (FollowersParent.LocalInstance != null) {
+            transform.parent = FollowersParent.LocalInstance.balls;
+        }
         prevPos = hand.position;
         transformToFollow = hand;
-        // Due to how these balls start as inactive and this is called the moment
-        // it is set active the first time, Start() may not have been called yet
-        if (rb == null) {
-            rb = GetComponent<Rigidbody>();
-        }
-        if (col == null) {
-            col = GetComponent<Collider>();
-        }
         rb.isKinematic = true;
         col.enabled = false;
     }
@@ -100,7 +114,7 @@ public class Ball : MonoBehaviour {
         rb.isKinematic = false;
         col.enabled = true;
         rb.AddForce(throwVecetor, ForceMode.Impulse);
-        transform.parent = BallManager.Instance.activeBalls;
+        SetParent(BallManager.LocalInstance.activeBalls);
     }
 
     private bool IsDead() {
@@ -117,5 +131,36 @@ public class Ball : MonoBehaviour {
             }
         }
         return false;
+    }
+
+    [PunRPC]
+    private void PhotonSetState(bool active) {
+        gameObject.SetActive(active);
+    }
+
+    public void SetState(bool active) {
+        if (!hasBeenInit) {
+            // null if this is called upon enabling gameobject
+            // i.e. before Awake() runs
+            Init();
+        }
+        if (PhotonNetwork.IsConnected) {
+            pView.RPC("PhotonSetState", RpcTarget.All, active);
+        } else {
+            gameObject.SetActive(active);
+        }
+    }
+
+    [PunRPC]
+    private void PhotonSetParent(Transform parent) {
+        transform.parent = parent;
+    }
+
+    public void SetParent(Transform parent) {
+        if (PhotonNetwork.IsConnected) {
+            PhotonSetParent(parent);
+        } else {
+            transform.parent = parent;
+        }
     }
 }

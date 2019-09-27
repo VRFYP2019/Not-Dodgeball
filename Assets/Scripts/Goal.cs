@@ -7,31 +7,33 @@ using UnityEngine;
 // Goalpost is to follow player's position and Y-axis rotation (Yaw)
 // Goalpost cannot move outside the bounds of the room
 public class Goal : MonoBehaviour {
-    private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET = -1.25f;
+    private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
     
     private Vector3 parentPos, newPos;
     private int playerScore;
     private float yRotation;
+    private float zOffset;
 
-    private PlayerManager.PlayerNumber playerNumber;
+    private Utils.PlayerNumber playerNumber;
 
     // Start is called before the first frame update
     void Start() {
-        ResetPlayerScore();
         if (GetComponentInParent<Player>() != null) {
             playerNumber = GetComponentInParent<Player>().playerNumber;
         } else {    // probably a dummy goal
-            playerNumber = PlayerManager.PlayerNumber.TWO;
+            playerNumber = Utils.PlayerNumber.TWO;
         }
-        InitRotation();
+        InitRotationAndOffset();
     }
 
-    private void InitRotation() {
-        if (playerNumber == PlayerManager.PlayerNumber.ONE) {
+    private void InitRotationAndOffset() {
+        if (playerNumber == Utils.PlayerNumber.ONE) {
             yRotation = PLAYER_1_ROTATION;
+            zOffset = Z_OFFSET_PLAYER_ONE;
         } else {
+            zOffset = Z_OFFSET_PLAYER_TWO;
             yRotation = PLAYER_2_ROTATION;
         }
     }
@@ -46,31 +48,20 @@ public class Goal : MonoBehaviour {
         // Prevent goal from exceeding room bounds
         newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
         newPos.y = Mathf.Clamp(parentPos.y + Y_OFFSET, Y_MIN, Y_MAX);
-        newPos.z = Mathf.Clamp(parentPos.z + Z_OFFSET, Z_MIN, Z_MAX);
+        newPos.z = Mathf.Clamp(parentPos.z + zOffset, Z_MIN, Z_MAX);
         UpdateGoalPosition(newPos);
     }
 
     private void UpdateGoalPosition(Vector3 pos) {
+        //transform.localPosition = pos;
         transform.position = pos;
         transform.eulerAngles = new Vector3 (0, yRotation, 0);
     }
 
     void OnTriggerEnter(Collider col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
-            AddPlayerScore(1);
-            BallManager.Instance.PutBallInPool(col.gameObject);
+            ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
+            BallManager.LocalInstance.PutBallInPool(col.gameObject);
         }
-    }
-
-    public void ResetPlayerScore() {
-        playerScore = 0;
-    }
-
-    public void AddPlayerScore(int points) {
-        playerScore += points;
-    }
-
-    public int GetPlayerScore() {
-        return playerScore;
     }
 }

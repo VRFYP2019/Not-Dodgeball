@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
+using Photon.Pun;
 
-public class Tool : MonoBehaviour {
+public class Tool : MonoBehaviourPunCallbacks {
     [SerializeField]
     private ToolFollower _toolFollowerPrefab = null;
     protected ToolFollower follower;
@@ -13,20 +14,35 @@ public class Tool : MonoBehaviour {
         SpawnToolFollower();
     }
 
+    [PunRPC]
     protected virtual void SpawnToolFollower() {
-        follower = Instantiate(_toolFollowerPrefab);
-        follower.transform.position = transform.position;
+        if (PhotonNetwork.IsConnected) {
+            follower = PhotonNetwork.Instantiate(_toolFollowerPrefab.name, transform.position, transform.rotation).GetComponent<ToolFollower>();
+        } else {
+            follower = Instantiate(_toolFollowerPrefab);
+            follower.transform.position = transform.position;
+        }
         follower.SetFollowTarget(this);
-        follower.transform.parent = FollowersParent.Instance.tools;
+        //StartCoroutine(WaitForFollowersParentThenSetParent());
+    }
+    
+    [PunRPC]
+    public void SetFollowerActive(bool on) {
+        if (follower != null) {
+            follower.SetActive(on);
+        }
     }
 
-    public void SetState(bool on) {
-        if (follower != null) {
-            if (on) {
-                follower.gameObject.SetActive(true);
-            } else {
-                follower.gameObject.SetActive(false);
-            }
+    IEnumerator WaitForFollowersParentThenSetParent() {
+        while (FollowersParent.LocalInstance == null) {
+            yield return null;
         }
+        follower.transform.parent = FollowersParent.LocalInstance.tools;
+
+    }
+
+    [PunRPC]
+    public void SetState(bool active) {
+        gameObject.SetActive(active);
     }
 }

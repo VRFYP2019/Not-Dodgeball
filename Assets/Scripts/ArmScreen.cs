@@ -29,7 +29,7 @@ public class ArmScreen : MonoBehaviour {
         } else {
             trans.localScale = new Vector3(scaleX, scaleY, scaleZ);
         }
-        text.text = "Balls: " + BallManager.Instance.playerBallQueues[0].childCount.ToString();
+        text.text = "Balls: " + BallManager.LocalInstance.playerBallQueue.childCount.ToString();
         float a = Vector3.Dot(transform.forward, cam.transform.forward) > 0.5f
             && !(Mathf.Abs(Vector3.Dot(transform.right, cam.transform.up)) < 0.8f) ? Vector3.Dot(transform.forward, cam.transform.forward) : 0;
         ChangeTransparency(a);

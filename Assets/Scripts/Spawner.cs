@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,15 +10,18 @@ public class Spawner : MonoBehaviour {
     private readonly float spawnDelay = 0.25f;
     public GameObject currentBall;
     private HandController handController;
-    private PlayerManager.PlayerNumber playerNumber;
+    private PhotonView photonView;
+
+    private void Awake() {
+        photonView = GetComponent<PhotonView>();
+    }
 
     // Start is called before the first frame update
     void Start() {
         handController = GetComponentInParent<HandController>();
-        playerNumber = GetComponentInParent<Player>().playerNumber;
-        parentOfBallsToThrow = BallManager.Instance.playerBallQueues[(int)playerNumber];
+        parentOfBallsToThrow = BallManager.LocalInstance.playerBallQueue;
     }
-
+   
     public void ThrowCurrentBall() {
         currentBall.GetComponent<Ball>().OnDetachFromHand();
         currentBall = null;
@@ -27,7 +31,7 @@ public class Spawner : MonoBehaviour {
     private void SetCurrentBallToFollow() {
         currentBall.GetComponent<Ball>().OnAttachToHand(transform);
     }
-
+    
     // Takes the next ball out of the queue and into the hand
     private void PutNextBallInHand() {
         if (!parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy) {
@@ -38,7 +42,7 @@ public class Spawner : MonoBehaviour {
         currentBall.GetComponent<Collider>().enabled = false;
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
-        currentBall.SetActive(true);
+        currentBall.GetComponent<Ball>().SetState(true);
     }
 
     public void RestartState() {
@@ -48,7 +52,7 @@ public class Spawner : MonoBehaviour {
     }
 
     public void UnspawnBall() {
-        BallManager.Instance.PutBallInQueue((int)playerNumber, currentBall);
+        BallManager.LocalInstance.PutBallInQueue(currentBall);
         currentBall.GetComponent<Ball>().transformToFollow = null;
         currentBall = null;
     }
@@ -70,5 +74,18 @@ public class Spawner : MonoBehaviour {
     // To be called when all balls are tossed
     private void FinishThrowing() {
         handController.SwitchToTool();
+    }
+
+    [PunRPC]
+    private void PhotonSetState(bool active) {
+        gameObject.SetActive(active);
+    }
+
+    public void SetState(bool active) {
+        if (PhotonNetwork.IsConnected) {
+            photonView.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+        } else {
+            gameObject.SetActive(active);
+        }
     }
 }
