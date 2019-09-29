@@ -51,9 +51,9 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 		if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad (gameObject);
-        }
-        else if (Instance != this)
+        } else if (Instance != this) {
             Destroy (gameObject);
+		}
 	}
 		
 	void Start() {
@@ -65,9 +65,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 	#region PUN CALLBACKS
 
 	public override void OnConnectedToMaster() {
-		Debug.Log("Connected! To server: " + PhotonNetwork.CloudRegion);
 		ConnectionStatusText.text = "Connected to: " + PhotonNetwork.CloudRegion + " Region";
-
 		PhotonNetwork.AutomaticallySyncScene = true;
 		PhotonNetwork.JoinLobby(TypedLobby.Default);
 	}
@@ -84,9 +82,9 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 
 	public override void OnRoomListUpdate(List<RoomInfo> roomList) {
-        ClearRoomListView();
-        UpdateCachedRoomList(roomList);
-        UpdateRoomListView();
+    	ClearRoomListView();
+    	UpdateCachedRoomList(roomList);
+    	UpdateRoomListView();
     }
 
 	public override void OnJoinedRoom() {
@@ -115,7 +113,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 	    entry.transform.localScale = Vector3.one;
 		entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
 		playerListEntries.Add(newPlayer.ActorNumber, entry);
-		//StartGameButton.gameObject.SetActive(CheckPlayersReady());
 	}
 
 	public override void OnLeftRoom() {
@@ -155,13 +152,11 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 		PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
 	}
 
-	public void setLocalPlayerName() {
+	public void SetLocalPlayerName() {
 		string playerName = PlayerNameInput.text;
 		playerName = (playerName.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : playerName;
 		PlayerNameInput.text = playerName;
 		PhotonNetwork.LocalPlayer.NickName = playerName;
-		Debug.Log("Player name " + playerName);
-		Debug.Log("Photon.LocalPlayer.NickName " + PhotonNetwork.LocalPlayer.NickName);
 	}
 		
 	public void OnLeaveGameButtonClicked() {
