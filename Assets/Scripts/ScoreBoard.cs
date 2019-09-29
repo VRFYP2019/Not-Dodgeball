@@ -9,9 +9,6 @@ public class ScoreBoard : MonoBehaviour {
 
     public Text player1ScoreText, player2ScoreText, timeLeftText;
     public bool isTimeOver;
-    // Set to public to allow setting via PlayerManager script
-    public GameObject player1Goal = null, player2Goal = null;
-    private Goal player1GoalScript, player2GoalScript;
     private float timeLeft;
     private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
@@ -21,6 +18,7 @@ public class ScoreBoard : MonoBehaviour {
     void Start() {
         restartPromptCoroutine = TimeOverRestartPrompt();
         Init();
+        GameManager.Instance.RestartEvent.AddListener(Restart);
     }
 
     public void Init() {
@@ -29,9 +27,6 @@ public class ScoreBoard : MonoBehaviour {
         player2ScoreText.text = "0";
         timeLeftText.text = timeLeft.ToString();
         isTimeOver = false;
-
-        player1GoalScript = player1Goal.GetComponentInChildren<Goal>();
-        player2GoalScript = player2Goal.GetComponentInChildren<Goal>();
     }
 
     // Update is called once per frame
@@ -67,17 +62,12 @@ public class ScoreBoard : MonoBehaviour {
 
     // Displays scores of both players
     private void UpdateDisplayScores() {
-        // Note: player 1 goal refers to goal attached to player 1.
-        // Hence, player 1's score is dependent on player 2 goal and vice versa.
-        player1ScoreText.text = player2GoalScript.GetPlayerScore().ToString();
-        player2ScoreText.text = player1GoalScript.GetPlayerScore().ToString();
+        player1ScoreText.text = ScoreManager.Instance.playerScores[0].ToString();
+        player2ScoreText.text = ScoreManager.Instance.playerScores[1].ToString();
     }
 
     public void Restart() {
         StopCoroutine(restartPromptCoroutine);
-        // TODO: remove these lines after moving scoring tracking from Goal to something else
-        player1GoalScript.ResetPlayerScore();
-        player2GoalScript.ResetPlayerScore();
         Init();
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
@@ -8,12 +9,29 @@ public class Human : Player {
     public SteamVR_Action_Boolean trigger = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
     private SteamVR_Behaviour_Pose leftHand;
     private SteamVR_Behaviour_Pose rightHand;
+    public MonoBehaviour[] localScripts;
+    public GameObject[] localObjects;
+    private PhotonView photonView;
 
     protected override void Start() {
-        base.Start();
-        SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
-        leftHand = hands[0];
-        rightHand = hands[1];
+        playerType = Utils.PlayerType.HUMAN;
+        photonView = GetComponent<PhotonView>();
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
+            foreach (MonoBehaviour m in localScripts) {
+                m.enabled = false;
+            }
+            foreach (GameObject g in localObjects) {
+                g.SetActive(false);
+            }
+            GetComponentInChildren<Camera>().enabled = false;
+            GetComponentInChildren<AudioListener>().enabled = false;
+            this.enabled = false;
+        } else {
+            base.Start();
+            SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
+            leftHand = hands[0];
+            rightHand = hands[1];
+        }
     }
 
     // Update is called once per frame

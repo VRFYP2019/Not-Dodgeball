@@ -11,7 +11,7 @@ public class ArmSpeed : MonoBehaviour {
     private Vector3 lastPos;
 
     private void Start() {
-        if (GetComponentInParent<Player>().playerType == PlayerManager.PlayerType.HUMAN) {
+        if (GetComponentInParent<Player>().playerType == Utils.PlayerType.HUMAN) {
             hand = GetComponent<SteamVR_Behaviour_Pose>();
             StartCoroutine(UpdateVelocityHuman());
         } else {

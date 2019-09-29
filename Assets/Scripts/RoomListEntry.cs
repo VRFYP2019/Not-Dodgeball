@@ -19,7 +19,7 @@ public class RoomListEntry : MonoBehaviour{
                 PhotonNetwork.LeaveLobby();
             }
 
-            NetworkController.Instance.setLocalPlayerName();
+            NetworkController.Instance.SetLocalPlayerName();
             PhotonNetwork.JoinRoom(roomName);
         });
     }

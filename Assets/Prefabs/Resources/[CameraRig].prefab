@@ -89,6 +89,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2118341066751001339}
   - component: {fileID: 2118341066751001338}
+  - component: {fileID: 147671139947361278}
+  - component: {fileID: 7543286925947895127}
   m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
@@ -124,6 +126,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
     type: 3}
+--- !u!114 &147671139947361278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341066751001336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 7543286925947895127}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &7543286925947895127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341066751001336}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2118341066931277687
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,6 +474,8 @@ GameObject:
   - component: {fileID: 2118341067453767009}
   - component: {fileID: 2118341067453767022}
   - component: {fileID: 2118341067453767011}
+  - component: {fileID: 6630341419371483225}
+  - component: {fileID: 4618227916067140290}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -526,6 +567,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76120635f8be5ee4084147307eb45950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6630341419371483225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341067453767020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 4618227916067140290}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &4618227916067140290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341067453767020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2118341067558500291
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,6 +736,8 @@ GameObject:
   - component: {fileID: 2118341067625887903}
   - component: {fileID: 2118341067625887900}
   - component: {fileID: 2118341067625887901}
+  - component: {fileID: 2209958137034351418}
+  - component: {fileID: 8401725292051361159}
   m_Layer: 8
   m_Name: GoalPost
   m_TagString: Untagged
@@ -718,6 +798,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 443377d75f2d9024294516cc49180804, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2209958137034351418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341067625887899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 8401725292051361159}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8401725292051361159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341067625887899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2118341067639942281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,6 +1470,8 @@ GameObject:
   - component: {fileID: 2118341068204836269}
   - component: {fileID: 2118341068204836266}
   - component: {fileID: 2118341068204836271}
+  - component: {fileID: 1106067650177484816}
+  - component: {fileID: 8376652343779038459}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -1444,6 +1563,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76120635f8be5ee4084147307eb45950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1106067650177484816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068204836264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 8376652343779038459}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &8376652343779038459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068204836264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2118341068241347233
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,6 +1610,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2118341068241347232}
   - component: {fileID: 2118341068241347235}
+  - component: {fileID: 9050055663541778143}
+  - component: {fileID: 5146248220970786864}
   m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
@@ -1489,6 +1647,43 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
     type: 3}
+--- !u!114 &9050055663541778143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068241347233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 5146248220970786864}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &5146248220970786864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068241347233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
 --- !u!1 &2118341068358082747
 GameObject:
   m_ObjectHideFlags: 0
@@ -1783,6 +1978,8 @@ GameObject:
   - component: {fileID: 2118341068661652252}
   - component: {fileID: 2118341068661652253}
   - component: {fileID: 2118341068661652248}
+  - component: {fileID: 5120535602630338610}
+  - component: {fileID: -341437323867801499}
   m_Layer: 0
   m_Name: '[CameraRig]'
   m_TagString: Untagged
@@ -1899,3 +2096,59 @@ MonoBehaviour:
   trigger:
     actionPath: /actions/default/in/InteractUI
     needsReinit: 0
+  localScripts:
+  - {fileID: 2118341066931277675}
+  - {fileID: 2118341067558500295}
+  - {fileID: 2118341067625887901}
+  - {fileID: 2118341067453767022}
+  - {fileID: 2118341068204836266}
+  - {fileID: 2118341067558500293}
+  - {fileID: 2118341066931277673}
+  - {fileID: 2118341066931277672}
+  - {fileID: 2118341066931277674}
+  - {fileID: 2118341067558500292}
+  - {fileID: 2118341067558500294}
+  - {fileID: 2118341066751001338}
+  - {fileID: 2118341068241347235}
+  - {fileID: 2118341067656368614}
+  - {fileID: 2118341067450020149}
+  localObjects:
+  - {fileID: 2118341067790645564}
+  - {fileID: 2118341068358082747}
+--- !u!114 &5120535602630338610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068661652249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: -341437323867801499}
+  viewIdField: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &-341437323867801499
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118341068661652249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0

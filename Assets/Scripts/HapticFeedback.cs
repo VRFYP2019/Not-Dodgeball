@@ -6,9 +6,8 @@ using Valve.VR;
 public class HapticFeedback : MonoBehaviour {
     public SteamVR_Action_Vibration vibration;
     private SteamVR_Input_Sources trackedObj;
-
-    // Start is called before the first frame update
-    private void Start() {
+    
+    private void Awake() {
         trackedObj = GetComponent<SteamVR_Behaviour_Pose>().inputSource;
     }
 

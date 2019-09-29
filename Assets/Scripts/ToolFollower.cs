@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Photon.Pun;
+using System.Collections.Generic;
 using UnityEngine;
 
 // The actual tangible part of the tool, instantiated separately from player
-public class ToolFollower : MonoBehaviour {
+public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private Tool _tool;
     private Rigidbody _rigidbody;
     private Vector3 _velocity;
@@ -21,12 +22,14 @@ public class ToolFollower : MonoBehaviour {
         NORMAL
     }
     protected FadeState fadeState = FadeState.NORMAL;
+    private PhotonView pView;
 
     [SerializeField]
     private float _sensitivity = 100f;
 
     private void Awake() {
         _rigidbody = GetComponent<Rigidbody>();
+        pView = GetComponent<PhotonView>();
     }
 
     private void Start() {
@@ -34,19 +37,29 @@ public class ToolFollower : MonoBehaviour {
             materials.AddRange(r.materials);
         }
     }
+ 
+    public void OnPhotonInstantiate(PhotonMessageInfo info) {
+        if (FollowersParent.LocalInstance != null) {
+            transform.parent = FollowersParent.LocalInstance.tools;
+        }
+    }
 
     private void Update() {
-        HandleFade();
+        if (!PhotonNetwork.IsConnected || pView.IsMine) {
+            HandleFade();
+        }
     }
 
     private void FixedUpdate() {
-        Vector3 destination = _tool.transform.position;
-        _rigidbody.transform.rotation = transform.rotation;
+        if (!PhotonNetwork.IsConnected || pView.IsMine) {
+            Vector3 destination = _tool.transform.position;
+            _rigidbody.transform.rotation = transform.rotation;
 
-        _velocity = (destination - _rigidbody.transform.position) * _sensitivity;
+            _velocity = (destination - _rigidbody.transform.position) * _sensitivity;
 
-        _rigidbody.velocity = _velocity;
-        transform.rotation = _tool.transform.rotation;
+            _rigidbody.velocity = _velocity;
+            transform.rotation = _tool.transform.rotation;
+        }
     }
 
     public void SetFollowTarget(Tool target) {
@@ -96,7 +109,23 @@ public class ToolFollower : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision) {
         if (_isHuman) {
-            ((ToolHuman)_tool).TriggerHapticFeedback(0.1f, 100, 30);
+            if (!PhotonNetwork.IsConnected || pView.IsMine) {
+                ((ToolHuman)_tool).TriggerHapticFeedback(0.1f, 100, 30);
+            }
+        }
+    }
+
+    [PunRPC]
+    private void PhotonSetState(bool active) {
+        gameObject.SetActive(active);
+    }
+
+    public void SetActive(bool active) {
+        if (PhotonNetwork.IsConnected) {
+            pView.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+        }
+        else {
+            gameObject.SetActive(active);
         }
     }
 }

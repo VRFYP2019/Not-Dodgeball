@@ -6,11 +6,19 @@ using UnityEngine;
 public class HandController : MonoBehaviour {
     private Tool tool;
     private Spawner spawnerHand;
+    bool hasBeenInit = false;
 
     // Start is called before the first frame update
     void Start() {
+        if (!hasBeenInit) {
+            Init();
+        }
+    }
+
+    private void Init() {
         tool = GetComponentInChildren<Tool>();
-        spawnerHand = GetComponentInChildren<Spawner>();
+        spawnerHand = GetComponentInChildren<Spawner>(true);
+        hasBeenInit = true;
     }
 
     public void Switch() {
@@ -22,24 +30,27 @@ public class HandController : MonoBehaviour {
     }
 
     public void SwitchToTool() {
+        if (!hasBeenInit) {
+            Init();
+        }
         if (spawnerHand.currentBall != null) {
             spawnerHand.UnspawnBall();
         }
-        tool.gameObject.SetActive(true);
         tool.SetState(true);
-        spawnerHand.gameObject.SetActive(false);
+        tool.SetFollowerActive(true);
+        spawnerHand.SetState(false);
     }
 
     // TODO: switch to default controller instead of tool
     public void ResetSpawnerStateAndSwitchToTool() {
-        spawnerHand.RestartState();
         SwitchToTool();
+        spawnerHand.RestartState();
     }
 
     public void SwitchToSpawnerHand() {
+        tool.SetFollowerActive(false);
         tool.SetState(false);
-        tool.gameObject.SetActive(false);
-        spawnerHand.gameObject.SetActive(true);
+        spawnerHand.SetState(true);
         StartCoroutine(spawnerHand.TrySpawn());
     }
 }
