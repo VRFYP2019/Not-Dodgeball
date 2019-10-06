@@ -2087,7 +2087,7 @@ MonoBehaviour:
   LeaveRoomButton: {fileID: 1935591002}
   PlayerListEntryPrefab: {fileID: 3390346581760645234, guid: 1054345d8404df44dac8b433b6f477bd,
     type: 3}
-  RoomManagerPrefab: {fileID: 6547548021350848648, guid: 7301ad1471a07c94fb5e0556e0ed728a,
+  RoomCreatorPrefab: {fileID: 6547548021350848648, guid: 7301ad1471a07c94fb5e0556e0ed728a,
     type: 3}
 --- !u!4 &1393912426
 Transform:

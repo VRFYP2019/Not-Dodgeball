@@ -28,9 +28,11 @@ public class Human : Player {
             this.enabled = false;
         } else {
             base.Start();
-            SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
-            leftHand = hands[0];
-            rightHand = hands[1];
+            if (!GameManager.Instance.isOculusQuest) {
+                SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
+                leftHand = hands[0];
+                rightHand = hands[1];
+            }
         }
     }
 
@@ -39,17 +41,31 @@ public class Human : Player {
         base.Update();
         // if game ended and trigger pressed, restart the game
         if (GameManager.Instance.isGameEnded) {
-            if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
+            if (GameManager.Instance.isOculusQuest) {
+                if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
+                    GameManager.Instance.Restart();
+                }
+            } else if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
                 GameManager.Instance.Restart();
             }
         }
 
-        // if grab is pressed, switch between tool and spawn for that hand
-        if (grab.GetStateDown(rightHand.inputSource)) {
-            rightHandController.Switch();
-        }
-        if (grab.GetStateDown(leftHand.inputSource)) {
-            leftHandController.Switch();
+        if (GameManager.Instance.isOculusQuest) {
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)) {
+                leftHandController.Switch();
+            }
+
+            if (OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger)) {
+                rightHandController.Switch();
+            }
+        } else {
+            // if grab is pressed, switch between tool and spawn for that hand
+            if (grab.GetStateDown(rightHand.inputSource)) {
+                rightHandController.Switch();
+            }
+            if (grab.GetStateDown(leftHand.inputSource)) {
+                leftHandController.Switch();
+            }
         }
     }
 }

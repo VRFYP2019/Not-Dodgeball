@@ -175,7 +175,6 @@ GameObject:
   - component: {fileID: 2118341066931277675}
   - component: {fileID: 2118341066931277672}
   - component: {fileID: 2118341066931277673}
-  - component: {fileID: 2118341066931277674}
   m_Layer: 0
   m_Name: Controller (left)
   m_TagString: Untagged
@@ -270,19 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2118341066931277674
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118341066931277687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04da32a173228ef4fba9b306256a96d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &2118341067196790105
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76120635f8be5ee4084147307eb45950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hand: 0
 --- !u!114 &6630341419371483225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,7 +603,6 @@ GameObject:
   - component: {fileID: 2118341067558500295}
   - component: {fileID: 2118341067558500292}
   - component: {fileID: 2118341067558500293}
-  - component: {fileID: 2118341067558500294}
   m_Layer: 0
   m_Name: Controller (right)
   m_TagString: Untagged
@@ -711,19 +697,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2118341067558500294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2118341067558500291}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04da32a173228ef4fba9b306256a96d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  velocity: {x: 0, y: 0, z: 0}
 --- !u!1 &2118341067625887899
 GameObject:
   m_ObjectHideFlags: 0
@@ -1563,6 +1536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76120635f8be5ee4084147307eb45950, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hand: 1
 --- !u!114 &1106067650177484816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2105,13 +2079,11 @@ MonoBehaviour:
   - {fileID: 2118341067558500293}
   - {fileID: 2118341066931277673}
   - {fileID: 2118341066931277672}
-  - {fileID: 2118341066931277674}
   - {fileID: 2118341067558500292}
-  - {fileID: 2118341067558500294}
-  - {fileID: 2118341066751001338}
-  - {fileID: 2118341068241347235}
   - {fileID: 2118341067656368614}
   - {fileID: 2118341067450020149}
+  - {fileID: 2118341066751001338}
+  - {fileID: 2118341068241347235}
   localObjects:
   - {fileID: 2118341067790645564}
   - {fileID: 2118341068358082747}

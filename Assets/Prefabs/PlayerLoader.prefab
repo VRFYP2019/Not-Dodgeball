@@ -105,7 +105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c7cd3464795057439808a858b3c55ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HumanPrefab: {fileID: 2118341068661652249, guid: 9ea8269726e18514d89b8730fd18a3dc,
+  OpenVRPrefab: {fileID: 2118341068661652249, guid: 9ea8269726e18514d89b8730fd18a3dc,
+    type: 3}
+  OculusPrefab: {fileID: 4271586205571071132, guid: 4a2e9f54795c42546aaca20515ec9d7d,
     type: 3}
   BotPrefab: {fileID: 6737888576237609523, guid: 6d6821ea1c3bf344db771f9fd2266cce,
     type: 3}
