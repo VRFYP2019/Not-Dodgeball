@@ -10,9 +10,11 @@ public class GameManager : MonoBehaviourPunCallbacks {
     public float gameDuration = 60.0f;   // 1 minute
     public int numPlayers = 1;
     public UnityEvent RestartEvent;
+    public bool isOculusQuest = false;
 
     private void Awake() {
         Instance = this;
+        isOculusQuest = OVRPlugin.productName == "Oculus Quest";
     }
 
     [PunRPC]

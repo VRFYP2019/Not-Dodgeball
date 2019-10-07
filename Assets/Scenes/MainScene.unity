@@ -549,6 +549,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5356393244840461064, guid: f0ba31bdda24ba447b07d3c87d113e5c,
+        type: 3}
+      propertyPath: m_Name
+      value: FollowersParent
+      objectReference: {fileID: 0}
     - target: {fileID: -5993483263316044797, guid: f0ba31bdda24ba447b07d3c87d113e5c,
         type: 3}
       propertyPath: ObservedComponents.Array.size
@@ -558,11 +563,6 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5356393244840461064, guid: f0ba31bdda24ba447b07d3c87d113e5c,
-        type: 3}
-      propertyPath: m_Name
-      value: FollowersParent
       objectReference: {fileID: 0}
     - target: {fileID: 5356393244840461066, guid: f0ba31bdda24ba447b07d3c87d113e5c,
         type: 3}
@@ -987,6 +987,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4165734954415435633, guid: bda1cbdccc2441144bc7eaf09e59eec7,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
     - target: {fileID: -5876371638361692314, guid: bda1cbdccc2441144bc7eaf09e59eec7,
         type: 3}
       propertyPath: ObservedComponents.Array.size
@@ -996,11 +1001,6 @@ PrefabInstance:
         type: 3}
       propertyPath: viewIdField
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4165734954415435633, guid: bda1cbdccc2441144bc7eaf09e59eec7,
-        type: 3}
-      propertyPath: m_Name
-      value: GameManager
       objectReference: {fileID: 0}
     - target: {fileID: 4165734954415435639, guid: bda1cbdccc2441144bc7eaf09e59eec7,
         type: 3}
@@ -1140,6 +1140,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7698177593181359284, guid: 03543cf34491c6244b5a7e7947aa92c6,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerLoader
+      objectReference: {fileID: 0}
     - target: {fileID: 7698177593181359282, guid: 03543cf34491c6244b5a7e7947aa92c6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1194,11 +1199,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7698177593181359284, guid: 03543cf34491c6244b5a7e7947aa92c6,
-        type: 3}
-      propertyPath: m_Name
-      value: PlayerLoader
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03543cf34491c6244b5a7e7947aa92c6, type: 3}

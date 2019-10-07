@@ -31,8 +31,8 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     public Button LeaveRoomButton;
     public GameObject PlayerListEntryPrefab;
 
-    [Header("RoomManager")]
-    public GameObject RoomManagerPrefab;
+    [Header("RoomCreator")]
+    public GameObject RoomCreatorPrefab;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
     private Dictionary<string, GameObject> roomListEntries;
@@ -206,8 +206,8 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 
     public void OnStartGameButtonClicked() {
-        RoomManager rm = Instantiate(RoomManagerPrefab).GetComponent<RoomManager>();
-        rm.numPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
-        rm.StartGame();
+        RoomCreator rc = Instantiate(RoomCreatorPrefab).GetComponent<RoomCreator>();
+        rc.numPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+        rc.StartGame();
     }
 }

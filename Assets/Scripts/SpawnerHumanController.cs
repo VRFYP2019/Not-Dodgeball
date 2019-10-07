@@ -8,16 +8,34 @@ public class SpawnerHumanController : MonoBehaviour {
     private SteamVR_Action_Boolean click = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
     private Spawner spawner;
     private SteamVR_Behaviour_Pose handPose;
+    enum Hand {
+        LEFT,
+        RIGHT
+    }
+    [SerializeField]
+    private Hand hand;
 
     // Start is called before the first frame update
     void Start() {
-        handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
+        if (!GameManager.Instance.isOculusQuest) {
+            handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
+        }
         spawner = GetComponent<Spawner>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (click.GetStateDown(handPose.inputSource)) {
+        if (GameManager.Instance.isOculusQuest) {
+            // TODO: make both hands work
+            if (hand == Hand.LEFT && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)) {
+                spawner.ThrowCurrentBall();
+                StartCoroutine(spawner.TrySpawn());
+            }
+            if (hand == Hand.RIGHT && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
+                spawner.ThrowCurrentBall();
+                StartCoroutine(spawner.TrySpawn());
+            }
+        } else if (click.GetStateDown(handPose.inputSource)) {
             // currentBall would be null if the player tries to throw before the delay from the previous throw is over
             if (spawner.currentBall != null) {
                 spawner.ThrowCurrentBall();
