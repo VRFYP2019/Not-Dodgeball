@@ -14,8 +14,11 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 
 **Milestones**
 
-| Week | Target        | Status     |
-| 6    | MVP Prototype | Incomplete |
+| Week  | Target                            | Status                                |
+| ----- | --------------------------------- | ------------------------------------- |
+| 6     | MVP Prototype                     | Complete for HTC Vive and Steam VR    |
+| 7     | Online Multiplayer Functionality  | Lobby and Start Game Complete         |
+| 8-9   | Migration to Oculus Quest         | Incomplete                            |
 
 
 **Allocation of tasks**
@@ -28,7 +31,11 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 - Two player game with both players are put into a rectangular room at opposite sides.
 - Each player has a goal which the aim is to score points into the opposing players goal.
     - Player's goal is attached to the player and will move as the player moves, following behind at a set distance.
-    - The goal will follow the player's yaw (Y-axis) rotation only.
+    - The goal has two states - Stationary and Following.
+        - A Stationary goal will have its position locked at where the goal's last Following position was.
+        - A Following goal will be following the player.
+    - When the player scores a goal, their own goal will be Following.
+    - When the opposing player scores a goal, the player's goal will be Stationary.
 - Game starts with each player owning 1 ball (TBC).
     - Players can spawn and throw as many balls as they own, with a short cooldown between spawning.
     - Either hand controller can spawn the ball.
@@ -52,7 +59,7 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 
 
 **Fitness involvement:**
-- Requires a lot of movement. Kicking(TBC) and smacking balls are allowed, hence it can be a full body workout.
+- Requires a lot of movement. ~~Kicking(TBC)~~ and smacking balls are allowed, hence it can be a full body workout.
 
 **Projected behavioural impact:**
 - It is a game that would be a logistical nightmare to implement in real life due to the number of balls to keep track of, so it is safe to assume there is no viable substitute for this game.
