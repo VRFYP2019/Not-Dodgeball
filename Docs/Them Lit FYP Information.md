@@ -59,7 +59,7 @@ The project aims to make exercising fun with VR and Sensors. Body movements will
 
 
 **Fitness involvement:**
-- Requires a lot of movement. ~~Kicking(TBC)~~ and smacking balls are allowed, hence it can be a full body workout.
+- Requires a lot of movement. ~~Kicking(TBC) and~~ smacking balls are allowed, hence it can be a full body workout.
 
 **Projected behavioural impact:**
 - It is a game that would be a logistical nightmare to implement in real life due to the number of balls to keep track of, so it is safe to assume there is no viable substitute for this game.
