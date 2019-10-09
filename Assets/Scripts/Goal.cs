@@ -4,17 +4,21 @@ using UnityEngine;
 
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
-// Goalpost is to follow player's position and Y-axis rotation (Yaw)
 // Goalpost cannot move outside the bounds of the room
 public class Goal : MonoBehaviour {
     private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
     
-    private Vector3 parentPos, newPos;
+    private Vector3 parentPos, newPos, lastSafePos;
     private int playerScore;
     private float yRotation;
     private float zOffset;
+    private GoalState goalState;
+    enum GoalState {
+        FOLLOWING,
+        STATIONARY
+    }
 
     private Utils.PlayerNumber playerNumber;
 
@@ -22,10 +26,11 @@ public class Goal : MonoBehaviour {
     void Start() {
         if (GetComponentInParent<Player>() != null) {
             playerNumber = GetComponentInParent<Player>().playerNumber;
-        } else {    // probably a dummy goal
+        } else {
             playerNumber = Utils.PlayerNumber.TWO;
         }
-        InitRotationAndOffset();
+        ResetGoal();
+        GameManager.Instance.RestartEvent.AddListener(ResetGoal);
     }
 
     private void InitRotationAndOffset() {
@@ -38,18 +43,28 @@ public class Goal : MonoBehaviour {
         }
     }
 
+    public void ResetGoal() {
+        InitRotationAndOffset();
+        goalState = GoalState.FOLLOWING;
+    }
+
     // Update is called once per frame
     void Update() {
         HandleGoalPosition();
     }
     
     private void HandleGoalPosition() {
-        parentPos = transform.parent.position;
-        // Prevent goal from exceeding room bounds
-        newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
-        newPos.y = Mathf.Clamp(parentPos.y + Y_OFFSET, Y_MIN, Y_MAX);
-        newPos.z = Mathf.Clamp(parentPos.z + zOffset, Z_MIN, Z_MAX);
-        UpdateGoalPosition(newPos);
+        if (goalState == GoalState.FOLLOWING) {
+            parentPos = transform.parent.position;
+            // Prevent goal from exceeding room bounds
+            newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
+            newPos.y = Mathf.Clamp(parentPos.y + Y_OFFSET, Y_MIN, Y_MAX);
+            newPos.z = Mathf.Clamp(parentPos.z + zOffset, Z_MIN, Z_MAX);
+            lastSafePos = newPos;
+            UpdateGoalPosition(newPos);
+        } else if (goalState == GoalState.STATIONARY) {
+            UpdateGoalPosition(lastSafePos);
+        }
     }
 
     private void UpdateGoalPosition(Vector3 pos) {
@@ -62,6 +77,11 @@ public class Goal : MonoBehaviour {
         if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
             ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
             BallManager.LocalInstance.PutBallInPool(col.gameObject);
+            SwitchGoalState();
         }
+    }
+
+    private void SwitchGoalState() {
+        goalState = (goalState == GoalState.FOLLOWING) ? GoalState.STATIONARY : GoalState.FOLLOWING;
     }
 }
