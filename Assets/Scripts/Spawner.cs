@@ -43,6 +43,7 @@ public class Spawner : MonoBehaviour {
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
         currentBall.GetComponent<Ball>().SetState(true);
+        currentBall.GetComponent<Ball>().SetPlayerNumber(GetComponentInParent<Player>().playerNumber);
     }
 
     public void RestartState() {
