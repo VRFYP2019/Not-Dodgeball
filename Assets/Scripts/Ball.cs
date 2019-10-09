@@ -18,6 +18,8 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private Vector3 prevPos;
     private PhotonView pView;
     private bool hasBeenInit = false;
+    private Utils.PlayerNumber playerNumber;
+    private Material mat;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
@@ -36,6 +38,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         col = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
         pView = GetComponent<PhotonView>();
+        mat = GetComponent<Renderer>().material;
         hasBeenInit = true;
     }
 
@@ -71,6 +74,9 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
+        if (!hasBeenInit) {
+            Init();
+        }
         object[] instantiationData = info.photonView.InstantiationData;
         SetState((bool)instantiationData[0]);
         transform.parent = BallManager.LocalInstance.ballPool;
@@ -139,11 +145,6 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     public void SetState(bool active) {
-        if (!hasBeenInit) {
-            // null if this is called upon enabling gameobject
-            // i.e. before Awake() runs
-            Init();
-        }
         if (PhotonNetwork.IsConnected) {
             pView.RPC("PhotonSetState", RpcTarget.All, active);
         } else {
@@ -162,5 +163,24 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         } else {
             transform.parent = parent;
         }
+    }
+
+    [PunRPC]
+    private void PhotonSetPlayerNumber(int playerNumber) {
+        this.playerNumber = (Utils.PlayerNumber)playerNumber;
+        UpdateColor();
+    }
+
+    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+        if (PhotonNetwork.IsConnected) {
+            pView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
+        } else {
+            this.playerNumber = playerNumber;
+            UpdateColor();
+        }
+    }
+
+    private void UpdateColor() {
+        mat.color = playerNumber == Utils.PlayerNumber.ONE ? Utils.blue : Utils.orange;
     }
 }
