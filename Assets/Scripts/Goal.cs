@@ -57,9 +57,9 @@ public class Goal : MonoBehaviour {
         if (goalState == GoalState.FOLLOWING) {
             parentPos = transform.parent.position;
             // Prevent goal from exceeding room bounds
-            newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
-            newPos.y = Mathf.Clamp(parentPos.y + Y_OFFSET, Y_MIN, Y_MAX);
-            newPos.z = Mathf.Clamp(parentPos.z + zOffset, Z_MIN, Z_MAX);
+            newPos.x = Mathf.Clamp(Mathf.Lerp(lastSafePos.x, parentPos.x + X_OFFSET, Time.deltaTime), X_MIN, X_MAX);
+            newPos.y = Mathf.Clamp(Mathf.Lerp(lastSafePos.y, parentPos.y + Y_OFFSET, Time.deltaTime), Y_MIN, Y_MAX);
+            newPos.z = Mathf.Clamp(Mathf.Lerp(lastSafePos.z, parentPos.z + zOffset, Time.deltaTime), Z_MIN, Z_MAX);
             lastSafePos = newPos;
             UpdateGoalPosition(newPos);
         } else if (goalState == GoalState.STATIONARY) {
