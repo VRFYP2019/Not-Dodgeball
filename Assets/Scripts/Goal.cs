@@ -99,11 +99,22 @@ public class Goal : MonoBehaviour {
 
     void OnTriggerEnter(Collider col) {
         if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
-            ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
-            BallManager.LocalInstance.PutBallInPool(col.gameObject);
-            SwitchGoalState();
+            // Prevent own goal
+            if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
+                ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
+                BallManager.LocalInstance.PutBallInPool(col.gameObject);
+                SwitchGoalState();
+            }
         }
     }
+
+    // TODO: KIV on how to deal with collision for own goal
+    // 1) Ball bounce out 2) Ball ignores collision 3) Put ball in pool
+    /*void OnCollisionEnter(Collision col) {
+      if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() == playerNumber) {
+          Physics.IgnoreCollision(col.gameObject.GetComponent<Collider>(), this.GetComponent<Collider>());
+      }
+    } */
 
     private void SwitchGoalState() {
         goalState = (goalState == GoalState.FOLLOWING) ? GoalState.STATIONARY : GoalState.TRANSITION;
