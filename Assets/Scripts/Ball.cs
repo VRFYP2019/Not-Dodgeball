@@ -180,6 +180,10 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
     }
 
+    public Utils.PlayerNumber GetPlayerNumber() {
+        return playerNumber;
+    }
+
     private void UpdateColor() {
         mat.color = playerNumber == Utils.PlayerNumber.ONE ? Utils.blue : Utils.orange;
     }
