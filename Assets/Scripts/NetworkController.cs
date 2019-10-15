@@ -102,8 +102,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
         foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList) {
             GameObject entry = Instantiate(PlayerListEntryPrefab);
-            entry.transform.SetParent(RoomInfoContent.transform);
-            entry.transform.localScale = Vector3.one;
+            entry.transform.SetParent(RoomInfoContent.transform, false);
             entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
             playerListEntries.Add(p.ActorNumber, entry);
         }
@@ -111,11 +110,10 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) {
         // Add new player to scrollview list
-            GameObject entry = Instantiate(PlayerListEntryPrefab);
-            entry.transform.SetParent(RoomInfoContent.transform);
-            entry.transform.localScale = Vector3.one;
-            entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
-            playerListEntries.Add(newPlayer.ActorNumber, entry);
+        GameObject entry = Instantiate(PlayerListEntryPrefab);
+        entry.transform.SetParent(RoomInfoContent.transform, false);
+        entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
+        playerListEntries.Add(newPlayer.ActorNumber, entry);
     }
 
     public override void OnLeftRoom() {
@@ -197,8 +195,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     private void UpdateRoomListView() {
         foreach (RoomInfo info in cachedRoomList.Values) {
             GameObject entry = Instantiate(RoomListEntryPrefab);
-            entry.transform.SetParent(RoomListContent.transform);
-            entry.transform.localScale = Vector3.one;
+            entry.transform.SetParent(RoomListContent.transform, false);
             entry.GetComponent<RoomListEntry>().Initialize(info.Name);
 
             roomListEntries.Add(info.Name, entry);
