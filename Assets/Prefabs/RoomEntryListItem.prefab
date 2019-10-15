@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 717887343272593679}
   - component: {fileID: 3450887567027288944}
   - component: {fileID: 6837277448202571648}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: RoomEntryListItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 5906131904057386199}
   - component: {fileID: 5579349847850096820}
   - component: {fileID: 6480714382053953297}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 8875552041970042565}
   - component: {fileID: 2893743487972656979}
   - component: {fileID: 147631422251619761}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: RoomNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,7 +331,7 @@ GameObject:
   - component: {fileID: 7506885978227665107}
   - component: {fileID: 8754992599015453263}
   - component: {fileID: 2350111249546414947}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: JoinRoomButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,7 +472,7 @@ GameObject:
   - component: {fileID: 4558148891305555799}
   - component: {fileID: 6799109984623030080}
   - component: {fileID: 3893595053017412300}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: SpaceFiller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
