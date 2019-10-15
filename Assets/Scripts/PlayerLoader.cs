@@ -15,8 +15,8 @@ public class PlayerLoader : MonoBehaviour {
     private GameObject player1, player2;
     // Start is called before the first frame update
     void Start() {
-        // TODO: differentiate which is connected
-        GameObject humanPrefab = OculusPrefab;
+        // TODO: add a new prefab for editor
+        GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab : OpenVRPrefab;
         if (PhotonNetwork.IsConnected) {
             if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
                 player1 = PhotonNetwork.Instantiate(humanPrefab.name, player1SpawnPoint.position, player1SpawnPoint.rotation);
