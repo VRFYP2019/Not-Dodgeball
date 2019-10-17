@@ -23,8 +23,12 @@ public class Human : Player {
             foreach (GameObject g in localObjects) {
                 g.SetActive(false);
             }
-            GetComponentInChildren<Camera>().enabled = false;
-            GetComponentInChildren<AudioListener>().enabled = false;
+            foreach (Camera cam in GetComponentsInChildren<Camera>()) {
+                cam.enabled = false;
+            }
+            foreach (AudioListener al in GetComponentsInChildren<AudioListener>()) {
+                GetComponentInChildren<AudioListener>().enabled = false;
+            }
             this.enabled = false;
         } else {
             base.Start();

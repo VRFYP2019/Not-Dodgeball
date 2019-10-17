@@ -96,7 +96,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e40f7bf9c721a6f49a2eae16fe81ffdc,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -554,16 +555,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: FollowersParent
       objectReference: {fileID: 0}
-    - target: {fileID: -5993483263316044797, guid: f0ba31bdda24ba447b07d3c87d113e5c,
-        type: 3}
-      propertyPath: ObservedComponents.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5993483263316044797, guid: f0ba31bdda24ba447b07d3c87d113e5c,
-        type: 3}
-      propertyPath: viewIdField
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5356393244840461066, guid: f0ba31bdda24ba447b07d3c87d113e5c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -618,6 +609,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5993483263316044797, guid: f0ba31bdda24ba447b07d3c87d113e5c,
+        type: 3}
+      propertyPath: ObservedComponents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5993483263316044797, guid: f0ba31bdda24ba447b07d3c87d113e5c,
+        type: 3}
+      propertyPath: viewIdField
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0ba31bdda24ba447b07d3c87d113e5c, type: 3}
@@ -992,16 +993,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager
       objectReference: {fileID: 0}
-    - target: {fileID: -5876371638361692314, guid: bda1cbdccc2441144bc7eaf09e59eec7,
-        type: 3}
-      propertyPath: ObservedComponents.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -5876371638361692314, guid: bda1cbdccc2441144bc7eaf09e59eec7,
-        type: 3}
-      propertyPath: viewIdField
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4165734954415435639, guid: bda1cbdccc2441144bc7eaf09e59eec7,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1056,6 +1047,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -5876371638361692314, guid: bda1cbdccc2441144bc7eaf09e59eec7,
+        type: 3}
+      propertyPath: ObservedComponents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5876371638361692314, guid: bda1cbdccc2441144bc7eaf09e59eec7,
+        type: 3}
+      propertyPath: viewIdField
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bda1cbdccc2441144bc7eaf09e59eec7, type: 3}

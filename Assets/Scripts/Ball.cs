@@ -145,6 +145,9 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     public void SetState(bool active) {
+        if (!hasBeenInit) {
+            Init();
+        }
         if (PhotonNetwork.IsConnected) {
             pView.RPC("PhotonSetState", RpcTarget.All, active);
         } else {
