@@ -23,6 +23,8 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
     protected FadeState fadeState = FadeState.NORMAL;
     private PhotonView pView;
+    [SerializeField]
+    private GameObject sparkPrefab;
 
     [SerializeField]
     private float _sensitivity = 100f;
@@ -111,6 +113,13 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         if (_isHuman) {
             if (!PhotonNetwork.IsConnected || pView.IsMine) {
                 ((ToolHuman)_tool).TriggerHapticFeedback(0.1f, 100, 30);
+            }
+        }
+        if (_velocity.magnitude > velocityLowerThreshold && collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
+            if (PhotonNetwork.IsConnected) {
+                PhotonNetwork.Instantiate(sparkPrefab.name, collision.GetContact(0).point, Quaternion.identity);
+            } else {
+                Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
             }
         }
     }
