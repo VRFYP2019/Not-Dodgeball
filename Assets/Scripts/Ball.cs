@@ -20,6 +20,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private bool hasBeenInit = false;
     private Utils.PlayerNumber playerNumber;
     private Material mat;
+    private ParticleSystem ps;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
@@ -39,6 +40,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         rb = GetComponent<Rigidbody>();
         pView = GetComponent<PhotonView>();
         mat = GetComponent<Renderer>().material;
+        ps = GetComponent<ParticleSystem>();
         hasBeenInit = true;
     }
 
@@ -92,6 +94,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Tool")) {
             audioSource.PlayOneShot(toolCollisionSound);
+            ps.Play();
         }
     }
 

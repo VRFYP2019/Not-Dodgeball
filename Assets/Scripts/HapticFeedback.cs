@@ -8,33 +8,25 @@ public class HapticFeedback : MonoBehaviour {
     private SteamVR_Input_Sources trackedObj;
     [SerializeField]
     OVRInput.Controller controllerMask;
-    OVRHaptics.OVRHapticsChannel channel;
-    OVRHapticsClip clip;
     
     private void Awake() {
-        if (GameManager.Instance.isOculusQuest) {
-            InitializeOVRHaptics();
-        } else {
+        if (!GameManager.Instance.isOculusQuest) {
             trackedObj = GetComponent<SteamVR_Behaviour_Pose>().inputSource;
         }
     }
 
-    private void InitializeOVRHaptics() {
-        int cnt = 100;
-        clip = new OVRHapticsClip(cnt);
-        for (int i = 0; i < cnt; i++) {
-            clip.Samples[i] = i % 2 == 0 ? (byte)0 : (byte)255;
+    public void Vibrate(float duration, float frequency, float amplitude) {
+        if (GameManager.Instance.isOculusQuest) {
+            // Hardcode to frequency and amplitude both 1 because Oculus haptics are weaker
+            OVRInput.SetControllerVibration(1, 1, controllerMask);
+            StartCoroutine(StopVibrationAfter(duration));
+        } else {
+            vibration.Execute(0, duration, frequency, amplitude, trackedObj);
         }
-
-        clip = new OVRHapticsClip(clip.Samples, clip.Samples.Length);
-        channel = controllerMask == OVRInput.Controller.LTouch ? OVRHaptics.LeftChannel : OVRHaptics.RightChannel;
     }
 
-    public void Vibrate(float duration, float frequency, float amplitude) {
-        if (!GameManager.Instance.isOculusQuest) {
-            vibration.Execute(0, duration, frequency, amplitude, trackedObj);
-        } else {
-            channel.Preempt(clip);
-        }
+    private IEnumerator StopVibrationAfter(float duration) {
+        yield return new WaitForSeconds(duration);
+        OVRInput.SetControllerVibration(0, 0, controllerMask);
     }
 }
