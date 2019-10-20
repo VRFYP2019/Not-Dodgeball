@@ -27,6 +27,11 @@ public class PlayerLoader : MonoBehaviour {
                 offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
                 player1.GetComponent<Player>().playerNumber = Utils.PlayerNumber.ONE;
                 player1.name = PhotonNetwork.LocalPlayer.NickName;
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 1) {
+                    // Spawn a bot if single player
+                    player2 = PhotonNetwork.Instantiate(BotPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
+                    player2.GetComponent<Player>().playerNumber = Utils.PlayerNumber.TWO;
+                }
             } else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) {
                 player2 = PhotonNetwork.Instantiate(humanPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
                 GameObject offScreenUI2 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
