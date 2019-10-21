@@ -81,7 +81,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
         object[] instantiationData = info.photonView.InstantiationData;
         SetState((bool)instantiationData[0]);
-        transform.parent = BallManager.LocalInstance.ballPool;
+        SetParent(BallManager.LocalInstance.ballPool);
     }
 
     private void OnCollisionEnter(Collision collision) {
@@ -107,9 +107,6 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     public void OnAttachToHand(Transform hand) {
         if (!hasBeenInit) {
             Init();
-        }
-        if (FollowersParent.LocalInstance != null) {
-            transform.parent = FollowersParent.LocalInstance.balls;
         }
         prevPos = hand.position;
         transformToFollow = hand;
@@ -159,13 +156,32 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     [PunRPC]
-    private void PhotonSetParent(Transform parent) {
-        transform.parent = parent;
+    private void PhotonSetParent(string parentName) {
+        BallManager instance;
+        if (GetComponent<PhotonView>().IsMine) {
+            instance = BallManager.LocalInstance;
+        } else {
+            instance = BallManager.RemoteInstance;
+        }
+        switch (parentName) {
+            case "Pool":
+                transform.parent = instance.ballPool;
+                break;
+            case "ActiveBalls":
+                transform.parent = instance.activeBalls;
+                break;
+            case "PlayerBallQueue":
+                transform.parent = instance.playerBallQueue;
+                break;
+            default:
+                Debug.Log(parentName);
+                return;
+        }
     }
 
     public void SetParent(Transform parent) {
         if (PhotonNetwork.IsConnected) {
-            PhotonSetParent(parent);
+            pView.RPC("PhotonSetParent", RpcTarget.All, parent.name);
         } else {
             transform.parent = parent;
         }

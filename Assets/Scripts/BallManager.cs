@@ -22,13 +22,13 @@ public class BallManager : MonoBehaviour {
 
     private void Awake() {
         photonView = GetComponent<PhotonView>();
+        spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
         if (!PhotonNetwork.IsConnected || photonView.IsMine) {
             LocalInstance = this;
+            StartCoroutine(spawnCoroutine);
         } else {
             RemoteInstance = this;
         }
-        spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
-        StartCoroutine(spawnCoroutine);
         InitPlayerQueues();
     }
 
@@ -41,7 +41,7 @@ public class BallManager : MonoBehaviour {
         if (numberOfStartingBalls > ballPool.childCount) {
             AddNewBallsToPool(numberOfStartingBalls - ballPool.childCount);
         }
-        
+
         for (int j = 0; j < numberOfStartingBalls; j++) {
             PutBallInQueue(ballPool.GetChild(0).gameObject);
         }
@@ -52,16 +52,19 @@ public class BallManager : MonoBehaviour {
         InitPlayerQueues();
     }
 
+    private void Update() {
+        // Ensure pool is never empty
+        if (ballPool.childCount < 1) {
+            AddNewBallsToPool(1);
+        }
+    }
+
     public void PutAllBallsInPool() {
         for (int i = activeBalls.childCount - 1; i > -1; i--) {
             PutBallInPool(activeBalls.GetChild(i).gameObject);
         }
-
-        for (int j = 0; j < numberOfStartingBalls; j++) {
-            if (ballPool.childCount == 0) {
-                AddNewBallsToPool(1);
-            }
-            PutBallInQueue(ballPool.GetChild(0).gameObject);
+        for (int i = playerBallQueue.childCount - 1; i > -1; i--) {
+            PutBallInPool(playerBallQueue.GetChild(i).gameObject);
         }
     }
 
@@ -76,13 +79,11 @@ public class BallManager : MonoBehaviour {
         ball.GetComponent<Ball>().SetParent(playerBallQueue);
     }
 
-    [PunRPC]
     public void AddNewBallsToPool(int numBallsToAdd = 1) {
         for (int i = 0; i < numBallsToAdd; i++) {
             GameObject newBall;
             if (PhotonNetwork.IsConnected) {
                 newBall = PhotonNetwork.Instantiate(BallTypes[0].name, Vector3.zero, Quaternion.identity, 0, GetBallInitData());
-                newBall.GetComponent<Ball>().SetParent(ballPool);
             } else {
                 newBall = Instantiate(BallTypes[0], ballPool);
             }
@@ -99,11 +100,6 @@ public class BallManager : MonoBehaviour {
     private IEnumerator AddBallsToQueuePeriodically(float addInterval) {
         while (true) {
             yield return new WaitForSeconds(addInterval);
-            // Insufficient balls in the pool, add new balls
-            if (ballPool.childCount < 1) {
-                AddNewBallsToPool(1);
-            }
- 
             PutBallInQueue(ballPool.GetChild(0).gameObject);
         }
     }

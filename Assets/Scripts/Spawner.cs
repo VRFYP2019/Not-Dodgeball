@@ -42,7 +42,6 @@ public class Spawner : MonoBehaviour {
         currentBall.GetComponent<Collider>().enabled = false;
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
-        currentBall.GetComponent<Ball>().SetState(true);
         currentBall.GetComponent<Ball>().SetPlayerNumber(GetComponentInParent<Player>().playerNumber);
     }
 
@@ -67,6 +66,8 @@ public class Spawner : MonoBehaviour {
         if (parentOfBallsToThrow.childCount > 1
             || (parentOfBallsToThrow.childCount == 1 && !parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy)) {
             PutNextBallInHand();
+            yield return new WaitForEndOfFrame();
+            currentBall.GetComponent<Ball>().SetState(true);
         } else if (currentBall == null) {
             FinishThrowing();
         }
