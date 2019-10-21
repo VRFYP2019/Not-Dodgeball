@@ -32,7 +32,7 @@ public class Human : Player {
             this.enabled = false;
         } else {
             base.Start();
-            if (!GameManager.Instance.isOculusQuest) {
+            if (!GameManager.Instance.isOculusQuest && !GameManager.Instance.isEditor) {
                 SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
                 leftHand = hands[0];
                 rightHand = hands[1];
@@ -49,6 +49,11 @@ public class Human : Player {
                 if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
                     GameManager.Instance.Restart();
                 }
+            } else if (GameManager.Instance.isEditor) {
+                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) {
+                    GameManager.Instance.Restart();
+                }
+
             } else if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
                 GameManager.Instance.Restart();
             }
@@ -62,7 +67,7 @@ public class Human : Player {
             if (OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger)) {
                 rightHandController.Switch();
             }
-        } else {
+        } else if (!GameManager.Instance.isEditor) {
             // if grab is pressed, switch between tool and spawn for that hand
             if (grab.GetStateDown(rightHand.inputSource)) {
                 rightHandController.Switch();

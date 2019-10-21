@@ -11,10 +11,12 @@ public class GameManager : MonoBehaviourPunCallbacks {
     public int numPlayers = 1;
     public UnityEvent RestartEvent;
     public bool isOculusQuest = false;
+    public bool isEditor = false;
 
     private void Awake() {
         Instance = this;
         isOculusQuest = OVRPlugin.productName == "Oculus Quest";
+        isEditor = Application.isEditor;
     }
 
     [PunRPC]

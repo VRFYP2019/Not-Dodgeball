@@ -7,6 +7,7 @@ using UnityEngine.XR;
 public class PlayerLoader : MonoBehaviour {
     public GameObject OpenVRPrefab;
     public GameObject OculusPrefab;
+    public GameObject EditorPlayerPrefab;
     public GameObject BotPrefab;
     public GameObject OffScreenUIPrefab;
     public GameObject BallManagerPrefab;
@@ -16,7 +17,8 @@ public class PlayerLoader : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         // TODO: add a new prefab for editor
-        GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab : OpenVRPrefab;
+        GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab :
+            GameManager.Instance.isEditor ? EditorPlayerPrefab : OpenVRPrefab;
         if (PhotonNetwork.IsConnected) {
             if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
                 player1 = PhotonNetwork.Instantiate(humanPrefab.name, player1SpawnPoint.position, player1SpawnPoint.rotation);
@@ -25,6 +27,11 @@ public class PlayerLoader : MonoBehaviour {
                 offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
                 player1.GetComponent<Player>().playerNumber = Utils.PlayerNumber.ONE;
                 player1.name = PhotonNetwork.LocalPlayer.NickName;
+                if (PhotonNetwork.CurrentRoom.PlayerCount == 1) {
+                    // Spawn a bot if single player
+                    player2 = PhotonNetwork.Instantiate(BotPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
+                    player2.GetComponent<Player>().playerNumber = Utils.PlayerNumber.TWO;
+                }
             } else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) {
                 player2 = PhotonNetwork.Instantiate(humanPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
                 GameObject offScreenUI2 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);

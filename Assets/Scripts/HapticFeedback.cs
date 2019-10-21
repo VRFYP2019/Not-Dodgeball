@@ -9,7 +9,7 @@ public class HapticFeedback : MonoBehaviour {
     [SerializeField]
     OVRInput.Controller controllerMask;
     
-    private void Awake() {
+    private void Start() {
         if (!GameManager.Instance.isOculusQuest) {
             trackedObj = GetComponent<SteamVR_Behaviour_Pose>().inputSource;
         }

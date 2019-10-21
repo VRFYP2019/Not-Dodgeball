@@ -109,6 +109,8 @@ MonoBehaviour:
     type: 3}
   OculusPrefab: {fileID: 4271586205571071132, guid: 4a2e9f54795c42546aaca20515ec9d7d,
     type: 3}
+  EditorPlayerPrefab: {fileID: 1721402358905198656, guid: 069c61a9914ee0f44a932eb1a41ba6c7,
+    type: 3}
   BotPrefab: {fileID: 6737888576237609523, guid: 6d6821ea1c3bf344db771f9fd2266cce,
     type: 3}
   OffScreenUIPrefab: {fileID: 3701012152876681771, guid: cd2ee31511a22cc43b98286fd8b591f4,
