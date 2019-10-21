@@ -10,7 +10,7 @@ public class Goal : MonoBehaviour {
     private static readonly float SNAP_THRESHOLD = 1.5f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
     private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
-    private static readonly int LENGTH_LINERENDERER = 3;
+    private static readonly int LENGTH_LINERENDERER = 2;
 
     private Vector3 parentPos, newPos, lastSafePos;
     private int playerScore;
@@ -54,14 +54,13 @@ public class Goal : MonoBehaviour {
         goalIndicator.widthMultiplier = 0.025f;
         goalIndicator.positionCount = LENGTH_LINERENDERER;
 
-        Color c1 = Color.green;
-        Color c2 = Color.white;
-        float startAlpha = 0.9f;
-        float endAlpha = 0.2f;
+        Color c1 = Color.white;
+        Color c2 = Color.green;
+        float alpha = 0.5f;
         Gradient gradient = new Gradient();
         gradient.SetKeys(
-            new GradientColorKey[] { new GradientColorKey(c1, 0.0f), new GradientColorKey(c2, 1.0f) },
-            new GradientAlphaKey[] { new GradientAlphaKey(startAlpha, 0.0f), new GradientAlphaKey(endAlpha, 1.0f) });
+            new GradientColorKey[] { new GradientColorKey(c1, 0.0f), new GradientColorKey(c2, 0.5f), new GradientColorKey(c1, 1.0f) },
+            new GradientAlphaKey[] { new GradientAlphaKey(alpha, 0.0f), new GradientAlphaKey(alpha, 1.0f) });
         goalIndicator.colorGradient = gradient;
     }
 
@@ -142,10 +141,13 @@ public class Goal : MonoBehaviour {
     }
 
     private void HandleGoalIndicator() {
-        Vector3 lrOffset = new Vector3(0f, -0.45f, 0);
+        Vector3 lrOffsetL = new Vector3(-0.5f, 0.45f, 0);
+        Vector3 lrOffsetR = new Vector3(0.5f, 0.45f, 0);
 
-        goalIndicator.SetVertexCount(2);
-        goalIndicator.SetPosition(0, transform.position + lrOffset);
-        goalIndicator.SetPosition(1, -transform.forward * LENGTH_LINERENDERER + (transform.position + lrOffset));
+        goalIndicator.SetVertexCount(4);
+        goalIndicator.SetPosition(0, -transform.forward * LENGTH_LINERENDERER + (transform.position + lrOffsetL));
+        goalIndicator.SetPosition(1, transform.position + lrOffsetL);
+        goalIndicator.SetPosition(2, transform.position + lrOffsetR);
+        goalIndicator.SetPosition(3, -transform.forward * LENGTH_LINERENDERER + (transform.position + lrOffsetR));
     }
 }
