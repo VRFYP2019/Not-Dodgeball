@@ -17,7 +17,7 @@ public class SpawnerHumanController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        if (!GameManager.Instance.isOculusQuest && !Application.isEditor) {
+        if (!GameManager.Instance.isOculusQuest && !GameManager.Instance.isEditor) {
             handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
         }
         spawner = GetComponent<Spawner>();
@@ -34,7 +34,7 @@ public class SpawnerHumanController : MonoBehaviour {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
             }
-        } else if (Application.isEditor) {
+        } else if (GameManager.Instance.isEditor) {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());

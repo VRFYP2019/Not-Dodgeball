@@ -9,13 +9,13 @@ public class ToolHuman : Tool {
     // Start is called before the first frame update
     protected override void Start() {
         base.Start();
-        if (!Application.isEditor) {
+        if (!GameManager.Instance.isEditor) {
             hapticFeedback = GetComponentInParent<HapticFeedback>();
         }
     }
 
     public void TriggerHapticFeedback(float duration, float frequency, float amplitude) {
-        if (!Application.isEditor) {
+        if (!GameManager.Instance.isEditor) {
             hapticFeedback.Vibrate(duration, frequency, amplitude);
         }
     }

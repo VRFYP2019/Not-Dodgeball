@@ -18,7 +18,7 @@ public class PlayerLoader : MonoBehaviour {
     void Start() {
         // TODO: add a new prefab for editor
         GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab :
-            Application.isEditor ? EditorPlayerPrefab : OpenVRPrefab;
+            GameManager.Instance.isEditor ? EditorPlayerPrefab : OpenVRPrefab;
         if (PhotonNetwork.IsConnected) {
             if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
                 player1 = PhotonNetwork.Instantiate(humanPrefab.name, player1SpawnPoint.position, player1SpawnPoint.rotation);
