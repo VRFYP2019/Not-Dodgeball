@@ -6,6 +6,7 @@ using UnityEngine;
 public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private Tool _tool;
     private Rigidbody _rigidbody;
+    private Collider _collider;
     private Vector3 _velocity;
     private bool _isHuman;
     private List<Material> materials = new List<Material>();
@@ -31,6 +32,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     private void Awake() {
         _rigidbody = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
         pView = GetComponent<PhotonView>();
     }
 
@@ -47,8 +49,11 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void Update() {
-        if (!PhotonNetwork.IsConnected || pView.IsMine) {
-            HandleFade();
+        HandleFade();
+        if (fadeState == FadeState.FADED) {
+            _collider.isTrigger = true;
+        } else {
+            _collider.isTrigger = false;
         }
     }
 
