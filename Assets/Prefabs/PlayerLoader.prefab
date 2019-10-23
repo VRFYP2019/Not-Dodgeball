@@ -107,7 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   OpenVRPrefab: {fileID: 2118341068661652249, guid: 9ea8269726e18514d89b8730fd18a3dc,
     type: 3}
-  OculusPrefab: {fileID: 4271586205571071132, guid: 4a2e9f54795c42546aaca20515ec9d7d,
+  OculusPrefab: {fileID: 7179765750729122756, guid: 9e920b82c9dc8474f9cd0679266e4df4,
     type: 3}
   EditorPlayerPrefab: {fileID: 1721402358905198656, guid: 069c61a9914ee0f44a932eb1a41ba6c7,
     type: 3}
