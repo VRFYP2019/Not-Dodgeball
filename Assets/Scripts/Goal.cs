@@ -119,4 +119,10 @@ public class Goal : MonoBehaviour {
     private void SwitchGoalState() {
         goalState = (goalState == GoalState.FOLLOWING) ? GoalState.STATIONARY : GoalState.TRANSITION;
     }
+
+    // Used for cases where this script will be disabled but the number is still needed
+    // i.e. multiplayer
+    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+        this.playerNumber = playerNumber;
+    }
 }
