@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviourPunCallbacks {
     public Utils.PlayerNumber playerNumber;
     public Utils.PlayerType playerType;
     protected HandController leftHandController;
@@ -23,6 +24,20 @@ public class Player : MonoBehaviour {
         if (GameManager.Instance.isGameEnded) {
             rightHandController.ResetSpawnerStateAndSwitchToTool();
             leftHandController.ResetSpawnerStateAndSwitchToTool();
+        }
+    }
+
+    [PunRPC]
+    public void PhotonSetPlayerNumber(int num) {
+        playerNumber = (Utils.PlayerNumber)num;
+        GetComponentInChildren<Goal>(true).SetPlayerNumber((Utils.PlayerNumber)num);
+    }
+
+    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+        if (PhotonNetwork.IsConnected) {
+            photonView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
+        } else {
+            this.playerNumber = playerNumber;
         }
     }
 }

@@ -18,7 +18,9 @@ public class Human : Player {
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             foreach (MonoBehaviour m in localScripts) {
-                m.enabled = false;
+                if (m != null) {
+                    m.enabled = false;
+                }
             }
             foreach (GameObject g in localObjects) {
                 g.SetActive(false);
