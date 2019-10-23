@@ -49,7 +49,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void Update() {
-        HandleFade();
+        if (!PhotonNetwork.IsConnected || pView.IsMine) {
+            HandleFade();
+        }
         if (fadeState == FadeState.FADED) {
             _collider.isTrigger = true;
         } else {
@@ -81,12 +83,11 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     public void HandleFade() {
         float magnitude = _velocity.magnitude;
         if (magnitude > velocityLowerThreshold && fadeState < FadeState.NORMAL) {
-            foreach (Material m in materials) {
-                float r = m.color.r;
-                float g = m.color.g;
-                float b = m.color.b;
-                float a = Mathf.Clamp(m.color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
-                m.color = new Color(r, g, b, a);
+            float a = Mathf.Clamp(materials[0].color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
+            if (PhotonNetwork.IsConnected) {
+                pView.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+            } else {
+                PhotonSetAlpha(a);
             }
             if (materials[0].color.a > 0.95f) {
                 fadeState = FadeState.NORMAL;
@@ -98,12 +99,11 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
                 fadeStartTime = Time.time;
                 fadeState = FadeState.FADING;
             } else if (Time.time - fadeStartTime > fadeDelay) {
-                foreach (Material m in GetComponent<Renderer>().materials) {
-                    float r = m.color.r;
-                    float g = m.color.g;
-                    float b = m.color.b;
-                    float a = Mathf.Clamp(m.color.a - Time.deltaTime, minOpacityValue, 1);
-                    m.color = new Color(r, g, b, a);
+                float a = Mathf.Clamp(materials[0].color.a - Time.deltaTime, minOpacityValue, 1);
+                if (PhotonNetwork.IsConnected) {
+                    pView.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+                } else {
+                    PhotonSetAlpha(a);
                 }
                 if (materials[0].color.a <= minOpacityValue) {
                     fadeState = FadeState.FADED;
@@ -126,6 +126,13 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
             } else {
                 Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
             }
+        }
+    }
+
+    [PunRPC]
+    private void PhotonSetAlpha(float a) {
+        foreach (Material m in materials) {
+            m.color = new Color(m.color.r, m.color.g, m.color.b, a);
         }
     }
 

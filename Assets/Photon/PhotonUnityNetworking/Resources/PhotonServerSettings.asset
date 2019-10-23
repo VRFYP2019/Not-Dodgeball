@@ -47,5 +47,6 @@ MonoBehaviour:
   - PhotonResetScores
   - PhotonRestart
   - PhotonSetPlayerNumber
+  - PhotonSetAlpha
   DisableAutoOpenWizard: 1
   ShowSettings: 1
