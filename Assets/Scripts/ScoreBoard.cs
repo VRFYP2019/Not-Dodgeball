@@ -52,6 +52,7 @@ public class ScoreBoard : MonoBehaviour {
         if (minutes < 0) {
             isTimeOver = true;
             GameManager.Instance.isGameEnded = true;
+            AudioManager.PlaySoundOnce("buzz");
             StartCoroutine(restartPromptCoroutine);
             minutes = 0;
             seconds = 0;

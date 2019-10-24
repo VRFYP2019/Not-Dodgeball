@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transformToFollow: {fileID: 0}
-  defaultCollisionSound: {fileID: 8300000, guid: 5fca4b123679aea48a8c4b05ea54d82e,
+  defaultCollisionSound: {fileID: 8300000, guid: 7a183dcda38018546a2603ae27d2471e,
     type: 3}
   toolCollisionSound: {fileID: 8300000, guid: a333e9c2311c2364eb03481a43478b3d, type: 3}
 --- !u!82 &313089349310094447
