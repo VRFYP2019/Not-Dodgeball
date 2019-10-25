@@ -12,7 +12,6 @@ public class Goal : MonoBehaviour {
     private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
 
     private Vector3 parentPos, newPos, lastSafePos;
-    private int playerScore;
     private float yRotation;
     private float zOffset;
     private GoalState goalState;
@@ -101,6 +100,7 @@ public class Goal : MonoBehaviour {
         if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
             // Prevent own goal
             if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
+                AudioManager.PlaySoundOnce("goalding");
                 ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
                 BallManager.LocalInstance.PutBallInPool(col.gameObject);
                 SwitchGoalState();
