@@ -8,6 +8,7 @@ public class PlayerLoader : MonoBehaviour {
     public GameObject OpenVRPrefab;
     public GameObject OculusPrefab;
     public GameObject EditorPlayerPrefab;
+    public GameObject DevCamPrefab;
     public GameObject BotPrefab;
     public GameObject OffScreenUIPrefab;
     public GameObject BallManagerPrefab;
@@ -53,6 +54,9 @@ public class PlayerLoader : MonoBehaviour {
             player2.GetComponent<Player>().playerNumber = Utils.PlayerNumber.TWO;
 
             GameObject ballManager = Instantiate(BallManagerPrefab);
+        }
+        if (GameManager.Instance.isEditor) {
+            Instantiate(DevCamPrefab);
         }
     }
 }
