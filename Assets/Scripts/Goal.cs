@@ -8,7 +8,7 @@ using UnityEngine;
 public class Goal : MonoBehaviour {
     private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
     private static readonly float SNAP_THRESHOLD = 1.5f;
-    private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -8f, Z_MAX =2f;
+    private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -12f, Z_MAX =3f;
     private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
 
     private Vector3 parentPos, newPos, lastSafePos;

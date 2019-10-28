@@ -7,7 +7,7 @@ public class WallIndicator : MonoBehaviour {
     public Transform playerLocation;
     public RawImage leftIndicator, rightIndicator, backIndicator;
     private Color indicatorColor = new Color32(255,50,50,1);
-    private static readonly float X_MIN = -2f, X_MAX = 2f, Z_MIN = -7f, Z_MAX =2f;
+    private static readonly float X_MIN = -2f, X_MAX = 2f, Z_MIN = -12f, Z_MAX =3f;
     private static readonly float WALL_THRESHOLD_DIST = 1f;
     private static readonly float ALPHA_MULTIPLIER = 1.3f;
 
