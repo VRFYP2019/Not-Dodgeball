@@ -6,7 +6,8 @@ using UnityEngine;
 public static class Utils {
     public enum PlayerNumber {
         ONE,
-        TWO
+        TWO,
+        NULL
     }
     public enum PlayerType {
         HUMAN,

@@ -1,11 +1,14 @@
-﻿using System.Collections;
+﻿using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
 // Goalpost cannot move outside the bounds of the room
-public class Goal : MonoBehaviour {
+public class Goal : MonoBehaviour, IOnEventCallback {
     private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
     private static readonly float SNAP_THRESHOLD = 1.5f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -12f, Z_MAX =3f;
@@ -34,6 +37,14 @@ public class Goal : MonoBehaviour {
         GameManager.Instance.RestartEvent.AddListener(ResetGoal);
     }
 
+    public void OnEnable() {
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    public void OnDisable() {
+        PhotonNetwork.RemoveCallbackTarget(this);
+    }
+
     private void InitRotationAndOffset() {
         if (playerNumber == Utils.PlayerNumber.ONE) {
             yRotation = PLAYER_1_ROTATION;
@@ -49,6 +60,21 @@ public class Goal : MonoBehaviour {
         goalState = GoalState.FOLLOWING;
     }
 
+    public void OnEvent(EventData photonEvent) {
+        byte GoalWasScoredEvent = 1;
+        byte eventCode = photonEvent.Code;
+
+        Debug.Log("Recieved event: " + eventCode);
+        if (eventCode == GoalWasScoredEvent) {
+            object[] data = (object[])photonEvent.CustomData;
+
+            Utils.PlayerNumber playerLastScored = (Utils.PlayerNumber)data[0];
+            if (playerNumber == playerLastScored) {
+                SwitchGoalState(GoalState.TRANSITION);
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update() {
         HandleGoalPosition();
@@ -56,6 +82,7 @@ public class Goal : MonoBehaviour {
     
     private void HandleGoalPosition() {
         parentPos = transform.parent.position;
+        
 
         if (goalState == GoalState.FOLLOWING) {
             // Prevent goal from exceeding room bounds
@@ -73,7 +100,7 @@ public class Goal : MonoBehaviour {
             UpdateGoalPosition(newPos);
 
             if (CheckForSnap()) {
-                goalState = GoalState.FOLLOWING;
+                SwitchGoalState(GoalState.FOLLOWING);
             }
 
         } else if (goalState == GoalState.STATIONARY) {
@@ -103,7 +130,7 @@ public class Goal : MonoBehaviour {
                 AudioManager.PlaySoundOnce("goalding");
                 ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
                 BallManager.LocalInstance.PutBallInPool(col.gameObject);
-                SwitchGoalState();
+                SwitchGoalState(GoalState.STATIONARY);
             }
         }
     }
@@ -116,8 +143,8 @@ public class Goal : MonoBehaviour {
       }
     } */
 
-    private void SwitchGoalState() {
-        goalState = (goalState == GoalState.FOLLOWING) ? GoalState.STATIONARY : GoalState.TRANSITION;
+    private void SwitchGoalState(GoalState stateToSwitch) {
+        goalState = stateToSwitch;
     }
 
     // Used for cases where this script will be disabled but the number is still needed
