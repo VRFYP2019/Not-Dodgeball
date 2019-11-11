@@ -41,6 +41,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void AddScoreToOpponent(Utils.PlayerNumber me, int score) {
         Utils.PlayerNumber scoringPlayerNumber = me == Utils.PlayerNumber.ONE ? Utils.PlayerNumber.TWO : Utils.PlayerNumber.ONE;
+        Debug.Log("VIC_DEBUG SCORE!: " + scoringPlayerNumber);
 
         if (PhotonNetwork.IsConnected) {
             photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
@@ -49,7 +50,7 @@ public class ScoreManager : MonoBehaviour {
             object[] content = new object[] { scoringPlayerNumber };
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
             SendOptions sendOptions = new SendOptions { Reliability = true };
-            Debug.Log("Raising event: " + GoalWasScoredEvent);
+            Debug.Log("VIC_DEBUG Raising event: " + GoalWasScoredEvent);
             PhotonNetwork.RaiseEvent(GoalWasScoredEvent, content, raiseEventOptions, sendOptions);
 
         } else {

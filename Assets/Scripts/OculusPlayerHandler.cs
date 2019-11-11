@@ -15,6 +15,7 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
     void Start() {
         if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             goal.transform.parent = transform;
+            goal.GetComponent<Goal>().enabled = false;
             Destroy(oVRCameraRig);
         }
     }

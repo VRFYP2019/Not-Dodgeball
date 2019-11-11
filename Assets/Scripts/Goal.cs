@@ -63,12 +63,13 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     public void OnEvent(EventData photonEvent) {
         byte GoalWasScoredEvent = 1;
         byte eventCode = photonEvent.Code;
-
-        Debug.Log("Recieved event: " + eventCode);
+        
+        Debug.Log("VIC_DEBUG Recieved event: " + eventCode);
         if (eventCode == GoalWasScoredEvent) {
             object[] data = (object[])photonEvent.CustomData;
 
             Utils.PlayerNumber playerLastScored = (Utils.PlayerNumber)data[0];
+            Debug.Log("VIC_DEBUG playerLastScored: " + playerLastScored);
             if (playerNumber == playerLastScored) {
                 SwitchGoalState(GoalState.TRANSITION);
             }
@@ -79,7 +80,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     void Update() {
         HandleGoalPosition();
     }
-    
+
     private void HandleGoalPosition() {
         parentPos = transform.parent.position;
         
