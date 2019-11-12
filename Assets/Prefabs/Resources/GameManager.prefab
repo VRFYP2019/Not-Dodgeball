@@ -45,10 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isGameEnded: 0
-  gameDuration: 60
+  gameDuration: 120
   numPlayers: 1
-  scoreBoards:
-  - {fileID: 0}
+  RestartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  isOculusQuest: 0
+  isEditor: 0
 --- !u!114 &-5876371638361692314
 MonoBehaviour:
   m_ObjectHideFlags: 0

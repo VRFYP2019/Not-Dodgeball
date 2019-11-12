@@ -72,6 +72,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
             if (playerNumber == playerLastScored) {
                 SwitchGoalState(GoalState.TRANSITION);
                 AudioManager.PlaySoundOnce("goalding");
+                BallManager.LocalInstance.AddBallsToQueue(2);
             } else {
                 AudioManager.PlaySoundOnce("goalbuzz");
             }
