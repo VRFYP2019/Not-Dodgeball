@@ -22,7 +22,6 @@ public class ScoreManager : MonoBehaviour {
         // TODO: make it include number of players incl bot
         playerScores = new int[2];
         GameManager.Instance.RestartEvent.AddListener(ResetScores);
-        playerLastScored = Utils.PlayerNumber.NULL;
     }
 
     [PunRPC]
