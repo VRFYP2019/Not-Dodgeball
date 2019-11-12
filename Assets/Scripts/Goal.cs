@@ -17,13 +17,14 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     private Vector3 parentPos, newPos, lastSafePos;
     private float yRotation;
     private float zOffset;
+    [SerializeField]
     private GoalState goalState;
     enum GoalState {
         FOLLOWING,
         TRANSITION,
         STATIONARY
     }
-
+    [SerializeField]
     private Utils.PlayerNumber playerNumber;
 
     // Start is called before the first frame update
@@ -64,7 +65,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
         byte GoalWasScoredEvent = 1;
         byte eventCode = photonEvent.Code;
         
-        Debug.Log("VIC_DEBUG Recieved event: " + eventCode);
+        //Debug.Log("VIC_DEBUG Recieved event: " + eventCode);
         if (eventCode == GoalWasScoredEvent) {
             object[] data = (object[])photonEvent.CustomData;
 
@@ -72,6 +73,9 @@ public class Goal : MonoBehaviour, IOnEventCallback {
             Debug.Log("VIC_DEBUG playerLastScored: " + playerLastScored);
             if (playerNumber == playerLastScored) {
                 SwitchGoalState(GoalState.TRANSITION);
+                AudioManager.PlaySoundOnce("goalding");
+            } else {
+                AudioManager.PlaySoundOnce("goalbuzz");
             }
         }
     }
@@ -125,13 +129,14 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     }
 
     void OnTriggerEnter(Collider col) {
-        if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
-            // Prevent own goal
-            if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
-                AudioManager.PlaySoundOnce("goalding");
-                ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
-                BallManager.LocalInstance.PutBallInPool(col.gameObject);
-                SwitchGoalState(GoalState.STATIONARY);
+        if (isActiveAndEnabled) {
+            if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
+                // Prevent own goal
+                if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
+                    ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
+                    BallManager.LocalInstance.PutBallInPool(col.gameObject);
+                    SwitchGoalState(GoalState.STATIONARY);
+                }
             }
         }
     }
