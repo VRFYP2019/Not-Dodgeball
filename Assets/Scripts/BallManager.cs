@@ -14,18 +14,18 @@ public class BallManager : MonoBehaviour {
     // A transform to be parent of all active balls in the scene
     public Transform activeBalls;
     // For debugging at the current stage of development. Just give the player 10 balls for a start
-    private static readonly int numberOfStartingBalls = 10;
-    // To add a new ball to the queue at fixed intervals
+    private static readonly int numberOfStartingBalls = 2;
+    // To add a new ball to the queue at fixed intervals (for debug only)
     private static readonly float ballSpawnInterval = 1f;
     private IEnumerator spawnCoroutine;
     private PhotonView photonView;
 
     private void Awake() {
         photonView = GetComponent<PhotonView>();
-        spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
         if (!PhotonNetwork.IsConnected || photonView.IsMine) {
             LocalInstance = this;
-            StartCoroutine(spawnCoroutine);
+            //spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
+            //StartCoroutine(spawnCoroutine);
         } else {
             RemoteInstance = this;
         }
@@ -54,7 +54,7 @@ public class BallManager : MonoBehaviour {
 
     private void Update() {
         // Ensure pool is never empty
-        if (ballPool.childCount < 1) {
+        if (ballPool.childCount < 2) {
             AddNewBallsToPool(1);
         }
     }
@@ -69,14 +69,22 @@ public class BallManager : MonoBehaviour {
     }
 
     public void PutBallInPool(GameObject ball) {
+        ball.GetComponent<Ball>().SetCountTimeLivedToFalse();
         ball.GetComponent<Ball>().SetState(false);
         ball.GetComponent<Ball>().SetParent(ballPool);
     }
 
-    // Put a ball into a specified queue
+    // Put a ball into player ball queue
     public void PutBallInQueue(GameObject ball) {
+        ball.GetComponent<Ball>().SetCountTimeLivedToFalse();
         ball.GetComponent<Ball>().SetState(false);
         ball.GetComponent<Ball>().SetParent(playerBallQueue);
+    }
+
+    // When a player scores, 2 balls are added
+    public void HandleBallScored(GameObject ball) {
+        PutBallInQueue(ball);
+        PutBallInQueue(ballPool.GetChild(0).gameObject);
     }
 
     public void AddNewBallsToPool(int numBallsToAdd = 1) {
@@ -88,6 +96,12 @@ public class BallManager : MonoBehaviour {
                 newBall = Instantiate(BallTypes[0], ballPool);
             }
             newBall.GetComponent<Ball>().SetState(false);
+        }
+    }
+
+    public void AddBallsToQueue(int numBalls) {
+        for (int i = 0; i < numBalls; i++) {
+            PutBallInQueue(ballPool.GetChild(0).gameObject);
         }
     }
 
