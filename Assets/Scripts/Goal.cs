@@ -65,12 +65,10 @@ public class Goal : MonoBehaviour, IOnEventCallback {
         byte GoalWasScoredEvent = 1;
         byte eventCode = photonEvent.Code;
         
-        //Debug.Log("VIC_DEBUG Recieved event: " + eventCode);
         if (eventCode == GoalWasScoredEvent) {
             object[] data = (object[])photonEvent.CustomData;
 
             Utils.PlayerNumber playerLastScored = (Utils.PlayerNumber)data[0];
-            Debug.Log("VIC_DEBUG playerLastScored: " + playerLastScored);
             if (playerNumber == playerLastScored) {
                 SwitchGoalState(GoalState.TRANSITION);
                 AudioManager.PlaySoundOnce("goalding");
