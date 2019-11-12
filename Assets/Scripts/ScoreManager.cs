@@ -1,4 +1,6 @@
 ﻿using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,6 +9,8 @@ public class ScoreManager : MonoBehaviour {
     public static ScoreManager Instance;
     public int[] playerScores;
     private PhotonView photonView;
+
+    private readonly byte GoalWasScoredEvent = 1;
 
     private void Awake() {
         Instance = this;
@@ -18,6 +22,7 @@ public class ScoreManager : MonoBehaviour {
         // TODO: make it include number of players incl bot
         playerScores = new int[2];
         GameManager.Instance.RestartEvent.AddListener(ResetScores);
+        playerLastScored = Utils.PlayerNumber.NULL;
     }
 
     [PunRPC]
@@ -34,11 +39,19 @@ public class ScoreManager : MonoBehaviour {
     }
 
     public void AddScoreToOpponent(Utils.PlayerNumber me, int score) {
-        Utils.PlayerNumber playerNumber = me == Utils.PlayerNumber.ONE ? Utils.PlayerNumber.TWO : Utils.PlayerNumber.ONE;
+        Utils.PlayerNumber scoringPlayerNumber = me == Utils.PlayerNumber.ONE ? Utils.PlayerNumber.TWO : Utils.PlayerNumber.ONE;
+
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)playerNumber, score);
+            photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
+
+            // Raise GoalWasScoredEvent to all players
+            object[] content = new object[] { scoringPlayerNumber };
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+            SendOptions sendOptions = new SendOptions { Reliability = true };
+            PhotonNetwork.RaiseEvent(GoalWasScoredEvent, content, raiseEventOptions, sendOptions);
+
         } else {
-            playerScores[(int)playerNumber] += score;
+            playerScores[(int)scoringPlayerNumber] += score;
         }
     }
 
