@@ -62,11 +62,11 @@ public class Human : Player {
         }
 
         if (GameManager.Instance.isOculusQuest) {
-            if (OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)) {
+            if (OVRInput.GetDown(OVRInput.RawButton.X | OVRInput.RawButton.Y)) {
                 leftHandController.Switch();
             }
 
-            if (OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger)) {
+            if (OVRInput.GetDown(OVRInput.RawButton.A | OVRInput.RawButton.B)) {
                 rightHandController.Switch();
             }
         } else if (!GameManager.Instance.isEditor) {
