@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 public class ScoreManager : MonoBehaviour {
     public static ScoreManager Instance;
@@ -29,7 +30,7 @@ public class ScoreManager : MonoBehaviour {
         playerScores[playerNumber] += score;
     }
 
-    public void AddScore(Utils.PlayerNumber playerNumber, int score) {
+    public void AddScore(PlayerNumber playerNumber, int score) {
         if (PhotonNetwork.IsConnected) {
             photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)playerNumber, score);
         } else {
@@ -37,8 +38,8 @@ public class ScoreManager : MonoBehaviour {
         }
     }
 
-    public void AddScoreToOpponent(Utils.PlayerNumber me, int score) {
-        Utils.PlayerNumber scoringPlayerNumber = me == Utils.PlayerNumber.ONE ? Utils.PlayerNumber.TWO : Utils.PlayerNumber.ONE;
+    public void AddScoreToOpponent(PlayerNumber me, int score) {
+        PlayerNumber scoringPlayerNumber = me == PlayerNumber.ONE ? PlayerNumber.TWO : PlayerNumber.ONE;
 
         if (PhotonNetwork.IsConnected) {
             photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);

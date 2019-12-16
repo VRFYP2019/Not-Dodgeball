@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Utils;
 
 public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     public Transform transformToFollow = null;
@@ -20,7 +21,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private float timeLived = 0;
     private Vector3 prevPos;
     private bool hasBeenInit = false;
-    private Utils.PlayerNumber playerNumber;
+    private PlayerNumber playerNumber;
     private Material mat;
     private ParticleSystem ps;
 
@@ -206,11 +207,11 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
 
     [PunRPC]
     private void PhotonSetPlayerNumber(int playerNumber) {
-        this.playerNumber = (Utils.PlayerNumber)playerNumber;
+        this.playerNumber = (PlayerNumber)playerNumber;
         UpdateColor();
     }
 
-    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+    public void SetPlayerNumber(PlayerNumber playerNumber) {
         if (!hasBeenInit) {
             Init();
         }
@@ -222,7 +223,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
     }
 
-    public Utils.PlayerNumber GetPlayerNumber() {
+    public PlayerNumber GetPlayerNumber() {
         return playerNumber;
     }
 
@@ -230,6 +231,6 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         if (mat == null) {
             mat = GetComponent<Renderer>().material;
         }
-        mat.color = playerNumber == Utils.PlayerNumber.ONE ? Utils.blue : Utils.orange;
+        mat.color = playerNumber == PlayerNumber.ONE ? Constants.blue : Constants.orange;
     }
 }

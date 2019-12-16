@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
@@ -25,14 +26,14 @@ public class Goal : MonoBehaviour, IOnEventCallback {
         STATIONARY
     }
     [SerializeField]
-    private Utils.PlayerNumber playerNumber;
+    private PlayerNumber playerNumber;
 
     // Start is called before the first frame update
     void Start() {
         if (GetComponentInParent<Player>() != null) {
             playerNumber = GetComponentInParent<Player>().playerNumber;
         } else {
-            playerNumber = Utils.PlayerNumber.TWO;
+            playerNumber = PlayerNumber.TWO;
         }
         ResetGoal();
         GameManager.Instance.RestartEvent.AddListener(ResetGoal);
@@ -47,7 +48,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     }
 
     private void InitRotationAndOffset() {
-        if (playerNumber == Utils.PlayerNumber.ONE) {
+        if (playerNumber == PlayerNumber.ONE) {
             yRotation = PLAYER_1_ROTATION;
             zOffset = Z_OFFSET_PLAYER_ONE;
         } else {
@@ -68,7 +69,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
         if (eventCode == GoalWasScoredEvent) {
             object[] data = (object[])photonEvent.CustomData;
 
-            Utils.PlayerNumber playerLastScored = (Utils.PlayerNumber)data[0];
+            PlayerNumber playerLastScored = (PlayerNumber)data[0];
             if (playerNumber == playerLastScored) {
                 SwitchGoalState(GoalState.TRANSITION);
                 AudioManager.PlaySoundOnce("goalding");
@@ -154,7 +155,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
 
     // Used for cases where this script will be disabled but the number is still needed
     // i.e. multiplayer
-    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+    public void SetPlayerNumber(PlayerNumber playerNumber) {
         this.playerNumber = playerNumber;
     }
 }

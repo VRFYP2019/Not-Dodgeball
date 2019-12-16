@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 public class Player : MonoBehaviourPunCallbacks {
-    public Utils.PlayerNumber playerNumber;
-    public Utils.PlayerType playerType;
+    public PlayerNumber playerNumber;
+    public PlayerType playerType;
     protected HandController leftHandController;
     protected HandController rightHandController;
 
@@ -29,11 +30,11 @@ public class Player : MonoBehaviourPunCallbacks {
 
     [PunRPC]
     public void PhotonSetPlayerNumber(int num) {
-        playerNumber = (Utils.PlayerNumber)num;
-        GetComponentInChildren<Goal>(true).SetPlayerNumber((Utils.PlayerNumber)num);
+        playerNumber = (PlayerNumber)num;
+        GetComponentInChildren<Goal>(true).SetPlayerNumber((PlayerNumber)num);
     }
 
-    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+    public void SetPlayerNumber(PlayerNumber playerNumber) {
         if (PhotonNetwork.IsConnected) {
             photonView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
         } else {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 using Valve.VR;
 
 public class Human : Player {
@@ -14,7 +15,7 @@ public class Human : Player {
     private PhotonView photonView;
 
     protected override void Start() {
-        playerType = Utils.PlayerType.HUMAN;
+        playerType = PlayerType.HUMAN;
         photonView = GetComponent<PhotonView>();
         if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             foreach (MonoBehaviour m in localScripts) {

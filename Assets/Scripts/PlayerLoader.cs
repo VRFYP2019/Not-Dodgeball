@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using Utils;
 
 public class PlayerLoader : MonoBehaviour {
     public GameObject OpenVRPrefab;
@@ -26,19 +27,19 @@ public class PlayerLoader : MonoBehaviour {
                 GameObject offScreenUI1 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
                 offScreenUI1.GetComponent<WallIndicator>().playerLocation = player1.GetComponentInChildren<Camera>(true).transform;
                 offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
-                player1.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.ONE);
+                player1.GetComponent<Player>().SetPlayerNumber(PlayerNumber.ONE);
                 player1.name = PhotonNetwork.LocalPlayer.NickName;
                 if (PhotonNetwork.CurrentRoom.PlayerCount == 1) {
                     // Spawn a bot if single player
                     player2 = PhotonNetwork.Instantiate(BotPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
-                    player2.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.TWO);
+                    player2.GetComponent<Player>().SetPlayerNumber(PlayerNumber.TWO);
                 }
             } else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) {
                 player2 = PhotonNetwork.Instantiate(humanPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
                 GameObject offScreenUI2 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
                 offScreenUI2.GetComponent<WallIndicator>().playerLocation = player2.GetComponentInChildren<Camera>(true).transform;
                 offScreenUI2.GetComponent<Canvas>().worldCamera = player2.GetComponentInChildren<Camera>();
-                player2.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.TWO);
+                player2.GetComponent<Player>().SetPlayerNumber(PlayerNumber.TWO);
                 player2.name = PhotonNetwork.LocalPlayer.NickName;
             }
             GameObject ballManager = PhotonNetwork.Instantiate(BallManagerPrefab.name, Vector3.zero, Quaternion.identity);
@@ -48,10 +49,10 @@ public class PlayerLoader : MonoBehaviour {
             GameObject offScreenUI1 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
             offScreenUI1.GetComponent<WallIndicator>().playerLocation = player1.GetComponentInChildren<Camera>(true).transform;
             offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
-            player1.GetComponent<Player>().playerNumber = Utils.PlayerNumber.ONE;
+            player1.GetComponent<Player>().playerNumber = PlayerNumber.ONE;
 
             player2 = Instantiate(BotPrefab, player2SpawnPoint.position, player2SpawnPoint.rotation);
-            player2.GetComponent<Player>().playerNumber = Utils.PlayerNumber.TWO;
+            player2.GetComponent<Player>().playerNumber = PlayerNumber.TWO;
 
             GameObject ballManager = Instantiate(BallManagerPrefab);
         }

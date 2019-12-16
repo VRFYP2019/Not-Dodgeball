@@ -29,6 +29,5 @@ public class RoomCreator : MonoBehaviourPunCallbacks {
         while(SceneManager.GetActiveScene().buildIndex == 0) {
             yield return null;
         }
-        GameManager.Instance.numPlayers = numPlayers;
     }
 }

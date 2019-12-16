@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Utils {
+namespace Utils {
     public enum PlayerNumber {
         ONE,
         TWO,
@@ -13,7 +13,14 @@ public static class Utils {
         HUMAN,
         BOT
     }
+    public enum PlayerPlatform {
+        EDITOR,
+        OCULUS,
+        STEAMVR
+    }
 
-    public static Color blue = new Color(0, 0.5f, 1);
-    public static Color orange = new Color(0.937f, 0.447f, 0.0823f);
+    public static class Constants {
+        public static Color blue = new Color(0, 0.5f, 1);
+        public static Color orange = new Color(0.937f, 0.447f, 0.0823f);
+    }
 }
