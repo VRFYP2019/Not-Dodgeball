@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 using Valve.VR;
 
 // To be attached on Spawner objects for human players, to control the use of them
@@ -17,7 +18,7 @@ public class SpawnerHumanController : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        if (!GameManager.Instance.isOculusQuest && !GameManager.Instance.isEditor) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
             handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
         }
         spawner = GetComponent<Spawner>();
@@ -25,7 +26,7 @@ public class SpawnerHumanController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (GameManager.Instance.isOculusQuest) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
             if (hand == Hand.LEFT && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)) {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
@@ -34,16 +35,18 @@ public class SpawnerHumanController : MonoBehaviour {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
             }
-        } else if (GameManager.Instance.isEditor) {
+        } else if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
             }
-        } else if (click.GetStateDown(handPose.inputSource)) {
-            // currentBall would be null if the player tries to throw before the delay from the previous throw is over
-            if (spawner.currentBall != null) {
-                spawner.ThrowCurrentBall();
-                StartCoroutine(spawner.TrySpawn());
+        } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
+            if (click.GetStateDown(handPose.inputSource)) {
+                // currentBall would be null if the player tries to throw before the delay from the previous throw is over
+                if (spawner.currentBall != null) {
+                    spawner.ThrowCurrentBall();
+                    StartCoroutine(spawner.TrySpawn());
+                }
             }
         }
     }

@@ -1,22 +1,30 @@
 ﻿using Photon.Pun;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR;
+using Utils;
 
 public class GameManager : MonoBehaviourPunCallbacks {
+    public PlayerPlatform playerPlatform;
     public static GameManager Instance;
     public bool isGameEnded = false;
     public float gameDuration = 60.0f;   // 1 minute
-    public int numPlayers = 1;
     public UnityEvent RestartEvent;
-    public bool isOculusQuest = false;
-    public bool isEditor = false;
 
     private void Awake() {
         Instance = this;
-        isOculusQuest = OVRPlugin.productName == "Oculus Quest";
-        isEditor = Application.isEditor;
+        string modelName = XRDevice.model;
+
+        if (modelName.StartsWith("Oculus")) {
+            playerPlatform = PlayerPlatform.OCULUS;
+        } else if (modelName.StartsWith("OpenVR") || modelName.StartsWith("HTC")) {    // TODO: remove whichever is wrong
+            playerPlatform = PlayerPlatform.STEAMVR;
+        } else if (Application.isEditor) {
+            playerPlatform = PlayerPlatform.EDITOR;
+        } else {
+            Debug.Log("Unhandled model: " + modelName);
+        }
     }
 
     [PunRPC]

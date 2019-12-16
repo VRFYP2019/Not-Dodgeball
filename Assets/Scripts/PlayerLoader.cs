@@ -18,9 +18,19 @@ public class PlayerLoader : MonoBehaviour {
     private GameObject player1, player2;
     // Start is called before the first frame update
     void Start() {
-        // TODO: add a new prefab for editor
-        GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab :
-            GameManager.Instance.isEditor ? EditorPlayerPrefab : OpenVRPrefab;
+        GameObject humanPrefab;
+        switch (GameManager.Instance.playerPlatform) {
+            case PlayerPlatform.OCULUS:
+                humanPrefab = OculusPrefab;
+                break;
+            case PlayerPlatform.STEAMVR:
+                humanPrefab = OpenVRPrefab;
+                break;
+            case PlayerPlatform.EDITOR:
+            default:
+                humanPrefab = EditorPlayerPrefab;
+                break;
+        }
         if (PhotonNetwork.IsConnected) {
             if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
                 player1 = PhotonNetwork.Instantiate(humanPrefab.name, player1SpawnPoint.position, player1SpawnPoint.rotation);
@@ -56,7 +66,7 @@ public class PlayerLoader : MonoBehaviour {
 
             GameObject ballManager = Instantiate(BallManagerPrefab);
         }
-        if (GameManager.Instance.isEditor) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {
             Instantiate(DevCamPrefab);
         }
     }

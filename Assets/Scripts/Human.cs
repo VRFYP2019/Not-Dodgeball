@@ -35,7 +35,7 @@ public class Human : Player {
             this.enabled = false;
         } else {
             base.Start();
-            if (!GameManager.Instance.isOculusQuest && !GameManager.Instance.isEditor) {
+            if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
                 SteamVR_Behaviour_Pose[] hands = GetComponentsInChildren<SteamVR_Behaviour_Pose>();
                 leftHand = hands[0];
                 rightHand = hands[1];
@@ -48,21 +48,23 @@ public class Human : Player {
         base.Update();
         // if game ended and trigger pressed, restart the game
         if (GameManager.Instance.isGameEnded) {
-            if (GameManager.Instance.isOculusQuest) {
+            if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
                 if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
                     GameManager.Instance.Restart();
                 }
-            } else if (GameManager.Instance.isEditor) {
+            } else if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {
                 if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) {
                     GameManager.Instance.Restart();
                 }
 
-            } else if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
-                GameManager.Instance.Restart();
+            } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
+                if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
+                    GameManager.Instance.Restart();
+                }
             }
         }
 
-        if (GameManager.Instance.isOculusQuest) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
             if (OVRInput.GetDown(OVRInput.RawButton.X | OVRInput.RawButton.Y)) {
                 leftHandController.Switch();
             }
@@ -70,8 +72,7 @@ public class Human : Player {
             if (OVRInput.GetDown(OVRInput.RawButton.A | OVRInput.RawButton.B)) {
                 rightHandController.Switch();
             }
-        } else if (!GameManager.Instance.isEditor) {
-            // if grab is pressed, switch between tool and spawn for that hand
+        } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
             if (grab.GetStateDown(rightHand.inputSource)) {
                 rightHandController.Switch();
             }

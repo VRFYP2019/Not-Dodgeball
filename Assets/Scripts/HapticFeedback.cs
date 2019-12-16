@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 using Valve.VR;
 
 public class HapticFeedback : MonoBehaviour {
@@ -10,13 +11,13 @@ public class HapticFeedback : MonoBehaviour {
     OVRInput.Controller controllerMask;
     
     private void Start() {
-        if (!GameManager.Instance.isOculusQuest) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
             trackedObj = GetComponent<SteamVR_Behaviour_Pose>().inputSource;
         }
     }
 
     public void Vibrate(float duration, float frequency, float amplitude) {
-        if (GameManager.Instance.isOculusQuest) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
             // Hardcode to frequency and amplitude both 1 because Oculus haptics are weaker
             OVRInput.SetControllerVibration(1, 1, controllerMask);
             StartCoroutine(StopVibrationAfter(duration));
