@@ -18,6 +18,11 @@ namespace Utils {
         OCULUS,
         STEAMVR
     }
+    public enum HandSide {
+        UNSPECIFIED,
+        LEFT,
+        RIGHT
+    }
 
     public static class Constants {
         public static Color blue = new Color(0, 0.5f, 1);

@@ -9,12 +9,7 @@ public class SpawnerHumanController : MonoBehaviour {
     private SteamVR_Action_Boolean click = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
     private Spawner spawner;
     private SteamVR_Behaviour_Pose handPose;
-    enum Hand {
-        LEFT,
-        RIGHT
-    }
-    [SerializeField]
-    private Hand hand;
+    private HandSide handSide;
 
     // Start is called before the first frame update
     void Start() {
@@ -22,16 +17,17 @@ public class SpawnerHumanController : MonoBehaviour {
             handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
         }
         spawner = GetComponent<Spawner>();
+        handSide = GetComponentInParent<HandController>().handSide;
     }
 
     // Update is called once per frame
     void Update() {
         if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
-            if (hand == Hand.LEFT && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)) {
+            if (handSide == HandSide.LEFT && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)) {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
             }
-            if (hand == Hand.RIGHT && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
+            if (handSide == HandSide.RIGHT && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
                 spawner.ThrowCurrentBall();
                 StartCoroutine(spawner.TrySpawn());
             }

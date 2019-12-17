@@ -10,10 +10,14 @@ public class ArmScreen : MonoBehaviour {
     private Transform trans;
     private Text text;
     private RawImage image;
-    [SerializeField]
     private Camera cam = null;
     // Start is called before the first frame update
     void Start() {
+        cam = GetComponentInParent<Human>().gameObject.GetComponentInChildren<Camera>();
+        if (cam == null) {
+            Debug.LogWarning("Camera failed to assign in arm screen");
+            enabled = false;
+        }
         text = GetComponentInChildren<Text>();
         image = GetComponent<RawImage>();
         trans = GetComponent<Transform>();

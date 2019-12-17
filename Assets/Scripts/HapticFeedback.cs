@@ -7,12 +7,17 @@ using Valve.VR;
 public class HapticFeedback : MonoBehaviour {
     public SteamVR_Action_Vibration vibration;
     private SteamVR_Input_Sources trackedObj;
-    [SerializeField]
-    OVRInput.Controller controllerMask;
+    private OVRInput.Controller controllerMask;
     
     private void Start() {
         if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
-            trackedObj = GetComponent<SteamVR_Behaviour_Pose>().inputSource;
+            trackedObj = GetComponentInParent<SteamVR_Behaviour_Pose>().inputSource;
+        }
+        HandSide handSide = GetComponent<HandController>().handSide;
+        if (handSide == HandSide.LEFT) {
+            controllerMask = OVRInput.Controller.LTouch;
+        } else if (handSide == HandSide.RIGHT) {
+            controllerMask = OVRInput.Controller.RTouch;
         }
     }
 
