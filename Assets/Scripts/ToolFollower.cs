@@ -25,7 +25,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     protected FadeState fadeState = FadeState.NORMAL;
     private PhotonView pView;
     [SerializeField]
-    private GameObject sparkPrefab;
+    private GameObject sparkPrefab = null;
 
     [SerializeField]
     private float _sensitivity = 100f;
@@ -43,8 +43,8 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
  
     public void OnPhotonInstantiate(PhotonMessageInfo info) {
-        if (FollowersParent.LocalInstance != null) {
-            transform.parent = FollowersParent.LocalInstance.tools;
+        if (FollowersParent.Instance != null) {
+            transform.parent = FollowersParent.Instance.tools;
         }
     }
 
