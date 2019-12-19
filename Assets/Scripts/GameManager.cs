@@ -6,11 +6,13 @@ using UnityEngine.XR;
 using Utils;
 
 public class GameManager : MonoBehaviourPunCallbacks {
-    public PlayerPlatform playerPlatform;
     public static GameManager Instance;
+    public PlayerPlatform playerPlatform;
     public bool isGameEnded = false;
     public float gameDuration = 60.0f;   // 1 minute
+    public float timeLeft;
     public UnityEvent RestartEvent;
+    public UnityEvent TimeOverEvent;
 
     private void Awake() {
         Instance = this;
@@ -24,6 +26,21 @@ public class GameManager : MonoBehaviourPunCallbacks {
             playerPlatform = PlayerPlatform.EDITOR;
         } else {
             Debug.Log("Unhandled model: " + modelName);
+        }
+    }
+
+    private void Start() {
+        timeLeft = gameDuration;
+    }
+
+    private void Update() {
+        if (!isGameEnded) {
+            timeLeft -= Time.deltaTime;
+            if (timeLeft < 0) {
+                isGameEnded = true;
+                AudioManager.PlaySoundOnce("buzz");
+                TimeOverEvent.Invoke();
+            }
         }
     }
 
@@ -45,6 +62,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
     private IEnumerator DelayAndRestart() {
         yield return new WaitForSeconds(0.25f);
         RestartEvent.Invoke();
+        timeLeft = gameDuration;
         isGameEnded = false;
     }
 }
