@@ -45,17 +45,16 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     [PunRPC]
-    public void PhotonRestart() {
+    public void GameManager_Restart() {
         BallManager.LocalInstance.Restart();
         StartCoroutine(DelayAndRestart());
     }
 
     public void Restart() {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonRestart", RpcTarget.All, null);
+            photonView.RPC("GameManager_Restart", RpcTarget.All, null);
         } else {
-            BallManager.LocalInstance.Restart();
-            StartCoroutine(DelayAndRestart());
+            GameManager_Restart();
         }
     }
 

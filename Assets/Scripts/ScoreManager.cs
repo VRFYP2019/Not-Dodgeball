@@ -26,23 +26,15 @@ public class ScoreManager : MonoBehaviour {
     }
 
     [PunRPC]
-    public void PhotonAddScore(int playerNumber, int score) {
+    public void ScoreManager_AddScore(int playerNumber, int score) {
         playerScores[playerNumber] += score;
-    }
-
-    public void AddScore(PlayerNumber playerNumber, int score) {
-        if (PhotonNetwork.IsConnected) {
-            pv.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)playerNumber, score);
-        } else {
-            playerScores[(int)playerNumber] += score;
-        }
     }
 
     public void AddScoreToOpponent(PlayerNumber me, int score) {
         PlayerNumber scoringPlayerNumber = me == PlayerNumber.ONE ? PlayerNumber.TWO : PlayerNumber.ONE;
 
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
+            pv.RPC("ScoreManager_AddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
 
             // Raise GoalWasScoredEvent to all players
             object[] content = new object[] { scoringPlayerNumber };
@@ -51,12 +43,12 @@ public class ScoreManager : MonoBehaviour {
             PhotonNetwork.RaiseEvent(GoalWasScoredEvent, content, raiseEventOptions, sendOptions);
 
         } else {
-            playerScores[(int)scoringPlayerNumber] += score;
+            ScoreManager_AddScore((int)scoringPlayerNumber, score);
         }
     }
 
     [PunRPC]
-    public void PhotonResetScores() {
+    public void ScoreManager_ResetScores() {
         for (int i = 0; i < playerScores.Length; i++) {
             playerScores[i] = 0;
         }
@@ -64,11 +56,9 @@ public class ScoreManager : MonoBehaviour {
 
     public void ResetScores() {
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("PhotonResetScores", RpcTarget.AllBuffered, null);
+            pv.RPC("ScoreManager_ResetScores", RpcTarget.AllBuffered, null);
         } else {
-            for (int i = 0; i < playerScores.Length; i++) {
-                playerScores[i] = 0;
-            }
+            ScoreManager_ResetScores();
         }
     }
 }

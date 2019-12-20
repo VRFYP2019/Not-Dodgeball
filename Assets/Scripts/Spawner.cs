@@ -79,15 +79,15 @@ public class Spawner : MonoBehaviour {
     }
 
     [PunRPC]
-    private void PhotonSetState(bool active) {
+    private void Spawner_SetState(bool active) {
         gameObject.SetActive(active);
     }
 
     public void SetState(bool active) {
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+            pv.RPC("Spawner_SetState", RpcTarget.AllBuffered, active);
         } else {
-            gameObject.SetActive(active);
+            Spawner_SetState(active);
         }
     }
 }

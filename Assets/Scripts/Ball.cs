@@ -162,7 +162,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     [PunRPC]
-    private void PhotonSetState(bool active) {
+    private void Ball_SetState(bool active) {
         gameObject.SetActive(active);
     }
 
@@ -171,14 +171,14 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             Init();
         }
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetState", RpcTarget.All, active);
+            photonView.RPC("Ball_SetState", RpcTarget.All, active);
         } else {
-            gameObject.SetActive(active);
+            Ball_SetState(active);
         }
     }
 
     [PunRPC]
-    private void PhotonSetParent(string parentName) {
+    private void Ball_SetParent(string parentName) {
         BallManager instance;
         if (GetComponent<PhotonView>().IsMine) {
             instance = BallManager.LocalInstance;
@@ -203,14 +203,14 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
 
     public void SetParent(Transform parent) {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetParent", RpcTarget.All, parent.name);
+            photonView.RPC("Ball_SetParent", RpcTarget.All, parent.name);
         } else {
             transform.parent = parent;
         }
     }
 
     [PunRPC]
-    private void PhotonSetPlayerNumber(int playerNumber) {
+    private void Ball_SetPlayerNumber(int playerNumber) {
         this.playerNumber = (PlayerNumber)playerNumber;
         UpdateColor();
     }
@@ -220,7 +220,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             Init();
         }
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
+            photonView.RPC("Ball_SetPlayerNumber", RpcTarget.All, (int)playerNumber);
         } else {
             this.playerNumber = playerNumber;
             UpdateColor();

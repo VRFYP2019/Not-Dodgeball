@@ -29,16 +29,16 @@ public class Player : MonoBehaviourPunCallbacks {
     }
 
     [PunRPC]
-    public void PhotonSetPlayerNumber(int num) {
+    public void Player_SetPlayerNumber(int num) {
         playerNumber = (PlayerNumber)num;
         GetComponentInChildren<Goal>(true).SetPlayerNumber((PlayerNumber)num);
     }
 
     public void SetPlayerNumber(PlayerNumber playerNumber) {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
+            photonView.RPC("Player_SetPlayerNumber", RpcTarget.All, (int)playerNumber);
         } else {
-            this.playerNumber = playerNumber;
+            Player_SetPlayerNumber((int)playerNumber);
         }
     }
 }

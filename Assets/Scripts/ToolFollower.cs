@@ -85,9 +85,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         if (magnitude > velocityLowerThreshold && fadeState < FadeState.NORMAL) {
             float a = Mathf.Clamp(materials[0].color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
             if (PhotonNetwork.IsConnected) {
-                pv.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+                pv.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
             } else {
-                PhotonSetAlpha(a);
+                ToolFollower_SetAlpha(a);
             }
             if (materials[0].color.a > 0.95f) {
                 fadeState = FadeState.NORMAL;
@@ -101,9 +101,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
             } else if (Time.time - fadeStartTime > fadeDelay) {
                 float a = Mathf.Clamp(materials[0].color.a - Time.deltaTime, minOpacityValue, 1);
                 if (PhotonNetwork.IsConnected) {
-                    pv.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+                    pv.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
                 } else {
-                    PhotonSetAlpha(a);
+                    ToolFollower_SetAlpha(a);
                 }
                 if (materials[0].color.a <= minOpacityValue) {
                     fadeState = FadeState.FADED;
@@ -131,23 +131,23 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     [PunRPC]
-    private void PhotonSetAlpha(float a) {
+    private void ToolFollower_SetAlpha(float a) {
         foreach (Material m in materials) {
             m.color = new Color(m.color.r, m.color.g, m.color.b, a);
         }
     }
 
     [PunRPC]
-    private void PhotonSetState(bool active) {
+    private void ToolFollower_SetState(bool active) {
         gameObject.SetActive(active);
     }
 
     public void SetActive(bool active) {
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+            pv.RPC("ToolFollower_SetState", RpcTarget.AllBuffered, active);
         }
         else {
-            gameObject.SetActive(active);
+            ToolFollower_SetState(active);
         }
     }
 }
