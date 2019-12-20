@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handSide: 0
 --- !u!1 &422333172
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,6 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  handSide: 0
 --- !u!1 &788283974
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,6 +394,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1332100505332994350}
     m_Modifications:
+    - target: {fileID: 6160307769856202025, guid: 83bff4daf25c2f642ac384bc52b8c9fd,
+        type: 3}
+      propertyPath: m_Name
+      value: DummyGoal
+      objectReference: {fileID: 0}
     - target: {fileID: 6160307769856202030, guid: 83bff4daf25c2f642ac384bc52b8c9fd,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -446,11 +453,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6160307769856202025, guid: 83bff4daf25c2f642ac384bc52b8c9fd,
-        type: 3}
-      propertyPath: m_Name
-      value: DummyGoal
       objectReference: {fileID: 0}
     - target: {fileID: -4440243221644745418, guid: 83bff4daf25c2f642ac384bc52b8c9fd,
         type: 3}
