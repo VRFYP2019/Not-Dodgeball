@@ -6,10 +6,12 @@ using static OVRPlugin;
 
 // Script to handle Oculus players because they think they're so special
 public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
-    public GameObject goal;
-    public GameObject oVRCameraRig;
-    public GameObject leftHand;
-    public GameObject rightHand;
+    [SerializeField]
+    private GameObject
+        goal = null,
+        oVRCameraRig = null,
+        leftHand = null,
+        rightHand = null;
 
     // Start is called before the first frame update
     void Start() {

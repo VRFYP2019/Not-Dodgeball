@@ -16,7 +16,8 @@ public class HandController : MonoBehaviour {
         if (!hasBeenInit) {
             Init();
         }
-        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS && handSide == HandSide.UNSPECIFIED) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS
+            && handSide == HandSide.UNSPECIFIED) {
             Debug.LogWarning("Hand side not selected.");
         }
     }

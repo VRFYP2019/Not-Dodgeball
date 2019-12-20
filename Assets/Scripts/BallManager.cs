@@ -8,24 +8,19 @@ public class BallManager : MonoBehaviour {
     public static BallManager LocalInstance;
     public static BallManager RemoteInstance;
     public GameObject[] BallTypes;
-    // playerBallQueues[0] will give the parent of balls for player 1 to spawn, and [1] for player 2
     public Transform playerBallQueue;
     public Transform ballPool;
-    // A transform to be parent of all active balls in the scene
+    // A transform to be parent of player's active balls in the scene
     public Transform activeBalls;
-    // For debugging at the current stage of development. Just give the player 10 balls for a start
     private static readonly int numberOfStartingBalls = 2;
-    // To add a new ball to the queue at fixed intervals (for debug only)
-    private static readonly float ballSpawnInterval = 1f;
-    private IEnumerator spawnCoroutine;
-    private PhotonView photonView;
 
     private void Awake() {
-        photonView = GetComponent<PhotonView>();
-        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
+        PhotonView pv = GetComponent<PhotonView>();
+        if (!PhotonNetwork.IsConnected || pv.IsMine) {
             LocalInstance = this;
-            //spawnCoroutine = AddBallsToQueuePeriodically(ballSpawnInterval);
-            //StartCoroutine(spawnCoroutine);
+            // Uncomment the following 2 lines to allow periodic spawning
+            //float ballSpawnInterval = 1f;
+            //StartCoroutine(AddBallsToQueuePeriodically(ballSpawnInterval));
         } else {
             RemoteInstance = this;
         }
@@ -43,7 +38,7 @@ public class BallManager : MonoBehaviour {
         }
 
         for (int j = 0; j < numberOfStartingBalls; j++) {
-            PutBallInQueue(ballPool.GetChild(0).gameObject);
+            PutBallInQueue(ballPool.GetChild(0).GetComponent<Ball>());
         }
     }
 
@@ -61,37 +56,36 @@ public class BallManager : MonoBehaviour {
 
     public void PutAllBallsInPool() {
         for (int i = activeBalls.childCount - 1; i > -1; i--) {
-            PutBallInPool(activeBalls.GetChild(i).gameObject);
+            PutBallInPool(activeBalls.GetChild(i).GetComponent<Ball>());
         }
         for (int i = playerBallQueue.childCount - 1; i > -1; i--) {
-            PutBallInPool(playerBallQueue.GetChild(i).gameObject);
+            PutBallInPool(playerBallQueue.GetChild(i).GetComponent<Ball>());
         }
     }
 
-    public void PutBallInPool(GameObject ball) {
-        ball.GetComponent<Ball>().SetCountTimeLivedToFalse();
-        ball.GetComponent<Ball>().SetState(false);
-        ball.GetComponent<Ball>().SetParent(ballPool);
+    public void PutBallInPool(Ball ball) {
+        ball.SetCountTimeLivedToFalse();
+        ball.SetState(false);
+        ball.SetParent(ballPool);
     }
 
     // Put a ball into player ball queue
-    public void PutBallInQueue(GameObject ball) {
-        ball.GetComponent<Ball>().SetCountTimeLivedToFalse();
-        ball.GetComponent<Ball>().SetState(false);
-        ball.GetComponent<Ball>().SetParent(playerBallQueue);
-    }
-
-    // When a player scores, 2 balls are added
-    public void HandleBallScored(GameObject ball) {
-        PutBallInQueue(ball);
-        PutBallInQueue(ballPool.GetChild(0).gameObject);
+    public void PutBallInQueue(Ball ball) {
+        ball.SetCountTimeLivedToFalse();
+        ball.SetState(false);
+        ball.SetParent(playerBallQueue);
     }
 
     public void AddNewBallsToPool(int numBallsToAdd = 1) {
         for (int i = 0; i < numBallsToAdd; i++) {
             GameObject newBall;
             if (PhotonNetwork.IsConnected) {
-                newBall = PhotonNetwork.Instantiate(BallTypes[0].name, Vector3.zero, Quaternion.identity, 0, GetBallInitData());
+                newBall = PhotonNetwork.Instantiate(
+                    BallTypes[0].name,
+                    Vector3.zero,
+                    Quaternion.identity,
+                    0,
+                    GetBallInitData());
             } else {
                 newBall = Instantiate(BallTypes[0], ballPool);
             }
@@ -101,7 +95,7 @@ public class BallManager : MonoBehaviour {
 
     public void AddBallsToQueue(int numBalls) {
         for (int i = 0; i < numBalls; i++) {
-            PutBallInQueue(ballPool.GetChild(0).gameObject);
+            PutBallInQueue(ballPool.GetChild(0).GetComponent<Ball>());
         }
     }
 
@@ -114,7 +108,7 @@ public class BallManager : MonoBehaviour {
     private IEnumerator AddBallsToQueuePeriodically(float addInterval) {
         while (true) {
             yield return new WaitForSeconds(addInterval);
-            PutBallInQueue(ballPool.GetChild(0).gameObject);
+            PutBallInQueue(ballPool.GetChild(0).GetComponent<Ball>());
         }
     }
 }

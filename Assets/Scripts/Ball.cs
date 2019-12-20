@@ -6,28 +6,28 @@ using UnityEngine.Audio;
 using Utils;
 
 public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
-    public Transform transformToFollow = null;
     private Collider col;
     private Rigidbody rb;
+    private Material mat;
+    private ParticleSystem ps;
+    private AudioSource audioSource;
+    private bool hasBeenInit = false;
+    private PlayerNumber playerNumber;
+    private Transform transformToFollow = null;
+    private readonly static float forceMultiplier = 100;
+    private Vector3 prevPos;
     private float lastReadTime = 0f;
     private int listPointer = 0;    // use a pointer instead of shifting the array every update
     private List<Collider> boundsInContact;
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
-    private readonly static float forceMultiplier = 100;
     private bool countTimeLived = false;    // set true if active
     private readonly static float timeToLive = 10;  // kill self in 10 seconds
     private float timeLived = 0;
-    private Vector3 prevPos;
-    private bool hasBeenInit = false;
-    private PlayerNumber playerNumber;
-    private Material mat;
-    private ParticleSystem ps;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
-    private AudioSource audioSource;
 
     void Awake() {
         if (!hasBeenInit) {
@@ -61,7 +61,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         } else {
             if (IsDead()) {
                 InitLists();
-                BallManager.LocalInstance.PutBallInPool(gameObject);
+                BallManager.LocalInstance.PutBallInPool(this);
             }
         }
         if (Time.time - lastReadTime > boundListUpdateInterval) {
@@ -77,7 +77,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             timeLived = 0;
             countTimeLived = false;
             InitLists();
-            BallManager.LocalInstance.PutBallInQueue(gameObject);
+            BallManager.LocalInstance.PutBallInQueue(this);
         }
     }
 
@@ -131,6 +131,10 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         col.enabled = true;
         rb.AddForce(throwVecetor, ForceMode.Impulse);
         SetParent(BallManager.LocalInstance.activeBalls);
+    }
+
+    public void SetTransformToFollowToNull() {
+        transformToFollow = null;
     }
 
     // There should only be a need to set it to false from outside

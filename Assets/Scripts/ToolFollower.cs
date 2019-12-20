@@ -4,11 +4,12 @@ using UnityEngine;
 
 // The actual tangible part of the tool, instantiated separately from player
 public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
-    private Tool _tool;
-    private Rigidbody _rigidbody;
-    private Collider _collider;
-    private Vector3 _velocity;
-    private bool _isHuman;
+    private Tool tool;
+    private Rigidbody rb;
+    private Collider col;
+    private PhotonView pv;
+    private Vector3 velocity;
+    private bool isHuman;
     private List<Material> materials = new List<Material>();
     private readonly Renderer[] renderers;
     private float fadeStartTime;
@@ -23,7 +24,6 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         NORMAL
     }
     protected FadeState fadeState = FadeState.NORMAL;
-    private PhotonView pView;
     [SerializeField]
     private GameObject sparkPrefab = null;
 
@@ -31,9 +31,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     private float _sensitivity = 100f;
 
     private void Awake() {
-        _rigidbody = GetComponent<Rigidbody>();
-        _collider = GetComponent<Collider>();
-        pView = GetComponent<PhotonView>();
+        rb = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
+        pv = GetComponent<PhotonView>();
     }
 
     private void Start() {
@@ -49,43 +49,43 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void Update() {
-        if (!PhotonNetwork.IsConnected || pView.IsMine) {
+        if (!PhotonNetwork.IsConnected || pv.IsMine) {
             HandleFade();
         }
         if (fadeState == FadeState.FADED) {
-            _collider.isTrigger = true;
+            col.isTrigger = true;
         } else {
-            _collider.isTrigger = false;
+            col.isTrigger = false;
         }
     }
 
     private void FixedUpdate() {
-        if (!PhotonNetwork.IsConnected || pView.IsMine) {
-            Vector3 destination = _tool.transform.position;
-            _rigidbody.transform.rotation = transform.rotation;
+        if (!PhotonNetwork.IsConnected || pv.IsMine) {
+            Vector3 destination = tool.transform.position;
+            rb.transform.rotation = transform.rotation;
 
-            _velocity = (destination - _rigidbody.transform.position) * _sensitivity;
+            velocity = (destination - rb.transform.position) * _sensitivity;
 
-            _rigidbody.velocity = _velocity;
-            transform.rotation = _tool.transform.rotation;
+            rb.velocity = velocity;
+            transform.rotation = tool.transform.rotation;
         }
     }
 
     public void SetFollowTarget(Tool target) {
-        _tool = target;
+        tool = target;
     }
 
     public void SetHumanity(bool isHuman) {
-        _isHuman = isHuman;
+        this.isHuman = isHuman;
     }
 
     // Fade/unfade based on the state of the tool and the magnitude of valocity
     public void HandleFade() {
-        float magnitude = _velocity.magnitude;
+        float magnitude = velocity.magnitude;
         if (magnitude > velocityLowerThreshold && fadeState < FadeState.NORMAL) {
             float a = Mathf.Clamp(materials[0].color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
             if (PhotonNetwork.IsConnected) {
-                pView.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+                pv.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
             } else {
                 PhotonSetAlpha(a);
             }
@@ -101,7 +101,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
             } else if (Time.time - fadeStartTime > fadeDelay) {
                 float a = Mathf.Clamp(materials[0].color.a - Time.deltaTime, minOpacityValue, 1);
                 if (PhotonNetwork.IsConnected) {
-                    pView.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
+                    pv.RPC("PhotonSetAlpha", RpcTarget.AllBuffered, a);
                 } else {
                     PhotonSetAlpha(a);
                 }
@@ -115,12 +115,13 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void OnCollisionEnter(Collision collision) {
-        if (_isHuman) {
-            if (!PhotonNetwork.IsConnected || pView.IsMine) {
-                ((ToolHuman)_tool).TriggerHapticFeedback(0.1f, 100, 30);
+        if (isHuman) {
+            if (!PhotonNetwork.IsConnected || pv.IsMine) {
+                ((ToolHuman)tool).TriggerHapticFeedback(0.1f, 100, 30);
             }
         }
-        if (_velocity.magnitude > velocityLowerThreshold && collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
+        if (velocity.magnitude > velocityLowerThreshold
+            && collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
             if (PhotonNetwork.IsConnected) {
                 PhotonNetwork.Instantiate(sparkPrefab.name, collision.GetContact(0).point, Quaternion.identity);
             } else {
@@ -143,7 +144,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     public void SetActive(bool active) {
         if (PhotonNetwork.IsConnected) {
-            pView.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+            pv.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
         }
         else {
             gameObject.SetActive(active);

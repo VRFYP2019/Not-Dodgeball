@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class LobbyManager : MonoBehaviour {
     [SerializeField]
-    private GameObject networkUi;
+    private GameObject networkUi = null;
 
     [Header("Desktop")]
     [SerializeField]
-    private GameObject[] desktopObjects;
+    private GameObject[] desktopObjects = null;
 
     [Header("OVR")]
     [SerializeField]
-    private GameObject[] oculusObjects;
+    private GameObject[] oculusObjects = null;
     [SerializeField]
-    private Camera oculusCam;
+    private Camera oculusCam = null;
     
     // Start is called before the first frame update
     void Start() {

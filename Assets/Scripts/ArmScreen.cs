@@ -1,11 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ArmScreen : MonoBehaviour {
-    private readonly Color[] colors = new Color[2];
     private float scaleX, scaleY, scaleZ;
     private Transform trans;
     private Text text;
@@ -34,8 +32,12 @@ public class ArmScreen : MonoBehaviour {
             trans.localScale = new Vector3(scaleX, scaleY, scaleZ);
         }
         text.text = "Balls: " + BallManager.LocalInstance.playerBallQueue.childCount.ToString();
-        float a = Vector3.Dot(transform.forward, cam.transform.forward) > 0.5f
-            && !(Mathf.Abs(Vector3.Dot(transform.right, cam.transform.up)) < 0.8f) ? Vector3.Dot(transform.forward, cam.transform.forward) : 0;
+        float a = (
+                Vector3.Dot(transform.forward, cam.transform.forward) > 0.5f)
+                && (!(Mathf.Abs(Vector3.Dot(transform.right, cam.transform.up)) < 0.8f)
+            )
+            ? Vector3.Dot(transform.forward, cam.transform.forward)
+            : 0;
         ChangeTransparency(a);
     }
 

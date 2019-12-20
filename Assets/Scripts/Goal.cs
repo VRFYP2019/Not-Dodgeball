@@ -18,15 +18,13 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     private Vector3 parentPos, newPos, lastSafePos;
     private float yRotation;
     private float zOffset;
-    [SerializeField]
     private GoalState goalState;
     enum GoalState {
         FOLLOWING,
         TRANSITION,
         STATIONARY
     }
-    [SerializeField]
-    private PlayerNumber playerNumber;
+    private PlayerNumber playerNumber;  // the playernumber of the player this goal is following
 
     // Start is called before the first frame update
     void Start() {
@@ -134,7 +132,7 @@ public class Goal : MonoBehaviour, IOnEventCallback {
                 // Prevent own goal
                 if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
                     ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
-                    BallManager.LocalInstance.PutBallInPool(col.gameObject);
+                    BallManager.LocalInstance.PutBallInPool(col.GetComponent<Ball>());
                     SwitchGoalState(GoalState.STATIONARY);
                 }
             }

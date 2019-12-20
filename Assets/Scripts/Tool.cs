@@ -1,12 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
 using Photon.Pun;
 
 public class Tool : MonoBehaviourPunCallbacks {
     [SerializeField]
-    private ToolFollower _toolFollowerPrefab = null;
+    private ToolFollower toolFollowerPrefab = null;
     protected ToolFollower follower;
 
     // Start is called before the first frame update
@@ -16,9 +15,9 @@ public class Tool : MonoBehaviourPunCallbacks {
 
     protected virtual void SpawnToolFollower() {
         if (PhotonNetwork.IsConnected) {
-            follower = PhotonNetwork.Instantiate(_toolFollowerPrefab.name, transform.position, transform.rotation).GetComponent<ToolFollower>();
+            follower = PhotonNetwork.Instantiate(toolFollowerPrefab.name, transform.position, transform.rotation).GetComponent<ToolFollower>();
         } else {
-            follower = Instantiate(_toolFollowerPrefab);
+            follower = Instantiate(toolFollowerPrefab);
             follower.transform.position = transform.position;
         }
         follower.SetFollowTarget(this);

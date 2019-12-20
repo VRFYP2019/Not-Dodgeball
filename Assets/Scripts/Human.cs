@@ -6,18 +6,18 @@ using Utils;
 using Valve.VR;
 
 public class Human : Player {
-    public SteamVR_Action_Boolean grab = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("GrabGrip");
-    public SteamVR_Action_Boolean trigger = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
+    private PhotonView pv;
     private SteamVR_Behaviour_Pose leftHand;
     private SteamVR_Behaviour_Pose rightHand;
+    public SteamVR_Action_Boolean grab = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("GrabGrip");
+    public SteamVR_Action_Boolean trigger = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("InteractUI");
     public MonoBehaviour[] localScripts;
     public GameObject[] localObjects;
-    private PhotonView photonView;
 
     protected override void Start() {
         playerType = PlayerType.HUMAN;
-        photonView = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
+        pv = GetComponent<PhotonView>();
+        if (PhotonNetwork.IsConnected && !pv.IsMine) {
             foreach (MonoBehaviour m in localScripts) {
                 if (m != null) {
                     m.enabled = false;
@@ -49,7 +49,8 @@ public class Human : Player {
         // if game ended and trigger pressed, restart the game
         if (GameManager.Instance.isGameEnded) {
             if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
-                if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
+                if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)
+                    || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
                     GameManager.Instance.Restart();
                 }
             } else if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {

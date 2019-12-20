@@ -9,13 +9,13 @@ using Utils;
 public class ScoreManager : MonoBehaviour {
     public static ScoreManager Instance;
     public int[] playerScores;
-    private PhotonView photonView;
+    private PhotonView pv;
 
     private readonly byte GoalWasScoredEvent = 1;
 
     private void Awake() {
         Instance = this;
-        photonView = GetComponent<PhotonView>();
+        pv = GetComponent<PhotonView>();
     }
 
     // Start is called before the first frame update
@@ -32,7 +32,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void AddScore(PlayerNumber playerNumber, int score) {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)playerNumber, score);
+            pv.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)playerNumber, score);
         } else {
             playerScores[(int)playerNumber] += score;
         }
@@ -42,7 +42,7 @@ public class ScoreManager : MonoBehaviour {
         PlayerNumber scoringPlayerNumber = me == PlayerNumber.ONE ? PlayerNumber.TWO : PlayerNumber.ONE;
 
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
+            pv.RPC("PhotonAddScore", RpcTarget.AllBuffered, (int)scoringPlayerNumber, score);
 
             // Raise GoalWasScoredEvent to all players
             object[] content = new object[] { scoringPlayerNumber };
@@ -64,7 +64,7 @@ public class ScoreManager : MonoBehaviour {
 
     public void ResetScores() {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonResetScores", RpcTarget.AllBuffered, null);
+            pv.RPC("PhotonResetScores", RpcTarget.AllBuffered, null);
         } else {
             for (int i = 0; i < playerScores.Length; i++) {
                 playerScores[i] = 0;

@@ -6,7 +6,7 @@ using UnityEngine;
 public class GoalIndicator : MonoBehaviour {
     private static readonly int LENGTH_LINERENDERER = 3;
     private LineRenderer goalIndicator;
-    PhotonView pv;
+    private PhotonView pv;
 
     void Start() {
         pv = GetComponent<PhotonView>();
@@ -41,7 +41,7 @@ public class GoalIndicator : MonoBehaviour {
     }
 
     private void DrawGoalIndicator() {
-        goalIndicator.SetVertexCount(2);
+        goalIndicator.positionCount = 2;
         goalIndicator.SetPosition(0, this.transform.position);
         goalIndicator.SetPosition(1, -this.transform.forward * LENGTH_LINERENDERER + this.transform.position);
     }
