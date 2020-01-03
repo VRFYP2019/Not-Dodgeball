@@ -235,6 +235,6 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         if (mat == null) {
             mat = GetComponent<Renderer>().material;
         }
-        mat.color = playerNumber == PlayerNumber.ONE ? Constants.blue : Constants.orange;
+        mat.color = playerNumber == PlayerNumber.ONE ? Constants.Colors.blue : Constants.Colors.orange;
     }
 }

@@ -25,7 +25,14 @@ namespace Utils {
     }
 
     public static class Constants {
-        public static Color blue = new Color(0, 0.5f, 1);
-        public static Color orange = new Color(0.937f, 0.447f, 0.0823f);
+        public static class Colors {
+            public static Color blue = new Color(0, 0.5f, 1);
+            public static Color orange = new Color(0.937f, 0.447f, 0.0823f);
+        }
+
+        public static class FontSizes {
+            public static int scoreBoardNormal = 25;
+            public static int scoreBoardSmall = 12;
+        }
     }
 }

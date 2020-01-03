@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 // Displays the scores of players and time left for the game
 // Display scores will no longer update once time is over
@@ -10,8 +11,6 @@ public class ScoreBoard : MonoBehaviour {
     public Text player1ScoreText, player2ScoreText, timeLeftText;
     public bool isTimeOver;
     private IEnumerator restartPromptCoroutine;
-    private int fontSizeNormal = 25;
-    private int fontSizeSmall = 12;
     private static readonly string timeOver = "TIME OVER";
     private static readonly string pressTriggerToRestart = "PRESS TRIGGER TO RESTART";
 
@@ -26,7 +25,7 @@ public class ScoreBoard : MonoBehaviour {
     public void Init() {
         player1ScoreText.text = "0";
         player2ScoreText.text = "0";
-        timeLeftText.fontSize = fontSizeNormal;
+        timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
         isTimeOver = false;
     }
 
@@ -72,11 +71,10 @@ public class ScoreBoard : MonoBehaviour {
 
     private IEnumerator TimeOverRestartPrompt() {
         while (true) {
-            timeLeftText.fontSize = fontSizeNormal;
+            timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
             timeLeftText.text = timeOver;
             yield return new WaitForSeconds(3f);
-            // TODO? use scrolling text to keep normal font size
-            timeLeftText.fontSize = fontSizeSmall;
+            timeLeftText.fontSize = Constants.FontSizes.scoreBoardSmall;
             timeLeftText.text = pressTriggerToRestart;
             yield return new WaitForSeconds(3f);
         }
