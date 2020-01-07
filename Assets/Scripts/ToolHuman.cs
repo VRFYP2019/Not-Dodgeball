@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Valve.VR;
+using Utils;
 
 public class ToolHuman : Tool {
     private HapticFeedback hapticFeedback;
@@ -9,13 +9,13 @@ public class ToolHuman : Tool {
     // Start is called before the first frame update
     protected override void Start() {
         base.Start();
-        if (!GameManager.Instance.isEditor) {
+        if (!(GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR)) {
             hapticFeedback = GetComponentInParent<HapticFeedback>();
         }
     }
 
     public void TriggerHapticFeedback(float duration, float frequency, float amplitude) {
-        if (!GameManager.Instance.isEditor) {
+        if (!(GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR)) {
             hapticFeedback.Vibrate(duration, frequency, amplitude);
         }
     }

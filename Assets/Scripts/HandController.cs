@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
-// Controls what the hand  is doing, i.e. spawning or smacking
+// Controls what the hand is doing, i.e. spawning or smacking
 public class HandController : MonoBehaviour {
+    [Tooltip("Left or right. Only required for OVR.")]
+    public HandSide handSide;
     private Tool tool;
     private Spawner spawnerHand;
     bool hasBeenInit = false;
@@ -12,6 +15,10 @@ public class HandController : MonoBehaviour {
     void Start() {
         if (!hasBeenInit) {
             Init();
+        }
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS
+            && handSide == HandSide.UNSPECIFIED) {
+            Debug.LogWarning("Hand side not selected.");
         }
     }
 

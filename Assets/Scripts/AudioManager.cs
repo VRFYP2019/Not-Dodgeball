@@ -8,7 +8,6 @@ public class AudioManager : MonoBehaviour {
     public AudioFile[] audioSources;
     public Dictionary<string,AudioFile> audioFiles;
     static AudioSource musicPlayer;
-    static GameObject audioPrefab;
 
     void Awake () { 
         InitInstance();

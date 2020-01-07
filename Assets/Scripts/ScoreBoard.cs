@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 
 // Displays the scores of players and time left for the game
 // Display scores will no longer update once time is over
@@ -9,51 +10,42 @@ public class ScoreBoard : MonoBehaviour {
 
     public Text player1ScoreText, player2ScoreText, timeLeftText;
     public bool isTimeOver;
-    private float timeLeft;
     private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
-    //private static readonly string pressTriggerToRestart = "PRESS TRIGGER TO RESTART";
+    private static readonly string pressTriggerToRestart = "PRESS TRIGGER TO RESTART";
 
     // Start is called before the first frame update
     void Start() {
         restartPromptCoroutine = TimeOverRestartPrompt();
         Init();
         GameManager.Instance.RestartEvent.AddListener(Restart);
+        GameManager.Instance.TimeOverEvent.AddListener(TimeOverHandler);
     }
 
     public void Init() {
-        timeLeft = GameManager.Instance.gameDuration;
         player1ScoreText.text = "0";
         player2ScoreText.text = "0";
-        timeLeftText.text = timeLeft.ToString();
+        timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
         isTimeOver = false;
     }
 
     // Update is called once per frame
     void Update() {
         if (!isTimeOver) {
-            CountdownTime();
             UpdateTimeLeft();
             UpdateDisplayScores();
         }
     }
 
-    private void CountdownTime() {
-        timeLeft -= Time.deltaTime;
-    }
-
     // Displays time left in minutes and seconds
     private void UpdateTimeLeft() {
+        float timeLeft = GameManager.Instance.timeLeft;
         float minutes = Mathf.Floor(timeLeft / 60);
         float seconds = timeLeft % 60;
         if (seconds > 59){
             seconds = 59;
         }
         if (minutes < 0) {
-            isTimeOver = true;
-            GameManager.Instance.isGameEnded = true;
-            AudioManager.PlaySoundOnce("buzz");
-            StartCoroutine(restartPromptCoroutine);
             minutes = 0;
             seconds = 0;
         }
@@ -67,6 +59,11 @@ public class ScoreBoard : MonoBehaviour {
         player2ScoreText.text = ScoreManager.Instance.playerScores[1].ToString();
     }
 
+    public void TimeOverHandler() {
+        isTimeOver = true;
+        StartCoroutine(restartPromptCoroutine);
+    }
+
     public void Restart() {
         StopCoroutine(restartPromptCoroutine);
         Init();
@@ -74,11 +71,12 @@ public class ScoreBoard : MonoBehaviour {
 
     private IEnumerator TimeOverRestartPrompt() {
         while (true) {
-            yield return new WaitForSeconds(3f);
+            timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
             timeLeftText.text = timeOver;
             yield return new WaitForSeconds(3f);
-            // uncomment following line after figuring out resizing the text
-            //timeLeftText.text = pressTriggerToRestart;
+            timeLeftText.fontSize = Constants.FontSizes.scoreBoardSmall;
+            timeLeftText.text = pressTriggerToRestart;
+            yield return new WaitForSeconds(3f);
         }
     }
 }

@@ -8,12 +8,12 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
     private Transform parentOfBallsToThrow;
     private readonly float spawnDelay = 0.25f;
-    public GameObject currentBall;
+    public Ball currentBall;
     private HandController handController;
-    private PhotonView photonView;
+    private PhotonView pv;
 
     private void Awake() {
-        photonView = GetComponent<PhotonView>();
+        pv = GetComponent<PhotonView>();
     }
 
     // Start is called before the first frame update
@@ -23,26 +23,26 @@ public class Spawner : MonoBehaviour {
     }
    
     public void ThrowCurrentBall() {
-        currentBall.GetComponent<Ball>().OnDetachFromHand();
+        currentBall.OnDetachFromHand();
         currentBall = null;
     }
 
     // Makes currentBall follow this hand
     private void SetCurrentBallToFollow() {
-        currentBall.GetComponent<Ball>().OnAttachToHand(transform);
+        currentBall.OnAttachToHand(transform);
     }
     
     // Takes the next ball out of the queue and into the hand
     private void PutNextBallInHand() {
         if (!parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy) {
-            currentBall = parentOfBallsToThrow.GetChild(0).gameObject;
+            currentBall = parentOfBallsToThrow.GetChild(0).GetComponent<Ball>();
         } else {    // if first in list is already held by other hand, get next in list
-            currentBall = parentOfBallsToThrow.GetChild(1).gameObject;
+            currentBall = parentOfBallsToThrow.GetChild(1).GetComponent<Ball>();
         }
         currentBall.GetComponent<Collider>().enabled = false;
         currentBall.GetComponent<Rigidbody>().isKinematic = true;
         SetCurrentBallToFollow();
-        currentBall.GetComponent<Ball>().SetPlayerNumber(GetComponentInParent<Player>().playerNumber);
+        currentBall.SetPlayerNumber(GetComponentInParent<Player>().playerNumber);
     }
 
     public void RestartState() {
@@ -53,7 +53,7 @@ public class Spawner : MonoBehaviour {
 
     public void UnspawnBall() {
         BallManager.LocalInstance.PutBallInQueue(currentBall);
-        currentBall.GetComponent<Ball>().transformToFollow = null;
+        currentBall.SetTransformToFollowToNull();
         currentBall = null;
     }
 
@@ -67,7 +67,7 @@ public class Spawner : MonoBehaviour {
             || (parentOfBallsToThrow.childCount == 1 && !parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy)) {
             PutNextBallInHand();
             yield return new WaitForEndOfFrame();
-            currentBall.GetComponent<Ball>().SetState(true);
+            currentBall.SetState(true);
         } else if (currentBall == null) {
             FinishThrowing();
         }
@@ -79,15 +79,15 @@ public class Spawner : MonoBehaviour {
     }
 
     [PunRPC]
-    private void PhotonSetState(bool active) {
+    private void Spawner_SetState(bool active) {
         gameObject.SetActive(active);
     }
 
     public void SetState(bool active) {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetState", RpcTarget.AllBuffered, active);
+            pv.RPC("Spawner_SetState", RpcTarget.AllBuffered, active);
         } else {
-            gameObject.SetActive(active);
+            Spawner_SetState(active);
         }
     }
 }

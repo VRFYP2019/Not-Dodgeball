@@ -3,30 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using Utils;
 
 public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
-    public Transform transformToFollow = null;
     private Collider col;
     private Rigidbody rb;
+    private Material mat;
+    private ParticleSystem ps;
+    private AudioSource audioSource;
+    private bool hasBeenInit = false;
+    private PlayerNumber playerNumber;
+    private Transform transformToFollow = null;
+    private readonly static float forceMultiplier = 100;
+    private Vector3 prevPos;
     private float lastReadTime = 0f;
     private int listPointer = 0;    // use a pointer instead of shifting the array every update
     private List<Collider> boundsInContact;
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
-    private readonly static float forceMultiplier = 100;
     private bool countTimeLived = false;    // set true if active
     private readonly static float timeToLive = 10;  // kill self in 10 seconds
     private float timeLived = 0;
-    private Vector3 prevPos;
-    private bool hasBeenInit = false;
-    private Utils.PlayerNumber playerNumber;
-    private Material mat;
-    private ParticleSystem ps;
 
     public AudioClip defaultCollisionSound;
     public AudioClip toolCollisionSound;
-    private AudioSource audioSource;
 
     void Awake() {
         if (!hasBeenInit) {
@@ -60,7 +61,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         } else {
             if (IsDead()) {
                 InitLists();
-                BallManager.LocalInstance.PutBallInPool(gameObject);
+                BallManager.LocalInstance.PutBallInPool(this);
             }
         }
         if (Time.time - lastReadTime > boundListUpdateInterval) {
@@ -76,7 +77,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             timeLived = 0;
             countTimeLived = false;
             InitLists();
-            BallManager.LocalInstance.PutBallInQueue(gameObject);
+            BallManager.LocalInstance.PutBallInQueue(this);
         }
     }
 
@@ -132,6 +133,10 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         SetParent(BallManager.LocalInstance.activeBalls);
     }
 
+    public void SetTransformToFollowToNull() {
+        transformToFollow = null;
+    }
+
     // There should only be a need to set it to false from outside
     public void SetCountTimeLivedToFalse() {
         countTimeLived = false;
@@ -157,7 +162,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     }
 
     [PunRPC]
-    private void PhotonSetState(bool active) {
+    private void Ball_SetState(bool active) {
         gameObject.SetActive(active);
     }
 
@@ -166,14 +171,14 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             Init();
         }
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetState", RpcTarget.All, active);
+            photonView.RPC("Ball_SetState", RpcTarget.All, active);
         } else {
-            gameObject.SetActive(active);
+            Ball_SetState(active);
         }
     }
 
     [PunRPC]
-    private void PhotonSetParent(string parentName) {
+    private void Ball_SetParent(string parentName) {
         BallManager instance;
         if (GetComponent<PhotonView>().IsMine) {
             instance = BallManager.LocalInstance;
@@ -198,31 +203,31 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
 
     public void SetParent(Transform parent) {
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetParent", RpcTarget.All, parent.name);
+            photonView.RPC("Ball_SetParent", RpcTarget.All, parent.name);
         } else {
             transform.parent = parent;
         }
     }
 
     [PunRPC]
-    private void PhotonSetPlayerNumber(int playerNumber) {
-        this.playerNumber = (Utils.PlayerNumber)playerNumber;
+    private void Ball_SetPlayerNumber(int playerNumber) {
+        this.playerNumber = (PlayerNumber)playerNumber;
         UpdateColor();
     }
 
-    public void SetPlayerNumber(Utils.PlayerNumber playerNumber) {
+    public void SetPlayerNumber(PlayerNumber playerNumber) {
         if (!hasBeenInit) {
             Init();
         }
         if (PhotonNetwork.IsConnected) {
-            photonView.RPC("PhotonSetPlayerNumber", RpcTarget.All, (int)playerNumber);
+            photonView.RPC("Ball_SetPlayerNumber", RpcTarget.All, (int)playerNumber);
         } else {
             this.playerNumber = playerNumber;
             UpdateColor();
         }
     }
 
-    public Utils.PlayerNumber GetPlayerNumber() {
+    public PlayerNumber GetPlayerNumber() {
         return playerNumber;
     }
 
@@ -230,6 +235,6 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         if (mat == null) {
             mat = GetComponent<Renderer>().material;
         }
-        mat.color = playerNumber == Utils.PlayerNumber.ONE ? Utils.blue : Utils.orange;
+        mat.color = playerNumber == PlayerNumber.ONE ? Constants.Colors.blue : Constants.Colors.orange;
     }
 }

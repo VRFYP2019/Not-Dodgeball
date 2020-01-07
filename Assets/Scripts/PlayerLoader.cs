@@ -2,61 +2,114 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
+using Utils;
 
 public class PlayerLoader : MonoBehaviour {
-    public GameObject OpenVRPrefab;
-    public GameObject OculusPrefab;
-    public GameObject EditorPlayerPrefab;
-    public GameObject DevCamPrefab;
-    public GameObject BotPrefab;
-    public GameObject OffScreenUIPrefab;
-    public GameObject BallManagerPrefab;
-    public Transform player1SpawnPoint;
-    public Transform player2SpawnPoint;
-    private GameObject player1, player2;
+    [SerializeField]
+    private GameObject
+        OpenVRPrefab = null,
+        OculusPrefab = null,
+        EditorPlayerPrefab = null,
+        DevCamPrefab = null,
+        BotPrefab = null,
+        OffScreenUIPrefab = null,
+        BallManagerPrefab = null;
+    [SerializeField]
+    private Transform
+        player1SpawnPoint = null,
+        player2SpawnPoint = null;
+
     // Start is called before the first frame update
     void Start() {
-        // TODO: add a new prefab for editor
-        GameObject humanPrefab = GameManager.Instance.isOculusQuest ? OculusPrefab :
-            GameManager.Instance.isEditor ? EditorPlayerPrefab : OpenVRPrefab;
+        GameObject humanPrefab;
+        switch (GameManager.Instance.playerPlatform) {
+            case PlayerPlatform.OCULUS:
+                humanPrefab = OculusPrefab;
+                break;
+            case PlayerPlatform.STEAMVR:
+                humanPrefab = OpenVRPrefab;
+                break;
+            case PlayerPlatform.EDITOR:
+            default:
+                humanPrefab = EditorPlayerPrefab;
+                break;
+        }
         if (PhotonNetwork.IsConnected) {
-            if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
-                player1 = PhotonNetwork.Instantiate(humanPrefab.name, player1SpawnPoint.position, player1SpawnPoint.rotation);
-                GameObject offScreenUI1 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
-                offScreenUI1.GetComponent<WallIndicator>().playerLocation = player1.GetComponentInChildren<Camera>(true).transform;
-                offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
-                player1.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.ONE);
-                player1.name = PhotonNetwork.LocalPlayer.NickName;
-                if (PhotonNetwork.CurrentRoom.PlayerCount == 1) {
-                    // Spawn a bot if single player
-                    player2 = PhotonNetwork.Instantiate(BotPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
-                    player2.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.TWO);
-                }
-            } else if (PhotonNetwork.LocalPlayer.ActorNumber == 2) {
-                player2 = PhotonNetwork.Instantiate(humanPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
-                GameObject offScreenUI2 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
-                offScreenUI2.GetComponent<WallIndicator>().playerLocation = player2.GetComponentInChildren<Camera>(true).transform;
-                offScreenUI2.GetComponent<Canvas>().worldCamera = player2.GetComponentInChildren<Camera>();
-                player2.GetComponent<Player>().SetPlayerNumber(Utils.PlayerNumber.TWO);
-                player2.name = PhotonNetwork.LocalPlayer.NickName;
+            switch (PhotonNetwork.CurrentRoom.PlayerCount) {
+                case 1:
+                    SpawnHuman(PlayerNumber.ONE);
+                    SpawnBot();
+                    break;
+                case 2:
+                    if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
+                        SpawnHuman(PlayerNumber.ONE);
+                    } else {
+                        SpawnHuman(PlayerNumber.TWO);
+                    }
+                    break;
+                default:
+                    Debug.LogError("Invalid number of players. Returning to lobby");
+                    PhotonNetwork.LoadLevel(0);
+                    return;
             }
             GameObject ballManager = PhotonNetwork.Instantiate(BallManagerPrefab.name, Vector3.zero, Quaternion.identity);
-            ballManager.name = "BallManager " + PhotonNetwork.LocalPlayer.ActorNumber;
         } else {
-            player1 = Instantiate(humanPrefab, player1SpawnPoint.position, player1SpawnPoint.rotation);
-            GameObject offScreenUI1 = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
-            offScreenUI1.GetComponent<WallIndicator>().playerLocation = player1.GetComponentInChildren<Camera>(true).transform;
-            offScreenUI1.GetComponent<Canvas>().worldCamera = player1.GetComponentInChildren<Camera>();
-            player1.GetComponent<Player>().playerNumber = Utils.PlayerNumber.ONE;
-
-            player2 = Instantiate(BotPrefab, player2SpawnPoint.position, player2SpawnPoint.rotation);
-            player2.GetComponent<Player>().playerNumber = Utils.PlayerNumber.TWO;
-
+            SpawnHuman(PlayerNumber.ONE);
+            SpawnBot();
             GameObject ballManager = Instantiate(BallManagerPrefab);
         }
-        if (GameManager.Instance.isEditor) {
+        if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {
             Instantiate(DevCamPrefab);
         }
+    }
+
+    private void SpawnHuman(PlayerNumber playerNumber) {
+        GameObject player, humanPrefab;
+        Transform spawnPoint;
+        switch (GameManager.Instance.playerPlatform) {
+            case PlayerPlatform.OCULUS:
+                humanPrefab = OculusPrefab;
+                break;
+            case PlayerPlatform.STEAMVR:
+                humanPrefab = OpenVRPrefab;
+                break;
+            case PlayerPlatform.EDITOR:
+            default:
+                humanPrefab = EditorPlayerPrefab;
+                break;
+        }
+        switch (playerNumber) {
+            case PlayerNumber.ONE:
+                spawnPoint = player1SpawnPoint;
+                break;
+            case PlayerNumber.TWO:
+                spawnPoint = player2SpawnPoint;
+                break;
+            default:
+                Debug.LogWarning("Player number is null. Player will not be spawned");
+                return;
+        }
+
+        if (PhotonNetwork.IsConnected) {
+            player = PhotonNetwork.Instantiate(humanPrefab.name, spawnPoint.position, spawnPoint.rotation);
+            player.name = PhotonNetwork.LocalPlayer.NickName;
+        } else {
+            player = Instantiate(humanPrefab, spawnPoint.position, spawnPoint.rotation);
+        }
+        GameObject offScreenUI = Instantiate(OffScreenUIPrefab, OffScreenUIPrefab.transform.position, OffScreenUIPrefab.transform.rotation);
+        offScreenUI.GetComponent<WallIndicator>().playerLocation = player.GetComponentInChildren<Camera>(true).transform;
+        offScreenUI.GetComponent<Canvas>().worldCamera = player.GetComponentInChildren<Camera>();
+        player.GetComponent<Player>().SetPlayerNumber(playerNumber);
+    }
+
+    // Assume bot is always only player 2
+    private void SpawnBot() {
+        GameObject bot;
+        if (PhotonNetwork.IsConnected) {
+            bot = PhotonNetwork.Instantiate(BotPrefab.name, player2SpawnPoint.position, player2SpawnPoint.rotation);
+        } else {
+            bot = Instantiate(BotPrefab, player2SpawnPoint.position, player2SpawnPoint.rotation);
+        }
+        bot.GetComponent<Player>().playerNumber = PlayerNumber.TWO;
     }
 }
