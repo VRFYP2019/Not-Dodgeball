@@ -23,6 +23,10 @@ namespace Utils {
         LEFT,
         RIGHT
     }
+    public enum HandObject {
+        TOOL,
+        SPAWNER
+    }
 
     public static class Constants {
         public static class Colors {

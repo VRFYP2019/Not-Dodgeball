@@ -5,20 +5,15 @@ using Utils;
 
 // Controls what the hand is doing, i.e. spawning or smacking
 public class HandController : MonoBehaviour {
-    [Tooltip("Left or right. Only required for OVR.")]
-    public HandSide handSide;
     private Tool tool;
     private Spawner spawnerHand;
+    public HandObject currHandObject;
     bool hasBeenInit = false;
 
     // Start is called before the first frame update
-    void Start() {
+    protected virtual void Start() {
         if (!hasBeenInit) {
             Init();
-        }
-        if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS
-            && handSide == HandSide.UNSPECIFIED) {
-            Debug.LogWarning("Hand side not selected.");
         }
     }
 
@@ -37,6 +32,7 @@ public class HandController : MonoBehaviour {
     }
 
     public void SwitchToTool() {
+        currHandObject = HandObject.TOOL;
         if (!hasBeenInit) {
             Init();
         }
@@ -55,6 +51,7 @@ public class HandController : MonoBehaviour {
     }
 
     public void SwitchToSpawnerHand() {
+        currHandObject = HandObject.SPAWNER;
         tool.SetFollowerActive(false);
         tool.SetState(false);
         spawnerHand.SetState(true);

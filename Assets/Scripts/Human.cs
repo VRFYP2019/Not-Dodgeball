@@ -67,18 +67,32 @@ public class Human : Player {
 
         if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
             if (OVRInput.GetDown(OVRInput.RawButton.X | OVRInput.RawButton.Y)) {
-                leftHandController.Switch();
+                SwitchHandObject(HandSide.LEFT);
             }
 
             if (OVRInput.GetDown(OVRInput.RawButton.A | OVRInput.RawButton.B)) {
-                rightHandController.Switch();
+                SwitchHandObject(HandSide.RIGHT);
             }
         } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
-            if (grab.GetStateDown(rightHand.inputSource)) {
-                rightHandController.Switch();
-            }
             if (grab.GetStateDown(leftHand.inputSource)) {
-                leftHandController.Switch();
+                SwitchHandObject(HandSide.LEFT);
+            }
+            if (grab.GetStateDown(rightHand.inputSource)) {
+                SwitchHandObject(HandSide.RIGHT);
+            }
+        }
+    }
+
+    protected override void SwitchHandObject(HandSide handSide) {
+        base.SwitchHandObject(handSide);
+        // if player is trying to switch to spawner when no balls left,
+        // trigger feedback to let them know it's not allowed
+        if (BallManager.LocalInstance.playerBallQueue.childCount == 0) {
+            if (handSide == HandSide.LEFT && leftHandController.currHandObject == HandObject.TOOL) {
+                ((HandControllerHuman)leftHandController).TriggerHapticFeedback(0.1f, 100, 30);
+            }
+            if (handSide == HandSide.RIGHT && rightHandController.currHandObject == HandObject.TOOL) {
+                ((HandControllerHuman)rightHandController).TriggerHapticFeedback(0.1f, 100, 30);
             }
         }
     }

@@ -13,7 +13,7 @@ public class HapticFeedback : MonoBehaviour {
         if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
             trackedObj = GetComponentInParent<SteamVR_Behaviour_Pose>().inputSource;
         }
-        HandSide handSide = GetComponent<HandController>().handSide;
+        HandSide handSide = GetComponent<HandControllerHuman>().handSide;
         if (handSide == HandSide.LEFT) {
             controllerMask = OVRInput.Controller.LTouch;
         } else if (handSide == HandSide.RIGHT) {
