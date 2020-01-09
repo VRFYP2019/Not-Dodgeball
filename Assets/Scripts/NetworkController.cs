@@ -8,6 +8,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonPlayer = Photon.Realtime.Player;
 
 public class NetworkController : MonoBehaviourPunCallbacks {
     public static NetworkController Instance;
@@ -118,7 +119,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) {
+    public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer) {
         // Add new player to scrollview list
         GameObject entry = Instantiate(PlayerListEntryPrefab);
         entry.transform.SetParent(RoomInfoContent.transform, false);
@@ -137,9 +138,25 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         playerListEntries = null;
     }
 
-    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer) {
+    public override void OnPlayerLeftRoom(PhotonPlayer otherPlayer) {
         Destroy(playerListEntries[otherPlayer.ActorNumber].gameObject);
         playerListEntries.Remove(otherPlayer.ActorNumber);
+
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+    }
+
+    public override void OnPlayerPropertiesUpdate(PhotonPlayer targetPlayer, PhotonHashtable changedProps) {
+        if (playerListEntries == null) {
+            playerListEntries = new Dictionary<int, GameObject>();
+        }
+
+        GameObject entry;
+        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry)) {
+            object isPlayerReady;
+            if (changedProps.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+            }
+        }
 
         StartGameButton.gameObject.SetActive(CheckPlayersReady());
     }
@@ -231,7 +248,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
             return false;
         }
 
-        foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList) {
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             object isPlayerReady;
             if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
                 if (!(bool) isPlayerReady) {
