@@ -44,7 +44,7 @@ public class PlayerListEntry : MonoBehaviour {
     }
 
     public void SetPlayerReady(bool playerReady) {
-        PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Ready?" : "Ready!";
+        PlayerReadyButton.GetComponentInChildren<Text>().text = playerReady ? "Not Ready" : "Ready!";
         PlayerNameText.gameObject.GetComponent<Text>().color = playerReady ? PlayerReadyColor : Color.black;
     }
 }
