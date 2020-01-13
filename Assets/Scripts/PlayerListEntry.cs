@@ -8,6 +8,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonPlayer = Photon.Realtime.Player;
 
 public class PlayerListEntry : MonoBehaviour {
 
@@ -26,6 +27,7 @@ public class PlayerListEntry : MonoBehaviour {
     }
 
     public void Start() {
+        // Only show player's own ready button
         if (PhotonNetwork.LocalPlayer.ActorNumber != ownerId) {
             PlayerReadyButton.gameObject.SetActive(false);
         } else {

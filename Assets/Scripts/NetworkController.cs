@@ -100,7 +100,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         }
 
         // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
-        foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList) {
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             GameObject entry = Instantiate(PlayerListEntryPrefab);
             entry.transform.SetParent(RoomInfoContent.transform, false);
             entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
@@ -151,6 +151,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         }
 
         GameObject entry;
+        // Update targetPlayer's ready status for local player
         if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry)) {
             object isPlayerReady;
             if (changedProps.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
@@ -176,7 +177,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
         string roomName = RoomNameInputField.text;
         roomName = (roomName.Equals(string.Empty)) ? "Room " + Random.Range(1000, 10000) : roomName;
-        //RoomOptions options = new RoomOptions {MaxPlayers = 2};
 
         RoomOptions roomOptions = new RoomOptions {};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
