@@ -7,6 +7,9 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
+using PhotonPlayer = Photon.Realtime.Player;
+
 public class NetworkController : MonoBehaviourPunCallbacks {
     public static NetworkController Instance;
 
@@ -71,7 +74,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 
     public override void OnJoinedLobby() {
-        ConnectionStatusText.text = "In Lobby";
+        ConnectionStatusText.text = "In Lobby: " + PhotonNetwork.CloudRegion + " Region";
         LobbyInfoPanel.SetActive(true);
         RoomInfoPanel.SetActive(false);
     }
@@ -88,7 +91,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 
     public override void OnJoinedRoom() {
-        ConnectionStatusText.text = "In Room";
+        ConnectionStatusText.text = "In Room: " + PhotonNetwork.CurrentRoom.Name;
         LobbyInfoPanel.SetActive(false);
         RoomInfoPanel.SetActive(true);
 
@@ -97,20 +100,33 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         }
 
         // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
-        foreach (Photon.Realtime.Player p in PhotonNetwork.PlayerList) {
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             GameObject entry = Instantiate(PlayerListEntryPrefab);
             entry.transform.SetParent(RoomInfoContent.transform, false);
             entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+
+            object isPlayerReady;
+            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+            }
+
             playerListEntries.Add(p.ActorNumber, entry);
         }
+
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+
+        PhotonHashtable props = new PhotonHashtable {{"PLAYER_LOADED_LEVEL_KEY", false}};
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
     }
 
-    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) {
+    public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer) {
         // Add new player to scrollview list
         GameObject entry = Instantiate(PlayerListEntryPrefab);
         entry.transform.SetParent(RoomInfoContent.transform, false);
         entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
         playerListEntries.Add(newPlayer.ActorNumber, entry);
+
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
     }
 
     public override void OnLeftRoom() {
@@ -122,11 +138,28 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         playerListEntries = null;
     }
 
-    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer) {
+    public override void OnPlayerLeftRoom(PhotonPlayer otherPlayer) {
         Destroy(playerListEntries[otherPlayer.ActorNumber].gameObject);
         playerListEntries.Remove(otherPlayer.ActorNumber);
 
-        //StartGameButton.gameObject.SetActive(CheckPlayersReady());
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+    }
+
+    public override void OnPlayerPropertiesUpdate(PhotonPlayer targetPlayer, PhotonHashtable changedProps) {
+        if (playerListEntries == null) {
+            playerListEntries = new Dictionary<int, GameObject>();
+        }
+
+        GameObject entry;
+        // Update targetPlayer's ready status for local player
+        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry)) {
+            object isPlayerReady;
+            if (changedProps.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+            }
+        }
+
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
     }
 
     void OnJoinedRoomFailed(short returnCode, string message) {
@@ -144,7 +177,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
         string roomName = RoomNameInputField.text;
         roomName = (roomName.Equals(string.Empty)) ? "Room " + Random.Range(1000, 10000) : roomName;
-        //RoomOptions options = new RoomOptions {MaxPlayers = 2};
 
         RoomOptions roomOptions = new RoomOptions {};
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
@@ -158,6 +190,8 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 		
     public void OnLeaveGameButtonClicked() {
+        PhotonHashtable props = new PhotonHashtable() {{"PLAYER_READY_KEY", false}};
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         PhotonNetwork.LeaveRoom();
     }
 
@@ -203,5 +237,28 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         if (PhotonNetwork.IsMasterClient) {
             PhotonNetwork.LoadLevel(1);
         }
+    }
+
+    public void LocalPlayerPropertiesUpdated() {
+        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+    }
+
+    private bool CheckPlayersReady() {
+        if (!PhotonNetwork.IsMasterClient) {
+            return false;
+        }
+
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
+            object isPlayerReady;
+            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+                if (!(bool) isPlayerReady) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
