@@ -118,8 +118,10 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
         prevPos = hand.position;
         transformToFollow = hand;
+        transform.position = hand.position;
         rb.isKinematic = true;
         col.enabled = false;
+        SetState(true);
     }
 
     public void OnDetachFromHand() {

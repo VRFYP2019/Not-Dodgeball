@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handSide: 0
+  currHandObject: 0
 --- !u!1 &422333172
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handSide: 0
+  currHandObject: 0
 --- !u!1 &788283974
 GameObject:
   m_ObjectHideFlags: 0

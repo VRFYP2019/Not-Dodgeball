@@ -36,9 +36,7 @@ public class HandController : MonoBehaviour {
         if (!hasBeenInit) {
             Init();
         }
-        if (spawnerHand.currentBall != null) {
-            spawnerHand.UnspawnBall();
-        }
+        spawnerHand.RestartState();
         tool.SetState(true);
         tool.SetFollowerActive(true);
         spawnerHand.SetState(false);
@@ -55,6 +53,6 @@ public class HandController : MonoBehaviour {
         tool.SetFollowerActive(false);
         tool.SetState(false);
         spawnerHand.SetState(true);
-        StartCoroutine(spawnerHand.TrySpawn());
+        spawnerHand.PutNextBallInHand();
     }
 }

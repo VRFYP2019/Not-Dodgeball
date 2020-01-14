@@ -66,32 +66,29 @@ public class Human : Player {
         }
 
         if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
-            if (OVRInput.GetDown(OVRInput.RawButton.X | OVRInput.RawButton.Y)) {
-                SwitchHandObject(HandSide.LEFT);
+            if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)) {
+                TrySwitchHandToSpawner(HandSide.LEFT);
             }
-
-            if (OVRInput.GetDown(OVRInput.RawButton.A | OVRInput.RawButton.B)) {
-                SwitchHandObject(HandSide.RIGHT);
+            if (OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
+                TrySwitchHandToSpawner(HandSide.RIGHT);
             }
         } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
-            if (grab.GetStateDown(leftHand.inputSource)) {
-                SwitchHandObject(HandSide.LEFT);
+            if (trigger.GetStateDown(SteamVR_Input_Sources.LeftHand)) {
+                TrySwitchHandToSpawner(HandSide.LEFT);
             }
-            if (grab.GetStateDown(rightHand.inputSource)) {
-                SwitchHandObject(HandSide.RIGHT);
+            if (trigger.GetStateDown(SteamVR_Input_Sources.RightHand)) {
+                TrySwitchHandToSpawner(HandSide.RIGHT);
             }
         }
     }
 
-    protected override void SwitchHandObject(HandSide handSide) {
-        base.SwitchHandObject(handSide);
-        // if player is trying to switch to spawner when no balls left,
-        // trigger feedback to let them know it's not allowed
+    protected override void TrySwitchHandToSpawner(HandSide handSide) {
+        base.TrySwitchHandToSpawner(handSide);
+        // If trying to switch when no balls, vibrate
         if (BallManager.LocalInstance.playerBallQueue.childCount == 0) {
-            if (handSide == HandSide.LEFT && leftHandController.currHandObject == HandObject.TOOL) {
+            if (handSide == HandSide.LEFT) {
                 ((HandControllerHuman)leftHandController).TriggerHapticFeedback(0.1f, 100, 30);
-            }
-            if (handSide == HandSide.RIGHT && rightHandController.currHandObject == HandObject.TOOL) {
+            } else if (handSide == HandSide.RIGHT) {
                 ((HandControllerHuman)rightHandController).TriggerHapticFeedback(0.1f, 100, 30);
             }
         }
