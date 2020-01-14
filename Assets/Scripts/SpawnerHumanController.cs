@@ -17,7 +17,7 @@ public class SpawnerHumanController : MonoBehaviour {
             handPose = GetComponentInParent<SteamVR_Behaviour_Pose>();
         }
         spawner = GetComponent<Spawner>();
-        handSide = GetComponentInParent<HandController>().handSide;
+        handSide = GetComponentInParent<HandControllerHuman>().handSide;
     }
 
     // Update is called once per frame

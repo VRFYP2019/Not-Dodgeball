@@ -1,23 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Utils;
 
 public class ToolHuman : Tool {
-    private HapticFeedback hapticFeedback;
+    private HandControllerHuman handControllerHuman;
 
-    // Start is called before the first frame update
-    protected override void Start() {
-        base.Start();
-        if (!(GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR)) {
-            hapticFeedback = GetComponentInParent<HapticFeedback>();
-        }
+    private void Awake() {
+        handControllerHuman = GetComponentInParent<HandControllerHuman>();
     }
 
     public void TriggerHapticFeedback(float duration, float frequency, float amplitude) {
-        if (!(GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR)) {
-            hapticFeedback.Vibrate(duration, frequency, amplitude);
-        }
+        handControllerHuman.TriggerHapticFeedback(duration, frequency, amplitude);
     }
 
     protected override void SpawnToolFollower() {

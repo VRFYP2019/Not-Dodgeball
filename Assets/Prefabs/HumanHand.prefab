@@ -95,7 +95,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7965826471793230937}
-  - component: {fileID: 8147850146262060191}
+  - component: {fileID: 518475807796813900}
   - component: {fileID: 6377588284077882066}
   m_Layer: 0
   m_Name: HumanHand
@@ -121,7 +121,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8147850146262060191
+--- !u!114 &518475807796813900
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -130,9 +130,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1368452946636138963}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d9fae2d871d29f4899c3a3065645bc9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9922fa266f2093a4089ad4e3b0af5d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currHandObject: 0
   handSide: 0
 --- !u!114 &6377588284077882066
 MonoBehaviour:
