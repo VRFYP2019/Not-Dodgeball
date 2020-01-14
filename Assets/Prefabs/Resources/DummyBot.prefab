@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc43ce1aa4ea9594cb9650ba7c59e357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
+  toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
     type: 3}
 --- !u!1 &1206403453
 GameObject:
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc43ce1aa4ea9594cb9650ba7c59e357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
+  toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
     type: 3}
 --- !u!1 &1209663953
 GameObject:
