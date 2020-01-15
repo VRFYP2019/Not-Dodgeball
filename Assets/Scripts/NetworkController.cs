@@ -22,7 +22,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     [Header("Create Room Panel")]
     public InputField RoomNameInputField;
-    public Button JoinOrCreateRoomButton;
 
     [Header("Room List Panel")]
     public GameObject RoomListContent;
@@ -31,7 +30,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     [Header("Room Info Panel")]
     public GameObject RoomInfoContent;
     public Button StartGameButton;
-    public Button LeaveRoomButton;
     public GameObject PlayerListEntryPrefab;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
@@ -46,7 +44,11 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         cachedRoomList = new Dictionary<string, RoomInfo>();
         roomListEntries = new Dictionary<string, GameObject>();
 
-        PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
+        if (PhotonNetwork.LocalPlayer.NickName.Equals("")) {
+            PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
+        } else {
+            PlayerNameInput.text = PhotonNetwork.LocalPlayer.NickName;
+        }
         ConnectionStatusText.text = "Connecting";
     }
 
@@ -235,7 +237,16 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     public void OnStartGameButtonClicked() {
         if (PhotonNetwork.IsMasterClient) {
+            ToggleLobbyUI();
             PhotonNetwork.LoadLevel(1);
+        }
+    }
+
+    public void ToggleLobbyUI() {
+        if (LobbyInfoPanel.transform.parent.parent.gameObject.activeInHierarchy) {
+            LobbyInfoPanel.transform.parent.parent.gameObject.SetActive(false);
+        } else {
+            LobbyInfoPanel.transform.parent.parent.gameObject.SetActive(true);
         }
     }
 
