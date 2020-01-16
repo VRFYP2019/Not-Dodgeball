@@ -9,7 +9,7 @@ using Photon.Realtime;
 
 public class EscapeMenu : MonoBehaviourPunCallbacks {
     private Camera playerCam;
-    private bool isPaused = false;
+    private bool isEscaped = false;
     public Canvas pauseMenuCanvas;
 
     [Header("Desktop")]
@@ -37,8 +37,8 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     }
 
     void Update() {
-        if (OVRInput.GetDown(OVRInput.Button.Start)) {
-             isPaused = TogglePause();
+        if (Input.GetKeyDown ("escape") || OVRInput.GetDown(OVRInput.Button.Start)) {
+            isEscaped = TogglePause();
         }
     }
     
@@ -50,7 +50,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     #endregion
 
     private bool TogglePause() {
-        if (!isPaused) {
+        if (!isEscaped) {
             pauseMenuCanvas.gameObject.SetActive(true);
             return true;
         } else {
@@ -61,11 +61,14 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
 
     public void ReturnToLobby() {
         AudioManager.PlaySoundOnce("goalding"); //TODO: UI sounds
-        NetworkController.Instance.OnLeaveGameButtonClicked();
+        NetworkController.Instance.PlayerLeaveRoom();
     }
 
     public void ReturnToRoom() {
         AudioManager.PlaySoundOnce("goalding");
-        // nothing for now
+        PhotonNetwork.AutomaticallySyncScene = false;
+        NetworkController.Instance.ToggleLobbyUI();
+        NetworkController.Instance.PlayerReturnToRoom();
+        PhotonNetwork.LoadLevel(0);
     }
 }

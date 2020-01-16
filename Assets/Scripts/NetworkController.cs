@@ -174,7 +174,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     #endregion
 
-    public void OnCreateOrJoinRoomButtonClicked() {
+    public void PlayerJoinOrCreateRoom() {
         SetLocalPlayerName();
 
         string roomName = RoomNameInputField.text;
@@ -191,7 +191,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         PhotonNetwork.LocalPlayer.NickName = playerName;
     }
 		
-    public void OnLeaveGameButtonClicked() {
+    public void PlayerLeaveRoom() {
         PhotonHashtable props = new PhotonHashtable() {{"PLAYER_READY_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         PhotonNetwork.LeaveRoom();
@@ -235,9 +235,10 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         }
     }
 
-    public void OnStartGameButtonClicked() {
+    public void PlayerStartGame() {
         if (PhotonNetwork.IsMasterClient) {
             ToggleLobbyUI();
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.LoadLevel(1);
         }
     }
@@ -248,6 +249,12 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         } else {
             LobbyInfoPanel.transform.parent.parent.gameObject.SetActive(true);
         }
+    }
+
+    public void PlayerReturnToRoom() {
+        ConnectionStatusText.text = "In Room: " + PhotonNetwork.CurrentRoom.Name;
+        LobbyInfoPanel.SetActive(false);
+        RoomInfoPanel.SetActive(true);
     }
 
     public void LocalPlayerPropertiesUpdated() {
