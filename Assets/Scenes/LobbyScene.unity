@@ -120,6 +120,61 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &6470031
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6470033}
+  - component: {fileID: 6470032}
+  m_Layer: 0
+  m_Name: NetworkUIRefs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &6470032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6470031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6020b177ec13104584113b479b3db5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ConnectionStatusText: {fileID: 452391870}
+  LobbyInfoPanel: {fileID: 1874658817}
+  RoomInfoPanel: {fileID: 428108680}
+  PlayerNameInput: {fileID: 1566667433}
+  RoomNameInputField: {fileID: 1647924408}
+  RoomListContent: {fileID: 1969418257}
+  RoomListEntryPrefab: {fileID: 220909131919785818, guid: c537b744c7c928049808e9f667162725,
+    type: 3}
+  RoomInfoContent: {fileID: 134247362}
+  StartGameButton: {fileID: 1285953853}
+  PlayerListEntryPrefab: {fileID: 3390346581760645234, guid: 1054345d8404df44dac8b433b6f477bd,
+    type: 3}
+--- !u!4 &6470033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6470031}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &116043178
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -769,7 +824,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: PlayerJoinOrCreateRoom
         m_Mode: 1
         m_Arguments:
@@ -2125,7 +2180,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: PlayerStartGame
         m_Mode: 1
         m_Arguments:
@@ -2330,11 +2385,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312080149}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -616.16595, y: -263.98035, z: -122.07843}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1393912426}
-  m_RootOrder: 1
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1347867287
 GameObject:
@@ -2480,18 +2535,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06b15ac76409c7d41bcfe98e84d38000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ConnectionStatusText: {fileID: 452391870}
-  LobbyInfoPanel: {fileID: 1874658817}
-  RoomInfoPanel: {fileID: 428108680}
-  PlayerNameInput: {fileID: 1566667433}
-  RoomNameInputField: {fileID: 1647924408}
-  RoomListContent: {fileID: 1969418257}
-  RoomListEntryPrefab: {fileID: 220909131919785818, guid: c537b744c7c928049808e9f667162725,
-    type: 3}
-  RoomInfoContent: {fileID: 134247362}
-  StartGameButton: {fileID: 1285953853}
-  PlayerListEntryPrefab: {fileID: 3390346581760645234, guid: 1054345d8404df44dac8b433b6f477bd,
-    type: 3}
 --- !u!4 &1393912426
 Transform:
   m_ObjectHideFlags: 0
@@ -2502,9 +2545,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 616.16595, y: 263.98035, z: 122.07843}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1626661007}
-  - {fileID: 1312080152}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3217,8 +3258,8 @@ RectTransform:
   m_Children:
   - {fileID: 211601242}
   - {fileID: 1500084928}
-  m_Father: {fileID: 1393912426}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4200,7 +4241,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: PlayerLeaveRoom
         m_Mode: 1
         m_Arguments:

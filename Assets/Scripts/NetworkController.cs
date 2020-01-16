@@ -9,28 +9,25 @@ using Photon.Realtime;
 
 using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 using PhotonPlayer = Photon.Realtime.Player;
+using UnityEngine.SceneManagement;
 
 public class NetworkController : MonoBehaviourPunCallbacks {
     public static NetworkController Instance;
 
-    public Text ConnectionStatusText;
-    public GameObject LobbyInfoPanel;
-    public GameObject RoomInfoPanel;
+    private Text ConnectionStatusText;
+    private GameObject LobbyInfoPanel;
+    private GameObject RoomInfoPanel;
 
-    [Header("Login Panel")]
-    public InputField PlayerNameInput;
+    private InputField PlayerNameInput;
 
-    [Header("Create Room Panel")]
-    public InputField RoomNameInputField;
+    private InputField RoomNameInputField;
 
-    [Header("Room List Panel")]
-    public GameObject RoomListContent;
-    public GameObject RoomListEntryPrefab;
+    private GameObject RoomListContent;
+    private GameObject RoomListEntryPrefab;
 
-    [Header("Room Info Panel")]
-    public GameObject RoomInfoContent;
-    public Button StartGameButton;
-    public GameObject PlayerListEntryPrefab;
+    private GameObject RoomInfoContent;
+    private Button StartGameButton;
+    private GameObject PlayerListEntryPrefab;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
     private Dictionary<string, GameObject> roomListEntries;
@@ -43,13 +40,6 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
         cachedRoomList = new Dictionary<string, RoomInfo>();
         roomListEntries = new Dictionary<string, GameObject>();
-
-        if (PhotonNetwork.LocalPlayer.NickName.Equals("")) {
-            PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
-        } else {
-            PlayerNameInput.text = PhotonNetwork.LocalPlayer.NickName;
-        }
-        ConnectionStatusText.text = "Connecting";
     }
 
     void InitInstance() {
@@ -62,9 +52,43 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 		
     void Start() {
+        AssignRefs();
+        ConnectionStatusText.text = "Connecting";
+
+        if (PhotonNetwork.LocalPlayer.NickName.Equals("")) {
+            PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
+        } else {
+            PlayerNameInput.text = PhotonNetwork.LocalPlayer.NickName;
+        }
         PhotonNetwork.ConnectUsingSettings();
         LobbyInfoPanel.SetActive(false);
         RoomInfoPanel.SetActive(false);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        if (scene.buildIndex == 0) {
+            AssignRefs();
+            if (!LobbyInfoPanel.transform.parent.parent.gameObject.activeInHierarchy) {
+                ToggleLobbyUI();
+            }
+        }
+    }
+
+    private void AssignRefs() {
+        ConnectionStatusText = NetworkUIRefs.Instance.ConnectionStatusText;
+        LobbyInfoPanel = NetworkUIRefs.Instance.LobbyInfoPanel;
+        RoomInfoPanel = NetworkUIRefs.Instance.RoomInfoPanel;
+
+        PlayerNameInput = NetworkUIRefs.Instance.PlayerNameInput;
+
+        RoomNameInputField = NetworkUIRefs.Instance.RoomNameInputField;
+        RoomListContent = NetworkUIRefs.Instance.RoomListContent;
+        RoomListEntryPrefab = NetworkUIRefs.Instance.RoomListEntryPrefab;
+
+        RoomInfoContent = NetworkUIRefs.Instance.RoomInfoContent;
+        StartGameButton = NetworkUIRefs.Instance.StartGameButton;
+        PlayerListEntryPrefab = NetworkUIRefs.Instance.PlayerListEntryPrefab;
     }
 
     #region PUN CALLBACKS
@@ -152,16 +176,15 @@ public class NetworkController : MonoBehaviourPunCallbacks {
             playerListEntries = new Dictionary<int, GameObject>();
         }
 
-        GameObject entry;
-        // Update targetPlayer's ready status for local player
-        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry)) {
-            object isPlayerReady;
-            if (changedProps.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
-                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+        // Update targetPlayer's ready status for local player if in lobby scene
+        if (SceneManagerHelper.ActiveSceneBuildIndex == 0) {
+            if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
+                if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
+                    entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
+                }
             }
+            StartGameButton.gameObject.SetActive(CheckPlayersReady());
         }
-
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
     }
 
     void OnJoinedRoomFailed(short returnCode, string message) {

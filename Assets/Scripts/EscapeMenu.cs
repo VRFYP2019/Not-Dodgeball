@@ -44,7 +44,6 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     
     #region PUN CALLBACKS
     public override void OnLeftRoom() {
-        NetworkController.Instance.ToggleLobbyUI();
         PhotonNetwork.LoadLevel(0);
     }
     #endregion
