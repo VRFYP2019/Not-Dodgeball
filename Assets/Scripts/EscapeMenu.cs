@@ -20,6 +20,8 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     [SerializeField]
     private GameObject[] oculusObjects = null;
 
+    private readonly byte LeaveGameEvent = 2;
+
     void Start() {
         if (OVRPlugin.productName != null && OVRPlugin.productName.StartsWith("Oculus")) {
             foreach (GameObject go in desktopObjects) {
@@ -60,14 +62,41 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
 
     public void ReturnToLobby() {
         AudioManager.PlaySoundOnce("goalding"); //TODO: UI sounds
-        NetworkController.Instance.PlayerLeaveRoom();
+        if (PhotonNetwork.IsConnected) {
+            bool isHost;
+            if (PhotonNetwork.IsMasterClient) {
+                isHost = true;
+            } else {
+                isHost = false;
+            }
+            // Raise LeaveGameEvent to all players
+            TryLeaveRoom(true, isHost);
+        } else {
+            NetworkController.Instance.PlayerLeaveRoom();
+        }
     }
 
     public void ReturnToRoom() {
         AudioManager.PlaySoundOnce("goalding");
-        PhotonNetwork.AutomaticallySyncScene = false;
-        NetworkController.Instance.ToggleLobbyUI();
-        NetworkController.Instance.PlayerReturnToRoom();
-        PhotonNetwork.LoadLevel(0);
+        if (PhotonNetwork.IsConnected) {
+            bool isHost;
+            if (PhotonNetwork.IsMasterClient) {
+                isHost = true;
+            } else {
+                isHost = false;
+            }
+            // Raise LeaveGameEvent to all players
+            TryLeaveRoom(false, isHost);
+        } else {
+            NetworkController.Instance.PlayerReturnToRoom();
+        }
+
+    }
+
+    private void TryLeaveRoom(bool isReturnToLobby, bool isHost) {
+        object[] content = new object[] { isReturnToLobby, isHost };
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
+        SendOptions sendOptions = new SendOptions { Reliability = true };
+        PhotonNetwork.RaiseEvent(LeaveGameEvent, content, raiseEventOptions, sendOptions);
     }
 }
