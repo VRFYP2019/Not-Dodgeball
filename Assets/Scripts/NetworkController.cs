@@ -90,14 +90,6 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         PlayerListEntryPrefab = NetworkUIRefs.Instance.PlayerListEntryPrefab;
     }
 
-    public void OnEnable() {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    public void OnDisable() {
-        PhotonNetwork.RemoveCallbackTarget(this);
-    }
-
     public void OnEvent(EventData photonEvent) {
         byte LeaveGameEvent = 2;
         byte eventCode = photonEvent.Code;
@@ -122,6 +114,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             }
 
             if (PhotonNetwork.IsMasterClient) {
+                PhotonNetwork.DestroyAll();
                 PhotonNetwork.LoadLevel(0); // ensure sync is true
             }
         }
