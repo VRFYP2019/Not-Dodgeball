@@ -63,15 +63,17 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     private bool TogglePause() {
         if (!isEscaped) {
             pauseMenuCanvas.gameObject.SetActive(true);
+            laserLineRenderer.enabled = true;
             return true;
         } else {
             pauseMenuCanvas.gameObject.SetActive(false);
+            laserLineRenderer.enabled = false;
             return false;
         }
     }
 
     public void ReturnToLobby() {
-        AudioManager.PlaySoundOnce("goalding"); //TODO: UI sounds
+        AudioManager.PlaySoundOnce("uiclick");
         if (PhotonNetwork.IsConnected) {
             bool isHost = (PhotonNetwork.IsMasterClient) ? true : false;
             TryLeaveRoom(true, isHost);
@@ -81,7 +83,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     }
 
     public void ReturnToRoom() {
-        AudioManager.PlaySoundOnce("goalding");
+        AudioManager.PlaySoundOnce("uiclick");
         if (PhotonNetwork.IsConnected) {
             bool isHost = (PhotonNetwork.IsMasterClient) ? true : false;
             TryLeaveRoom(false, isHost);
