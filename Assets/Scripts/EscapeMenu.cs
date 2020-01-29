@@ -19,6 +19,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     [Header("OVR")]
     [SerializeField]
     private GameObject[] oculusObjects = null;
+    private LineRenderer laserLineRenderer;
 
     private readonly byte LeaveGameEvent = 2;
 
@@ -29,6 +30,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
             }
             foreach (GameObject go in oculusObjects) {
                 go.SetActive(true);
+                laserLineRenderer = GameObject.Find("LaserPointer").GetComponent<LineRenderer>();;
             }
             Camera[] cams = FindObjectsOfType<Camera>();
             foreach (Camera c in cams) {
