@@ -93,7 +93,6 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     public void OnEvent(EventData photonEvent) {
         byte LeaveGameEvent = 2;
         byte eventCode = photonEvent.Code;
-        //Debug.Log("Event recieved - eventCode: " + photonEvent.Code);
 
         if (eventCode == LeaveGameEvent) {
             Debug.Log("Event recieved: Leave Game Event");
@@ -155,12 +154,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
         // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
         foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
-            GameObject entry = Instantiate(PlayerListEntryPrefab);
-            entry.transform.SetParent(RoomInfoContent.transform, false);
-            entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+            GameObject entry = CreateEntry(p);
 
-            object isPlayerReady;
-            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out  object isPlayerReady)) {
                 entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
             }
 
@@ -175,9 +171,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer) {
         // Add new player to scrollview list
-        GameObject entry = Instantiate(PlayerListEntryPrefab);
-        entry.transform.SetParent(RoomInfoContent.transform, false);
-        entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
+        GameObject entry = CreateEntry(newPlayer);
         playerListEntries.Add(newPlayer.ActorNumber, entry);
 
         StartGameButton.gameObject.SetActive(CheckPlayersReady());
@@ -246,6 +240,14 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         PhotonHashtable props = new PhotonHashtable() {{"PLAYER_READY_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         PhotonNetwork.LeaveRoom();
+    }
+
+    private GameObject CreateEntry(PhotonPlayer p) {
+        GameObject entry = Instantiate(PlayerListEntryPrefab);
+        entry.transform.SetParent(RoomInfoContent.transform, false);
+        entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+
+        return entry;
     }
 
     private void UpdateCachedRoomList(List<RoomInfo> roomList) {

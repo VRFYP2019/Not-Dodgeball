@@ -71,13 +71,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     public void ReturnToLobby() {
         AudioManager.PlaySoundOnce("goalding"); //TODO: UI sounds
         if (PhotonNetwork.IsConnected) {
-            bool isHost;
-            if (PhotonNetwork.IsMasterClient) {
-                isHost = true;
-            } else {
-                isHost = false;
-            }
-            // Raise LeaveGameEvent to all players
+            bool isHost = (PhotonNetwork.IsMasterClient) ? true : false;
             TryLeaveRoom(true, isHost);
         } else {
             NetworkController.Instance.PlayerLeaveRoom();
@@ -87,13 +81,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     public void ReturnToRoom() {
         AudioManager.PlaySoundOnce("goalding");
         if (PhotonNetwork.IsConnected) {
-            bool isHost;
-            if (PhotonNetwork.IsMasterClient) {
-                isHost = true;
-            } else {
-                isHost = false;
-            }
-            // Raise LeaveGameEvent to all players
+            bool isHost = (PhotonNetwork.IsMasterClient) ? true : false;
             TryLeaveRoom(false, isHost);
         } else {
             NetworkController.Instance.PlayerReturnToRoom();
@@ -101,6 +89,7 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
 
     }
 
+    // Raise LeaveGameEvent to all players
     private void TryLeaveRoom(bool isReturnToLobby, bool isHost) {
         object[] content = new object[] { isReturnToLobby, isHost };
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
