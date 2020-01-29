@@ -30,7 +30,15 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
             foreach (GameObject go in oculusObjects) {
                 go.SetActive(true);
             }
-            playerCam = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+            Camera[] cams = FindObjectsOfType<Camera>();
+            foreach (Camera c in cams) {
+                PhotonView pv = c.GetComponentInParent<PhotonView>();
+                if (pv == null || !c.isActiveAndEnabled) {
+                    continue;
+                } else {
+                    playerCam = c;
+                }
+            }
             pauseMenuCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             pauseMenuCanvas.worldCamera = playerCam;
             pauseMenuCanvas.planeDistance = 3f;
