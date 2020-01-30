@@ -39,4 +39,12 @@ namespace Utils {
             public static int scoreBoardSmall = 12;
         }
     }
+
+    public static class Math {
+        // Modulo that handles negative numbers as well
+        // (C#'s % is a remainder function, not a modulo)
+        public static int Modulo(int a, int b) {
+            return ((a %= b) < 0) ? a + b : a;
+        }
+    }
 }
