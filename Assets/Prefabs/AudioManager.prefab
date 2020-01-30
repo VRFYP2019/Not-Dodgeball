@@ -58,7 +58,7 @@ MonoBehaviour:
     playOnAwake: 0
   - audioName: uiclick
     audioClip: {fileID: 8300000, guid: b9a0e0aa6ab729e4cb4b3194ee03f56a, type: 3}
-    volume: 0.5
+    volume: 0.6
     source: {fileID: 0}
     isLooping: 0
     playOnAwake: 0
