@@ -15,7 +15,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private bool hasBeenInit = false;
     private PlayerNumber playerNumber;
     private Transform transformToFollow = null;
-    private readonly static float forceMultiplier = 100;
+    private readonly static float forceMultiplier = 69;
     // weights to multiply prev velocities with to get the throwing velocity
     private static float[] prevVelocityWeights = { 0.1f, 0.2f, 0.3f, 0.3f, 0.2f, 0.1f };
     private static int numFramesOfVelocities = prevVelocityWeights.Length;
