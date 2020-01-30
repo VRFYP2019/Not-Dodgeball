@@ -42,30 +42,28 @@ public class Player : MonoBehaviourPunCallbacks {
         }
     }
 
-    protected virtual void SwitchHandObject(HandSide handSide) {
+    protected virtual void TrySwitchHandToSpawner(HandSide handSide) {
         if (handSide == HandSide.LEFT) {
-            if (leftHandController.currHandObject == HandObject.TOOL
-                && BallManager.LocalInstance.playerBallQueue.childCount == 1
+            if (BallManager.LocalInstance.playerBallQueue.childCount == 1
                 && rightHandController.currHandObject == HandObject.SPAWNER
                 ) {
-                // If, when trying to switch this hand to spawner, and there is
+                // If, when trying to switch this hand to spawner, there is
                 // only 1 ball left and it is being held by another hand,
                 // take it out of that hand
                 rightHandController.ResetSpawnerStateAndSwitchToTool();
             }
-            // Only switch between spawner and tool if there is at least 1 ball in queue
+            // Only switch to spawner if there is at least 1 ball in queue
             if (BallManager.LocalInstance.playerBallQueue.childCount > 0) {
-                leftHandController.Switch();
+                leftHandController.SwitchToSpawnerHand();
             }
         } else if (handSide == HandSide.RIGHT) {
-            if (rightHandController.currHandObject == HandObject.TOOL
-                && BallManager.LocalInstance.playerBallQueue.childCount == 1
+            if (BallManager.LocalInstance.playerBallQueue.childCount == 1
                 && leftHandController.currHandObject == HandObject.SPAWNER) {
                 leftHandController.ResetSpawnerStateAndSwitchToTool();
             }
-            // Only switch between spawner and tool if there is at least 1 ball in queue
+            // Only switch to spawner if there is at least 1 ball in queue
             if (BallManager.LocalInstance.playerBallQueue.childCount > 0) {
-                rightHandController.Switch();
+                rightHandController.SwitchToSpawnerHand();
             }
         }
     }

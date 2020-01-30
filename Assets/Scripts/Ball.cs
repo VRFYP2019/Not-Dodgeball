@@ -1,6 +1,7 @@
 ﻿using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using Utils;
@@ -14,10 +15,16 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private bool hasBeenInit = false;
     private PlayerNumber playerNumber;
     private Transform transformToFollow = null;
-    private readonly static float forceMultiplier = 100;
+    private readonly static float forceMultiplier = 69;
+    // weights to multiply prev velocities with to get the throwing velocity
+    private static float[] prevVelocityWeights = { 0.1f, 0.2f, 0.3f, 0.3f, 0.2f, 0.1f };
+    private static int numFramesOfVelocities = prevVelocityWeights.Length;
+    private static float sumPrevVelocityWeights = prevVelocityWeights.Sum();
+    private Vector3[] prevVelocities;
+    private int prevVelocitiesPointer = 0;
     private Vector3 prevPos;
     private float lastReadTime = 0f;
-    private int listPointer = 0;    // use a pointer instead of shifting the array every update
+    private int boundsListPointer = 0;    // use a pointer instead of shifting the array every update
     private List<Collider> boundsInContact;
     private readonly List<Collider>[] boundsLists = new List<Collider>[numFramesToConsider];
     private readonly static int numFramesToConsider = 3;
@@ -50,6 +57,9 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             boundsLists[i] = new List<Collider>();
         }
         boundsInContact = new List<Collider>();
+        boundsListPointer = 0;
+        prevVelocities = new Vector3[numFramesOfVelocities];
+        prevVelocitiesPointer = 0;
     }
 
     // Update is called once per frame
@@ -57,27 +67,24 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         if (transformToFollow != null) {
             transform.position = transformToFollow.position;
             transform.rotation = transformToFollow.rotation;
-            prevPos = transform.position;
-        } else {
-            if (IsDead()) {
-                InitLists();
-                BallManager.LocalInstance.PutBallInPool(this);
+            if (prevPos != null) {
+                prevVelocities[prevVelocitiesPointer] = transform.position - prevPos;
+                prevVelocitiesPointer++;
+                prevVelocitiesPointer %= numFramesOfVelocities;
             }
+            prevPos = transform.position;
         }
         if (Time.time - lastReadTime > boundListUpdateInterval) {
-            boundsLists[listPointer] = new List<Collider>(boundsInContact.ToArray());
-            listPointer++;
-            listPointer %= numFramesToConsider;
+            boundsLists[boundsListPointer] = new List<Collider>(boundsInContact.ToArray());
+            boundsListPointer++;
+            boundsListPointer %= numFramesToConsider;
             lastReadTime = Time.time;
         }
         if (countTimeLived) {
             timeLived += Time.deltaTime;
         }
         if (IsDead()) {
-            timeLived = 0;
-            countTimeLived = false;
-            InitLists();
-            BallManager.LocalInstance.PutBallInQueue(this);
+            OnDeath();
         }
     }
 
@@ -118,14 +125,24 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
         prevPos = hand.position;
         transformToFollow = hand;
+        transform.position = hand.position;
         rb.isKinematic = true;
         col.enabled = false;
+        SetState(true);
     }
 
     public void OnDetachFromHand() {
         timeLived = 0;
         countTimeLived = true;
-        Vector3 throwVecetor = (transformToFollow.position - prevPos) * forceMultiplier;
+        Vector3 throwVecetor = Vector3.zero;
+        for (int i = 0; i < numFramesOfVelocities; i++) {
+            throwVecetor += prevVelocityWeights[i] * prevVelocities[Math.Modulo((prevVelocitiesPointer - i), numFramesOfVelocities)];
+        }
+        foreach (float w in prevVelocityWeights) {
+            throwVecetor += w * prevVelocities[prevVelocitiesPointer];
+        }
+        throwVecetor /= sumPrevVelocityWeights;
+        throwVecetor *= forceMultiplier;
         transformToFollow = null;
         rb.isKinematic = false;
         col.enabled = true;
@@ -159,6 +176,13 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
             }
         }
         return false;
+    }
+
+    private void OnDeath() {
+        timeLived = 0;
+        countTimeLived = false;
+        InitLists();
+        BallManager.LocalInstance.PutBallInQueue(this);
     }
 
     [PunRPC]
