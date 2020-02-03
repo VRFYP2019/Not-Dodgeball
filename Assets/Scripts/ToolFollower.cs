@@ -32,12 +32,12 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
+        col = GetComponentInChildren<Collider>();
         pv = GetComponent<PhotonView>();
     }
 
     private void Start() {
-        foreach (Renderer r in GetComponents<Renderer>()) {
+        foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
             materials.AddRange(r.materials);
         }
     }
@@ -145,9 +145,25 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     public void SetActive(bool active) {
         if (PhotonNetwork.IsConnected) {
             pv.RPC("ToolFollower_SetState", RpcTarget.AllBuffered, active);
-        }
-        else {
+        } else {
             ToolFollower_SetState(active);
+        }
+    }
+
+    [PunRPC]
+    private void ToolFollower_FlipCollider() {
+        Transform colliderTransform = GetComponentInChildren<Collider>().transform;
+        Vector3 scale = colliderTransform.localScale;
+        colliderTransform.localScale = new Vector3(
+            scale.x, -scale.y, scale.z
+        );
+    }
+
+    public void FlipCollider() {
+        if (PhotonNetwork.IsConnected) {
+            pv.RPC("ToolFollower_FlipCollider", RpcTarget.AllBuffered);
+        } else {
+            ToolFollower_FlipCollider();
         }
     }
 }

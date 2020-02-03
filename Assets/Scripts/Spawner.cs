@@ -11,10 +11,13 @@ public class Spawner : MonoBehaviour {
     public Ball currentBall;
     private HandController handController;
     private PhotonView pv;
+    private Animator anim;
     private bool hasBeenInit = false;
 
     private void Awake() {
         pv = GetComponent<PhotonView>();
+        handController = GetComponentInParent<HandController>();
+        anim = GetComponent<Animator>();
     }
 
     // Start is called before the first frame update
@@ -25,12 +28,12 @@ public class Spawner : MonoBehaviour {
     }
 
     private void Init() {
-        handController = GetComponentInParent<HandController>();
         parentOfBallsToThrow = BallManager.LocalInstance.playerBallQueue;
         hasBeenInit = true;
     }
 
     public void ThrowCurrentBall() {
+        anim.SetTrigger("throw");
         currentBall.OnDetachFromHand();
         currentBall = null;
         // Have a slight delay so that the ball does not immediately hit the tool
@@ -42,6 +45,7 @@ public class Spawner : MonoBehaviour {
         if (!hasBeenInit) {
             Init();
         }
+        anim.SetTrigger("reset");
         if (!parentOfBallsToThrow.GetChild(0).gameObject.activeInHierarchy) {
             currentBall = parentOfBallsToThrow.GetChild(0).GetComponent<Ball>();
         } else {    // if first in list is already held by other hand, get next in list

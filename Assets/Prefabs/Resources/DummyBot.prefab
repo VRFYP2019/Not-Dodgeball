@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currHandObject: 0
+  handSide: 2
 --- !u!1 &422333172
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currHandObject: 0
+  handSide: 1
 --- !u!1 &788283974
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc43ce1aa4ea9594cb9650ba7c59e357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
+  toolFollowerPrefab: {fileID: 4145969593944982921, guid: 0d33796d43ae39140a92101b1b553ed2,
     type: 3}
 --- !u!1 &1206403453
 GameObject:
@@ -180,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc43ce1aa4ea9594cb9650ba7c59e357, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolFollowerPrefab: {fileID: 4644954167196449662, guid: 62243949ae3d56547a16740900d19c29,
+  toolFollowerPrefab: {fileID: 4145969593944982921, guid: 0d33796d43ae39140a92101b1b553ed2,
     type: 3}
 --- !u!1 &1209663953
 GameObject:
