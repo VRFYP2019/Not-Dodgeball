@@ -141,11 +141,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToolHolder
       objectReference: {fileID: 0}
-    - target: {fileID: -6911294339195749402, guid: 4d522547cae5a9a46bd266aa0ec53608,
-        type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 4d522547cae5a9a46bd266aa0ec53608,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -200,6 +195,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6911294339195749402, guid: 4d522547cae5a9a46bd266aa0ec53608,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: -1617365279978105996, guid: 4d522547cae5a9a46bd266aa0ec53608,
         type: 3}
