@@ -9,45 +9,36 @@ using Photon.Realtime;
 
 using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 using PhotonPlayer = Photon.Realtime.Player;
+using UnityEngine.SceneManagement;
 
-public class NetworkController : MonoBehaviourPunCallbacks {
+public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     public static NetworkController Instance;
 
-    public Text ConnectionStatusText;
-    public GameObject LobbyInfoPanel;
-    public GameObject RoomInfoPanel;
+    private Text ConnectionStatusText;
+    private InputField PlayerNameInput;
+    private InputField RoomNameInputField;
 
-    [Header("Login Panel")]
-    public InputField PlayerNameInput;
+    private GameObject
+        LobbyInfoPanel,
+        RoomInfoPanel,
+        RoomListContent,
+        RoomListEntryPrefab,
+        RoomInfoContent,
+        PlayerListEntryPrefab;
 
-    [Header("Create Room Panel")]
-    public InputField RoomNameInputField;
-    public Button JoinOrCreateRoomButton;
-
-    [Header("Room List Panel")]
-    public GameObject RoomListContent;
-    public GameObject RoomListEntryPrefab;
-
-    [Header("Room Info Panel")]
-    public GameObject RoomInfoContent;
-    public Button StartGameButton;
-    public Button LeaveRoomButton;
-    public GameObject PlayerListEntryPrefab;
+    private Button StartGameButton;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
     private Dictionary<string, GameObject> roomListEntries;
     private Dictionary<int, GameObject> playerListEntries;
 
+    private bool isReturnToRoom = false;
+
     void Awake() {
         InitInstance();
-
         PhotonNetwork.AutomaticallySyncScene = true;
-
         cachedRoomList = new Dictionary<string, RoomInfo>();
         roomListEntries = new Dictionary<string, GameObject>();
-
-        PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
-        ConnectionStatusText.text = "Connecting";
     }
 
     void InitInstance() {
@@ -60,16 +51,78 @@ public class NetworkController : MonoBehaviourPunCallbacks {
     }
 		
     void Start() {
+        AssignRefs();
+        ConnectionStatusText.text = "Connecting";
+
+        PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
         PhotonNetwork.ConnectUsingSettings();
         LobbyInfoPanel.SetActive(false);
         RoomInfoPanel.SetActive(false);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        if (scene.buildIndex == 0) {
+            AssignRefs();
+            string LocalNickname = PhotonNetwork.LocalPlayer.NickName;
+            PlayerNameInput.text = (LocalNickname.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : LocalNickname;
+            if (isReturnToRoom) {
+                isReturnToRoom = false;
+                OnLeftRoom(); // To clear player entries
+                OnJoinedRoom();
+            }
+        }
+    }
+
+    private void AssignRefs() {
+        ConnectionStatusText = NetworkUIRefs.Instance.ConnectionStatusText;
+        LobbyInfoPanel = NetworkUIRefs.Instance.LobbyInfoPanel;
+        RoomInfoPanel = NetworkUIRefs.Instance.RoomInfoPanel;
+
+        PlayerNameInput = NetworkUIRefs.Instance.PlayerNameInput;
+
+        RoomNameInputField = NetworkUIRefs.Instance.RoomNameInputField;
+        RoomListContent = NetworkUIRefs.Instance.RoomListContent;
+        RoomListEntryPrefab = NetworkUIRefs.Instance.RoomListEntryPrefab;
+
+        RoomInfoContent = NetworkUIRefs.Instance.RoomInfoContent;
+        StartGameButton = NetworkUIRefs.Instance.StartGameButton;
+        PlayerListEntryPrefab = NetworkUIRefs.Instance.PlayerListEntryPrefab;
+    }
+
+    public void OnEvent(EventData photonEvent) {
+        byte LeaveGameEvent = 2;
+        byte eventCode = photonEvent.Code;
+
+        if (eventCode == LeaveGameEvent) {
+            Debug.Log("Event recieved: Leave Game Event");
+            object[] data = (object[])photonEvent.CustomData;
+            bool isReturnToLobby = (bool)data[0];
+            bool isHostDecision = (bool)data[1];
+
+            if (!isReturnToLobby) {     // Either picks room, Both to room
+                isReturnToRoom = true;
+            } else if (isHostDecision) {// Host picks lobby, Both to lobby
+                NetworkController.Instance.PlayerLeaveRoom();
+            } else {                    // Client picks lobby, Host to room
+                if (!PhotonNetwork.IsMasterClient) {
+                    NetworkController.Instance.PlayerLeaveRoom();
+                } else if (PhotonNetwork.IsMasterClient) {
+                    isReturnToRoom = true;
+                }
+            }
+
+            if (PhotonNetwork.IsMasterClient) {
+                PhotonNetwork.DestroyAll();
+                PhotonNetwork.LoadLevel(0); // ensure sync is true
+            }
+        }
     }
 
     #region PUN CALLBACKS
 
     public override void OnConnectedToMaster() {
         ConnectionStatusText.text = "Connected to: " + PhotonNetwork.CloudRegion + " Region";
-        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
 
@@ -101,12 +154,9 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
         // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
         foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
-            GameObject entry = Instantiate(PlayerListEntryPrefab);
-            entry.transform.SetParent(RoomInfoContent.transform, false);
-            entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+            GameObject entry = CreateEntry(p);
 
-            object isPlayerReady;
-            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
+            if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out  object isPlayerReady)) {
                 entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
             }
 
@@ -121,9 +171,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer) {
         // Add new player to scrollview list
-        GameObject entry = Instantiate(PlayerListEntryPrefab);
-        entry.transform.SetParent(RoomInfoContent.transform, false);
-        entry.GetComponent<PlayerListEntry>().Initialize(newPlayer.ActorNumber, newPlayer.NickName);
+        GameObject entry = CreateEntry(newPlayer);
         playerListEntries.Add(newPlayer.ActorNumber, entry);
 
         StartGameButton.gameObject.SetActive(CheckPlayersReady());
@@ -150,16 +198,15 @@ public class NetworkController : MonoBehaviourPunCallbacks {
             playerListEntries = new Dictionary<int, GameObject>();
         }
 
-        GameObject entry;
-        // Update targetPlayer's ready status for local player
-        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out entry)) {
-            object isPlayerReady;
-            if (changedProps.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
-                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool) isPlayerReady);
+        // Update targetPlayer's ready status for local player if in lobby scene
+        if (SceneManagerHelper.ActiveSceneBuildIndex == 0) {
+            if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
+                if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
+                    entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
+                }
             }
+            StartGameButton.gameObject.SetActive(CheckPlayersReady());
         }
-
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
     }
 
     void OnJoinedRoomFailed(short returnCode, string message) {
@@ -172,7 +219,7 @@ public class NetworkController : MonoBehaviourPunCallbacks {
 
     #endregion
 
-    public void OnCreateOrJoinRoomButtonClicked() {
+    public void PlayerJoinOrCreateRoom() {
         SetLocalPlayerName();
 
         string roomName = RoomNameInputField.text;
@@ -189,10 +236,18 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         PhotonNetwork.LocalPlayer.NickName = playerName;
     }
 		
-    public void OnLeaveGameButtonClicked() {
+    public void PlayerLeaveRoom() {
         PhotonHashtable props = new PhotonHashtable() {{"PLAYER_READY_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         PhotonNetwork.LeaveRoom();
+    }
+
+    private GameObject CreateEntry(PhotonPlayer p) {
+        GameObject entry = Instantiate(PlayerListEntryPrefab);
+        entry.transform.SetParent(RoomInfoContent.transform, false);
+        entry.GetComponent<PlayerListEntry>().Initialize(p.ActorNumber, p.NickName);
+
+        return entry;
     }
 
     private void UpdateCachedRoomList(List<RoomInfo> roomList) {
@@ -233,10 +288,15 @@ public class NetworkController : MonoBehaviourPunCallbacks {
         }
     }
 
-    public void OnStartGameButtonClicked() {
+    public void PlayerStartGame() {
         if (PhotonNetwork.IsMasterClient) {
+            PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.LoadLevel(1);
         }
+    }
+
+    public void PlayerReturnToRoom() {
+        isReturnToRoom = true;
     }
 
     public void LocalPlayerPropertiesUpdated() {
