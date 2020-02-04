@@ -13,12 +13,14 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
         leftHand = null,
         rightHand = null;
 
-    // Start is called before the first frame update
-    void Start() {
+    void Awake() {
         if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             goal.transform.parent = transform;
             goal.GetComponent<Goal>().enabled = false;
-            Destroy(oVRCameraRig);
+        } else {
+            oVRCameraRig.SetActive(true);
+            oVRCameraRig.GetComponent<OVRManager>().enabled = true;
+            oVRCameraRig.GetComponent<OVRCameraRig>().enabled = true;
         }
     }
 

@@ -41,7 +41,7 @@ public class PlayerLoader : MonoBehaviour {
                     SpawnBot();
                     break;
                 case 2:
-                    if (PhotonNetwork.LocalPlayer.ActorNumber == 1) {
+                    if (PhotonNetwork.IsMasterClient) {
                         SpawnHuman(PlayerNumber.ONE);
                     } else {
                         SpawnHuman(PlayerNumber.TWO);

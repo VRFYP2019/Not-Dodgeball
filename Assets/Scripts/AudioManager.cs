@@ -45,7 +45,7 @@ public class AudioManager : MonoBehaviour {
         }
 
         AudioFile s = Instance.audioFiles[name];
-        s.source.PlayOneShot(s.audioClip);
+        s.source.PlayOneShot(s.audioClip, s.volume);
     } 
 
     public static void PlayMusic (string name) {
