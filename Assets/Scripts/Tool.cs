@@ -20,6 +20,13 @@ public class Tool : MonoBehaviourPunCallbacks {
             follower = Instantiate(toolFollowerPrefab);
             follower.transform.position = transform.position;
         }
+        if (GetComponentInParent<HandController>().handSide == Utils.HandSide.RIGHT) {
+            follower.transform.localScale = new Vector3(
+                follower.transform.localScale.x,
+                -follower.transform.localScale.y,
+                follower.transform.localScale.z);
+            follower.FlipCollider();
+        }
         follower.SetFollowTarget(this);
     }
 

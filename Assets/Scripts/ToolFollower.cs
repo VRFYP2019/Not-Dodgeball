@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,19 +27,24 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     protected FadeState fadeState = FadeState.NORMAL;
     [SerializeField]
     private GameObject sparkPrefab = null;
+    private bool isResetting = false;
 
     [SerializeField]
     private float _sensitivity = 100f;
 
     private void Awake() {
         rb = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
+        col = GetComponentInChildren<Collider>();
         pv = GetComponent<PhotonView>();
     }
 
     private void Start() {
-        foreach (Renderer r in GetComponents<Renderer>()) {
-            materials.AddRange(r.materials);
+        foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
+            foreach (Material m in r.materials) {
+                if (m.GetFloat("_Mode") > 0) {  // if m's rendering mode is not opaque
+                    materials.Add(m);
+                }
+            }
         }
     }
  
@@ -60,14 +66,16 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void FixedUpdate() {
-        if (!PhotonNetwork.IsConnected || pv.IsMine) {
-            Vector3 destination = tool.transform.position;
-            rb.transform.rotation = transform.rotation;
+        if (!isResetting) {
+            if (!PhotonNetwork.IsConnected || pv.IsMine) {
+                Vector3 destination = tool.transform.position;
+                rb.transform.rotation = transform.rotation;
 
-            velocity = (destination - rb.transform.position) * _sensitivity;
+                velocity = (destination - rb.transform.position) * _sensitivity;
 
-            rb.velocity = velocity;
-            transform.rotation = tool.transform.rotation;
+                rb.velocity = velocity;
+                transform.rotation = tool.transform.rotation;
+            }
         }
     }
 
@@ -77,6 +85,13 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     public void SetHumanity(bool isHuman) {
         this.isHuman = isHuman;
+    }
+
+    public override void OnEnable() {
+        // Fix rare case where object is disabled in the middle of coroutine
+        if (isResetting) {
+            isResetting = false;
+        }
     }
 
     // Fade/unfade based on the state of the tool and the magnitude of valocity
@@ -130,6 +145,26 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         }
     }
 
+    // Reset position once collision ends
+    private void OnCollisionExit(Collision collision) {
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
+            StartCoroutine(ResetPosition());
+        }
+    }
+
+    private IEnumerator ResetPosition() {
+        isResetting = true;
+        yield return new WaitForFixedUpdate();
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        rb.isKinematic = true;
+        transform.position = tool.transform.position;
+        velocity = Vector3.zero;
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        yield return new WaitForFixedUpdate();
+        isResetting = false;
+    }
+
     [PunRPC]
     private void ToolFollower_SetAlpha(float a) {
         foreach (Material m in materials) {
@@ -145,9 +180,24 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     public void SetActive(bool active) {
         if (PhotonNetwork.IsConnected) {
             pv.RPC("ToolFollower_SetState", RpcTarget.AllBuffered, active);
-        }
-        else {
+        } else {
             ToolFollower_SetState(active);
+        }
+    }
+
+    [PunRPC]
+    private void ToolFollower_FlipCollider() {
+        Transform colliderTransform = GetComponentInChildren<Collider>().transform;
+        Vector3 scale = colliderTransform.localScale;
+        colliderTransform.localScale = new Vector3(
+            scale.x, -scale.y, scale.z);
+    }
+
+    public void FlipCollider() {
+        if (PhotonNetwork.IsConnected) {
+            pv.RPC("ToolFollower_FlipCollider", RpcTarget.AllBuffered);
+        } else {
+            ToolFollower_FlipCollider();
         }
     }
 }

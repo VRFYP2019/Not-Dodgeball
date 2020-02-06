@@ -4,8 +4,6 @@ using UnityEngine;
 using Utils;
 
 public class HandControllerHuman : HandController {
-    [Tooltip("Left or right. Only required for OVR.")]
-    public HandSide handSide;
     private HapticFeedback hapticFeedback;
     // Start is called before the first frame update
     protected override void Start() {

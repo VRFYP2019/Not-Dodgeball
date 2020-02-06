@@ -8,6 +8,7 @@ public class HandController : MonoBehaviour {
     private Tool tool;
     private Spawner spawnerHand;
     public HandObject currHandObject;
+    public HandSide handSide;
     bool hasBeenInit = false;
 
     // Start is called before the first frame update
@@ -20,6 +21,12 @@ public class HandController : MonoBehaviour {
     private void Init() {
         tool = GetComponentInChildren<Tool>();
         spawnerHand = GetComponentInChildren<Spawner>(true);
+        if (handSide == HandSide.RIGHT) {
+            spawnerHand.transform.localScale = new Vector3(
+                -spawnerHand.transform.localScale.x,
+                spawnerHand.transform.localScale.y,
+                spawnerHand.transform.localScale.z);
+        }
         hasBeenInit = true;
     }
 

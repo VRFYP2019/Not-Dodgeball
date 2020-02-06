@@ -41,5 +41,6 @@ MonoBehaviour:
   - Spawner_SetState
   - ToolFollower_SetAlpha
   - ToolFollower_SetState
+  - ToolFollower_FlipCollider
   DisableAutoOpenWizard: 1
   ShowSettings: 1
