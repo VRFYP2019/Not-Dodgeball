@@ -25,8 +25,7 @@ public class HandController : MonoBehaviour {
             spawnerHand.transform.localScale = new Vector3(
                 -spawnerHand.transform.localScale.x,
                 spawnerHand.transform.localScale.y,
-                spawnerHand.transform.localScale.z
-            );
+                spawnerHand.transform.localScale.z);
         }
         hasBeenInit = true;
     }

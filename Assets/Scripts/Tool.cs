@@ -24,8 +24,7 @@ public class Tool : MonoBehaviourPunCallbacks {
             follower.transform.localScale = new Vector3(
                 follower.transform.localScale.x,
                 -follower.transform.localScale.y,
-                follower.transform.localScale.z
-            );
+                follower.transform.localScale.z);
             follower.FlipCollider();
         }
         follower.SetFollowTarget(this);

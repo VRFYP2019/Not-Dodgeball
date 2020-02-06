@@ -190,8 +190,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         Transform colliderTransform = GetComponentInChildren<Collider>().transform;
         Vector3 scale = colliderTransform.localScale;
         colliderTransform.localScale = new Vector3(
-            scale.x, -scale.y, scale.z
-        );
+            scale.x, -scale.y, scale.z);
     }
 
     public void FlipCollider() {
