@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     protected FadeState fadeState = FadeState.NORMAL;
     [SerializeField]
     private GameObject sparkPrefab = null;
+    private bool isResetting = false;
 
     [SerializeField]
     private float _sensitivity = 100f;
@@ -38,7 +40,11 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     private void Start() {
         foreach (Renderer r in GetComponentsInChildren<Renderer>()) {
-            materials.AddRange(r.materials);
+            foreach (Material m in r.materials) {
+                if (m.GetFloat("_Mode") > 0) {  // if m's rendering mode is not opaque
+                    materials.Add(m);
+                }
+            }
         }
     }
  
@@ -60,14 +66,16 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void FixedUpdate() {
-        if (!PhotonNetwork.IsConnected || pv.IsMine) {
-            Vector3 destination = tool.transform.position;
-            rb.transform.rotation = transform.rotation;
+        if (!isResetting) {
+            if (!PhotonNetwork.IsConnected || pv.IsMine) {
+                Vector3 destination = tool.transform.position;
+                rb.transform.rotation = transform.rotation;
 
-            velocity = (destination - rb.transform.position) * _sensitivity;
+                velocity = (destination - rb.transform.position) * _sensitivity;
 
-            rb.velocity = velocity;
-            transform.rotation = tool.transform.rotation;
+                rb.velocity = velocity;
+                transform.rotation = tool.transform.rotation;
+            }
         }
     }
 
@@ -77,6 +85,13 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     public void SetHumanity(bool isHuman) {
         this.isHuman = isHuman;
+    }
+
+    public override void OnEnable() {
+        // Fix rare case where object is disabled in the middle of coroutine
+        if (isResetting) {
+            isResetting = false;
+        }
     }
 
     // Fade/unfade based on the state of the tool and the magnitude of valocity
@@ -128,6 +143,24 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
                 Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
             }
         }
+    }
+
+    // Reset position once collision ends
+    private void OnCollisionExit(Collision collision) {
+        StartCoroutine(ResetPosition());
+    }
+
+    private IEnumerator ResetPosition() {
+        isResetting = true;
+        yield return new WaitForFixedUpdate();
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        rb.isKinematic = true;
+        transform.position = tool.transform.position;
+        velocity = Vector3.zero;
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        yield return new WaitForFixedUpdate();
+        isResetting = false;
     }
 
     [PunRPC]
