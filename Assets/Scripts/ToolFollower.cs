@@ -147,7 +147,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     // Reset position once collision ends
     private void OnCollisionExit(Collision collision) {
-        StartCoroutine(ResetPosition());
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
+            StartCoroutine(ResetPosition());
+        }
     }
 
     private IEnumerator ResetPosition() {
