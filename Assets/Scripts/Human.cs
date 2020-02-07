@@ -6,7 +6,6 @@ using Utils;
 using Valve.VR;
 
 public class Human : Player {
-    private PhotonView pv;
     private SteamVR_Behaviour_Pose leftHand;
     private SteamVR_Behaviour_Pose rightHand;
     public SteamVR_Action_Boolean grab = SteamVR_Input.GetAction<SteamVR_Action_Boolean>("GrabGrip");
@@ -16,8 +15,7 @@ public class Human : Player {
 
     protected override void Start() {
         playerType = PlayerType.HUMAN;
-        pv = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsConnected && !pv.IsMine) {
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             foreach (MonoBehaviour m in localScripts) {
                 if (m != null) {
                     m.enabled = false;

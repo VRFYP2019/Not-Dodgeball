@@ -204,7 +204,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     [PunRPC]
     private void Ball_SetParent(string parentName) {
         BallManager instance;
-        if (GetComponent<PhotonView>().IsMine) {
+        if (photonView.IsMine) {
             instance = BallManager.LocalInstance;
         } else {
             instance = BallManager.RemoteInstance;

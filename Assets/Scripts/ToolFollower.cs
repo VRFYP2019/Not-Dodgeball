@@ -8,7 +8,6 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     private Tool tool;
     private Rigidbody rb;
     private Collider col;
-    private PhotonView pv;
     private Vector3 velocity;
     private bool isHuman;
     private List<Material> materials = new List<Material>();
@@ -35,7 +34,6 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     private void Awake() {
         rb = GetComponent<Rigidbody>();
         col = GetComponentInChildren<Collider>();
-        pv = GetComponent<PhotonView>();
     }
 
     private void Start() {
@@ -55,7 +53,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
     }
 
     private void Update() {
-        if (!PhotonNetwork.IsConnected || pv.IsMine) {
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
             HandleFade();
         }
         if (fadeState == FadeState.FADED) {
@@ -67,7 +65,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     private void FixedUpdate() {
         if (!isResetting) {
-            if (!PhotonNetwork.IsConnected || pv.IsMine) {
+            if (!PhotonNetwork.IsConnected || photonView.IsMine) {
                 Vector3 destination = tool.transform.position;
                 rb.transform.rotation = transform.rotation;
 
@@ -100,7 +98,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
         if (magnitude > velocityLowerThreshold && fadeState < FadeState.NORMAL) {
             float a = Mathf.Clamp(materials[0].color.a + Time.deltaTime * unfadeSpeed, minOpacityValue, 1);
             if (PhotonNetwork.IsConnected) {
-                pv.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
+                photonView.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
             } else {
                 ToolFollower_SetAlpha(a);
             }
@@ -116,7 +114,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
             } else if (Time.time - fadeStartTime > fadeDelay) {
                 float a = Mathf.Clamp(materials[0].color.a - Time.deltaTime, minOpacityValue, 1);
                 if (PhotonNetwork.IsConnected) {
-                    pv.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
+                    photonView.RPC("ToolFollower_SetAlpha", RpcTarget.AllBuffered, a);
                 } else {
                     ToolFollower_SetAlpha(a);
                 }
@@ -131,7 +129,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     private void OnCollisionEnter(Collision collision) {
         if (isHuman) {
-            if (!PhotonNetwork.IsConnected || pv.IsMine) {
+            if (!PhotonNetwork.IsConnected || photonView.IsMine) {
                 ((ToolHuman)tool).TriggerHapticFeedback(0.1f, 100, 30);
             }
         }
@@ -179,7 +177,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     public void SetActive(bool active) {
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("ToolFollower_SetState", RpcTarget.AllBuffered, active);
+            photonView.RPC("ToolFollower_SetState", RpcTarget.AllBuffered, active);
         } else {
             ToolFollower_SetState(active);
         }
@@ -195,7 +193,7 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
 
     public void FlipCollider() {
         if (PhotonNetwork.IsConnected) {
-            pv.RPC("ToolFollower_FlipCollider", RpcTarget.AllBuffered);
+            photonView.RPC("ToolFollower_FlipCollider", RpcTarget.AllBuffered);
         } else {
             ToolFollower_FlipCollider();
         }
