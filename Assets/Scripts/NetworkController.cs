@@ -162,8 +162,12 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
             playerListEntries.Add(p.ActorNumber, entry);
         }
-
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.gameObject.SetActive(true);
+            StartGameButton.interactable = CheckPlayersReady();
+        } else {
+            StartGameButton.gameObject.SetActive(false);
+        }
 
         PhotonHashtable props = new PhotonHashtable {{"PLAYER_LOADED_LEVEL_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
@@ -174,7 +178,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         GameObject entry = CreateEntry(newPlayer);
         playerListEntries.Add(newPlayer.ActorNumber, entry);
 
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.interactable = CheckPlayersReady();
+        }
     }
 
     public override void OnLeftRoom() {
@@ -190,7 +196,10 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         Destroy(playerListEntries[otherPlayer.ActorNumber].gameObject);
         playerListEntries.Remove(otherPlayer.ActorNumber);
 
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.gameObject.SetActive(true);
+            StartGameButton.interactable = CheckPlayersReady();
+        }
     }
 
     public override void OnPlayerPropertiesUpdate(PhotonPlayer targetPlayer, PhotonHashtable changedProps) {
@@ -205,7 +214,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
                     entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
                 }
             }
-            StartGameButton.gameObject.SetActive(CheckPlayersReady());
+            if (PhotonNetwork.IsMasterClient) {
+                StartGameButton.interactable = CheckPlayersReady();
+            }
         }
     }
 
@@ -300,14 +311,12 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public void LocalPlayerPropertiesUpdated() {
-        StartGameButton.gameObject.SetActive(CheckPlayersReady());
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.interactable = CheckPlayersReady();
+        }
     }
 
     private bool CheckPlayersReady() {
-        if (!PhotonNetwork.IsMasterClient) {
-            return false;
-        }
-
         foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             object isPlayerReady;
             if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out isPlayerReady)) {
