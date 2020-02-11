@@ -43,5 +43,6 @@ MonoBehaviour:
   - ToolFollower_SetState
   - ToolFollower_FlipCollider
   - Ball_SetUseGravity
+  - Ball_SetPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
