@@ -25,7 +25,6 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         STATIONARY
     }
 
-    private PhotonView pv;
     private PlayerNumber playerNumber;  // the playernumber of the player this goal is following
     [SerializeField]
     private GameObject sparkPrefab = null;
@@ -36,10 +35,6 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
                 followingMat = null,
                 stationaryMat = null,
                 hitMat = null;
-
-    private void Awake() {
-        pv = GetComponent<PhotonView>();
-    }
 
     void Start() {
         if (GetComponentInParent<Player>() != null) {
@@ -86,7 +81,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
                 AudioManager.PlaySoundOnce("goalding");
                 SwitchGoalState(GoalState.TRANSITION);
                 if (PhotonNetwork.IsConnected) {
-                    pv.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.FOLLOWING, false);
+                    photonView.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.FOLLOWING, false);
                 } else {
                     SwitchGoalMaterial(followingMat);
                 }
@@ -154,7 +149,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
                     SwitchGoalState(GoalState.STATIONARY);
 
                     if (PhotonNetwork.IsConnected) {
-                        pv.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.STATIONARY, true);
+                        photonView.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.STATIONARY, true);
                         PhotonNetwork.Instantiate(sparkPrefab.name, col.transform.position, Quaternion.identity);
                     } else {
                         StartCoroutine(ShowGoalHitFor(0.5f));
@@ -178,15 +173,13 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     [PunRPC]
-    private void Goal_SetMaterial(byte stateToSwitch, bool  isHit) {
+    private void Goal_SetMaterial(byte stateToSwitch, bool isHit) {
         if (isHit) {
             StartCoroutine(ShowGoalHitFor(0.5f));
         } else {
             GoalState state = (GoalState)stateToSwitch;
             if (state == GoalState.STATIONARY) {
                 SwitchGoalMaterial(stationaryMat);
-            } else if (state == GoalState.FOLLOWING) {
-                SwitchGoalMaterial(followingMat);
             }
         }
     }
