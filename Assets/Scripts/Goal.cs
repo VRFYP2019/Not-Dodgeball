@@ -9,7 +9,7 @@ using Utils;
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
 // Goalpost cannot move outside the bounds of the room
-public class Goal : MonoBehaviour, IOnEventCallback {
+public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
     private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
     private static readonly float SNAP_THRESHOLD = 1.5f;
     private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -12f, Z_MAX =3f;
@@ -24,9 +24,18 @@ public class Goal : MonoBehaviour, IOnEventCallback {
         TRANSITION,
         STATIONARY
     }
-    private PlayerNumber playerNumber;  // the playernumber of the player this goal is following
 
-    // Start is called before the first frame update
+    private PlayerNumber playerNumber;  // the playernumber of the player this goal is following
+    [SerializeField]
+    private GameObject sparkPrefab = null;
+    [SerializeField]
+    private MeshRenderer[] goalSidesMR;
+    [SerializeField]
+    private Material
+        followingMat = null,
+        stationaryMat = null,
+        hitMat = null;
+
     void Start() {
         if (GetComponentInParent<Player>() != null) {
             playerNumber = GetComponentInParent<Player>().playerNumber;
@@ -69,8 +78,13 @@ public class Goal : MonoBehaviour, IOnEventCallback {
 
             PlayerNumber playerLastScored = (PlayerNumber)data[0];
             if (playerNumber == playerLastScored) {
-                SwitchGoalState(GoalState.TRANSITION);
                 AudioManager.PlaySoundOnce("goalding");
+                SwitchGoalState(GoalState.TRANSITION);
+                if (PhotonNetwork.IsConnected) {
+                    photonView.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.FOLLOWING, false);
+                } else {
+                    SwitchGoalMaterial(followingMat);
+                }
                 BallManager.LocalInstance.AddBallsToQueue(2);
             } else {
                 AudioManager.PlaySoundOnce("goalbuzz");
@@ -86,7 +100,6 @@ public class Goal : MonoBehaviour, IOnEventCallback {
     private void HandleGoalPosition() {
         parentPos = transform.parent.position;
         
-
         if (goalState == GoalState.FOLLOWING) {
             // Prevent goal from exceeding room bounds
             newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
@@ -134,6 +147,14 @@ public class Goal : MonoBehaviour, IOnEventCallback {
                     ScoreManager.Instance.AddScoreToOpponent(playerNumber, 1);
                     BallManager.LocalInstance.PutBallInPool(col.GetComponent<Ball>());
                     SwitchGoalState(GoalState.STATIONARY);
+
+                    if (PhotonNetwork.IsConnected) {
+                        photonView.RPC("Goal_SetMaterial", RpcTarget.AllBuffered, (byte)GoalState.STATIONARY, true);
+                        PhotonNetwork.Instantiate(sparkPrefab.name, col.transform.position, Quaternion.identity);
+                    } else {
+                        StartCoroutine(ShowGoalHitFor(0.5f));
+                        Instantiate(sparkPrefab, col.transform.position, Quaternion.identity);
+                    }
                 }
             }
         }
@@ -149,6 +170,30 @@ public class Goal : MonoBehaviour, IOnEventCallback {
 
     private void SwitchGoalState(GoalState stateToSwitch) {
         goalState = stateToSwitch;
+    }
+
+    [PunRPC]
+    private void Goal_SetMaterial(byte stateToSwitch, bool isHit) {
+        if (isHit) {
+            StartCoroutine(ShowGoalHitFor(0.5f));
+        } else {
+            GoalState state = (GoalState)stateToSwitch;
+            if (state == GoalState.STATIONARY) {
+                SwitchGoalMaterial(stationaryMat);
+            }
+        }
+    }
+
+    private void SwitchGoalMaterial(Material m) {
+        foreach(MeshRenderer mr in goalSidesMR) {
+            mr.material = m;
+        }
+    }
+
+    private IEnumerator ShowGoalHitFor(float duration) {
+        SwitchGoalMaterial(hitMat);
+        yield return new WaitForSeconds(duration);
+        SwitchGoalMaterial(stationaryMat);
     }
 
     // Used for cases where this script will be disabled but the number is still needed
