@@ -127,6 +127,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         transformToFollow = hand;
         transform.position = hand.position;
         rb.isKinematic = true;
+        SetUseGravity(false);
         col.enabled = false;
         SetState(true);
     }
@@ -145,6 +146,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         throwVecetor *= forceMultiplier;
         transformToFollow = null;
         rb.isKinematic = false;
+        SetUseGravity(true);
         col.enabled = true;
         rb.AddForce(throwVecetor, ForceMode.Impulse);
         SetParent(BallManager.LocalInstance.activeBalls);
@@ -183,6 +185,26 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         countTimeLived = false;
         InitLists();
         BallManager.LocalInstance.PutBallInQueue(this);
+    }
+
+    [PunRPC]
+    private void Ball_SetUseGravity(bool shouldUseGravity) {
+        if (rb == null) {
+            rb = GetComponent<Rigidbody>();
+        }
+        if (shouldUseGravity) {
+            rb.useGravity = true;
+        } else {
+            rb.useGravity = false;
+        }
+    }
+
+    private void SetUseGravity(bool shouldUseGravity) {
+        if (PhotonNetwork.IsConnected) {
+            photonView.RPC("Ball_SetUseGravity", RpcTarget.All, shouldUseGravity);
+        } else {
+            Ball_SetUseGravity(shouldUseGravity);
+        }
     }
 
     [PunRPC]
