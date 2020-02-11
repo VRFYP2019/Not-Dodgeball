@@ -32,9 +32,9 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
     private MeshRenderer[] goalSidesMR;
     [SerializeField]
     private Material
-                followingMat = null,
-                stationaryMat = null,
-                hitMat = null;
+        followingMat = null,
+        stationaryMat = null,
+        hitMat = null;
 
     void Start() {
         if (GetComponentInParent<Player>() != null) {
