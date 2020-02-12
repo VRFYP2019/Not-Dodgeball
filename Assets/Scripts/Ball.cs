@@ -125,7 +125,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         }
         prevPos = hand.position;
         transformToFollow = hand;
-        transform.position = hand.position;
+        SetPosition(hand.transform.position);
         rb.isKinematic = true;
         SetUseGravity(false);
         col.enabled = false;
@@ -187,6 +187,19 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         BallManager.LocalInstance.PutBallInQueue(this);
     }
 
+    [PunRPC]
+    private void Ball_SetPosition(float x, float y, float z) {
+        transform.position = new Vector3(x, y, z);
+    }
+
+    public void SetPosition(Vector3 newPos) {
+        if (PhotonNetwork.IsConnected) {
+            photonView.RPC("Ball_SetPosition", RpcTarget.All, newPos.x, newPos.y, newPos.z);
+        } else {
+            transform.position = newPos;
+        }
+    }
+    
     [PunRPC]
     private void Ball_SetUseGravity(bool shouldUseGravity) {
         if (rb == null) {
