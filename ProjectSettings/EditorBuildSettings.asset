@@ -5,10 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/LobbyScene.unity
     guid: 28f487c1c9d1a404aa0345677abf67f8
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: dfe30ae92277edb4cb31b21f40184412
+  - enabled: 1
+    path: Assets/Movesense Plugin/ExampleScenes/ScanScene.unity
+    guid: 36a1b9088fe934fae8287df85cac1bca
+  - enabled: 1
+    path: Assets/Movesense Plugin/ExampleScenes/SubscriptionScene.unity
+    guid: 44e7cbd76c19f49ee92e02e73ff8eef8
+  - enabled: 1
+    path: Assets/Movesense Plugin/ExampleScenes/VisualizationScene.unity
+    guid: fa57b6e7faa0c4e5b81f53b2bc089712
   m_configObjects: {}
