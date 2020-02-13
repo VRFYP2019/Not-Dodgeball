@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 using System.Collections.Generic;
-
+using UnityEngine.Android;
 
 public enum BleHardwareState {
 	UNKNOWN			= 0,
@@ -199,17 +199,31 @@ public class ScanController : MonoBehaviour {
 			#endif
 
 			isInitialized = true;
-		}
-	}
+            #if UNITY_ANDROID && !UNITY_EDITOR
+                if (!Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)) {
+                    Permission.RequestUserPermission(Permission.CoarseLocation);
+                }
+            #endif
+        }
+    }
 
-	#if UNITY_STANDALONE_OSX || UNITY_EDITOR
-	public static void ReportActualBleState(string s_actualState) {
-	#else
+    void OnGUI() {
+        #if UNITY_ANDROID && !UNITY_EDITOR
+            if (!Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)) {
+                // The user denied permission to use the location. Deny the user's permission to play
+                Application.Quit();
+            }
+        #endif
+    }
+
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR
+    public static void ReportActualBleState(string s_actualState) {
+#else
 	public void ReportActualBleState(string s_actualState) {
-	#endif
-		#pragma warning disable CS0162
+#endif
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "ReportActualBleState: state: " + s_actualState);
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		BleState = (BleHardwareState)int.Parse(s_actualState);
 
 		switch (BleState) {
@@ -220,39 +234,39 @@ public class ScanController : MonoBehaviour {
 				Debug.Log(TAG + "User decided to keep Bluetooth off");
 				break;
 			case BleHardwareState.POWERED_ON:
-				#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 					Debug.Log(TAG + "Bluetooth-Hardware is turned on, checking Location");
 					if (!scanPlugin.Call<bool>("IsLocationTurnedOn")) {
 						CheckBleStatus();
 					} else {
 						Scan();
 					}
-				#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR
 					Debug.Log(TAG + "Bluetooth-Hardware is turned on");
 					Scan();
-				#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
-				#endif
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
+#endif
 				break;
 			case BleHardwareState.LOCATION_OFF:
 				Debug.Log(TAG + "User decided to keep Location off");
 				break;
 			case BleHardwareState.LOCATION_ON:
-				#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 					Debug.Log(TAG + "Location is on");
 					if (!scanPlugin.Call<bool>("IsBluetoothTurnedOn")) {
 						CheckBleStatus();
 					} else {
 						Scan();
 					}
-				#endif
+#endif
 				break;
 		}
 	}
 	private static void CheckBleStatus() {
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log (TAG + "checking Ble status");
-		#pragma warning restore CS0162
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#pragma warning restore CS0162
+#if UNITY_ANDROID && !UNITY_EDITOR
 			if (!scanPlugin.Call<bool>("IsBleFeatured")) {
 				Debug.Log(TAG + "Bluetooth is not featured");
 			} else {
@@ -270,7 +284,7 @@ public class ScanController : MonoBehaviour {
 					}
 				}
 			}
-		#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR
 			switch (GetBLEStatus()) {
 				case 0:
 					Debug.Log(TAG + "CBManagerStateUnknown");
@@ -291,44 +305,44 @@ public class ScanController : MonoBehaviour {
 					Debug.Log(TAG + "CBManagerStatePoweredOn");
 					break;
 			}
-		#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
-		#endif
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
+#endif
 	}
 
 	public static void StartScan() {
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log (TAG + "StartScan, checking Ble-status");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 
 		if (instance == null || !IsInitialized) {
 			Debug.LogError(TAG + "StartScan: ScanController is not initialized. Did you forget to add ScanController object in the scene?");
 			return;
 		}
 
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 			if (!scanPlugin.Call<bool>("IsBleFeatured") || !scanPlugin.Call<bool>("IsBluetoothAvailable") || !scanPlugin.Call<bool>("IsBluetoothTurnedOn") || !scanPlugin.Call<bool>("IsLocationTurnedOn")) {
 				Debug.Log(TAG + "Scan not possible");
 				CheckBleStatus();
 			} else {
 				Scan();
 			}
-		#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR
 			if (GetBLEStatus() != 5) {
 				Debug.Log(TAG + "Scan not possible");
 				CheckBleStatus();
 			} else {
 				Scan();
 			}
-		#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
-		#endif
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
+#endif
 	}
 	private static void Scan() {
 		if (IsScanning) {
 			return;
 		}
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log (TAG + "Scan");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		IsIgnoringScanReport = false;
 		IsScanning = true;
 		
@@ -338,12 +352,12 @@ public class ScanController : MonoBehaviour {
 			Event(null, new EventArgs(EventType.REMOVE_UNCONNECTED, TAG + "Scan", null));
 		}
 		
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 			scanPlugin.Call("Scan", uuidString);
-		#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR
 			Scan_iOS(uuidString);
-		#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
-		#endif
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
+#endif
 
 		if (Event != null) {
 			Event(null, new EventArgs(EventType.SYSTEM_SCANNING, TAG + "Scan", null));
@@ -354,18 +368,18 @@ public class ScanController : MonoBehaviour {
 		if (!IsScanning) {
 			return;
 		}
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log (TAG + "StopScan");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		IsIgnoringScanReport = true;
 		IsScanning = false;
 		StopRefreshDeviceList();
-		#if UNITY_ANDROID && !UNITY_EDITOR
+#if UNITY_ANDROID && !UNITY_EDITOR
 			scanPlugin.Call("StopScan");
-		#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR
 			Stop_iOS();
-		#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
-		#endif
+#elif UNITY_STANDALONE_OSX || UNITY_EDITOR
+#endif
 		
 		if (Event != null) {
 			Event(null, new EventArgs(EventType.SYSTEM_NOT_SCANNING, TAG + "StopScan", null));
@@ -373,18 +387,18 @@ public class ScanController : MonoBehaviour {
 	}
 	
 
-	#if UNITY_STANDALONE_OSX || UNITY_EDITOR
+#if UNITY_STANDALONE_OSX || UNITY_EDITOR
 	public static void ReportScan(string Device) {
-	#else
+#else
 	public void ReportScan(string Device) {
-	#endif
+#endif
 		if (IsIgnoringScanReport) {
 			return;
 		}
 
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "ReportScan: " + Device);
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		
 		StartRefreshDeviceList();
 
@@ -396,9 +410,9 @@ public class ScanController : MonoBehaviour {
 		string macID = splitString[0];
 
 		if (MovesenseDevice.GetConnectingState(macID)) {
-			#pragma warning disable CS0162
+#pragma warning disable CS0162
 			if (isLogging) Debug.Log(TAG + macID + " is connecting, cancel further processing");
-			#pragma warning restore CS0162
+#pragma warning restore CS0162
 			return;
 		}
 
@@ -408,25 +422,25 @@ public class ScanController : MonoBehaviour {
 
 		if (MovesenseDevice.ContainsMacID(macID)) {
 			if (MovesenseDevice.GetRssi(macID) != i_rssi && !IsRefreshingRssiBlocked) {
-				#pragma warning disable CS0162
+#pragma warning disable CS0162
 				if (isLogging) Debug.Log(TAG + macID + " (" + serial + ") already scanned, refreshing rssi");
-				#pragma warning restore CS0162
+#pragma warning restore CS0162
 				MovesenseDevice.RefreshRssi(macID, i_rssi);
 
 				if (Event != null) {
 					Event(null, new EventArgs(EventType.RSSI, TAG + "ReportScan", macID));
 				}
 			} else {
-				#pragma warning disable CS0162
+#pragma warning disable CS0162
 				if (isLogging) Debug.Log(TAG + macID + " (" + serial + ") already scanned, " + (IsRefreshingRssiBlocked ? "refreshRssi blocked" : "same rssi") + ", cancel further processing");
-				#pragma warning restore CS0162
+#pragma warning restore CS0162
 				
 				return;
 			}
 		} else {
-			#pragma warning disable CS0162
+#pragma warning disable CS0162
 			if (isLogging) Debug.Log(TAG + macID + " (" + serial + ") is new");
-			#pragma warning restore CS0162
+#pragma warning restore CS0162
 			
 			MovesenseDevice movesenseDevice = new MovesenseDevice(macID, serial, i_rssi, false, false, null);
 			MovesenseDevice.Add(movesenseDevice);
@@ -439,9 +453,9 @@ public class ScanController : MonoBehaviour {
 	}
 
 	private static void StartRssiRefreshBlocker() {
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "StartRssiRefreshBlocker: isRefreshingRssiBlocked = true");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		IsRefreshingRssiBlocked = true;
 
 		if (IsStartRefresh) {
@@ -451,17 +465,17 @@ public class ScanController : MonoBehaviour {
 		instance.InvokeRepeating("SetisRefreshingRssiBlocked", rssiBlockTime, rssiBlockTime);
 	}
 	private void SetisRefreshingRssiBlocked() {
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "SetisRefreshingRssiBlocked");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		isRefreshingRssiBlocked = false;
 	}
 
 	public static void StartRefreshDeviceList() {
 		if (!IsRefreshing) {
-			#pragma warning disable CS0162
+#pragma warning disable CS0162
 			if (isLogging) Debug.Log(TAG + "StartRefreshDeviceList");
-			#pragma warning restore CS0162
+#pragma warning restore CS0162
 			IsRefreshing = true;
 
 			instance.InvokeRepeating("RefreshDeviceList", deviceRefreshTime, deviceRefreshTime);
@@ -473,9 +487,9 @@ public class ScanController : MonoBehaviour {
 		if (!IsRefreshing) {
 			return;
 		}
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "StopRefreshDeviceList");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		
 		if (RefresherList.Count == 0 || !IsScanning) {
 			IsRefreshing = false;
@@ -488,9 +502,9 @@ public class ScanController : MonoBehaviour {
 		instance.CancelInvoke("SetisRefreshingRssiBlocked");
 	}
 	private void RefreshDeviceList() {
-		#pragma warning disable CS0162
+#pragma warning disable CS0162
 		if (isLogging) Debug.Log(TAG + "RefreshDeviceList");
-		#pragma warning restore CS0162
+#pragma warning restore CS0162
 		isIgnoringScanReport = true;
 
 		MovesenseDevice.RemoveAllExcept(refresherList);
