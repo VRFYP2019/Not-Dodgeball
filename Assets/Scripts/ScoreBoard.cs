@@ -9,6 +9,7 @@ using Utils;
 public class ScoreBoard : MonoBehaviour {
 
     public Text player1ScoreText, player2ScoreText, timeLeftText;
+    public GameObject timeOverPanel;
     public bool isTimeOver;
     private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
@@ -27,6 +28,7 @@ public class ScoreBoard : MonoBehaviour {
         player2ScoreText.text = "0";
         timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
         isTimeOver = false;
+        timeOverPanel.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,6 +64,7 @@ public class ScoreBoard : MonoBehaviour {
     public void TimeOverHandler() {
         isTimeOver = true;
         StartCoroutine(restartPromptCoroutine);
+        timeOverPanel.SetActive(true);
     }
 
     public void Restart() {
@@ -70,12 +73,13 @@ public class ScoreBoard : MonoBehaviour {
     }
 
     private IEnumerator TimeOverRestartPrompt() {
+        Text timeOverText = timeOverPanel.GetComponentInChildren<Text>();
         while (true) {
-            timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
-            timeLeftText.text = timeOver;
+            timeOverText.fontSize = Constants.FontSizes.scoreBoardNormal;
+            timeOverText.text = timeOver;
             yield return new WaitForSeconds(3f);
-            timeLeftText.fontSize = Constants.FontSizes.scoreBoardSmall;
-            timeLeftText.text = pressTriggerToRestart;
+            timeOverText.fontSize = Constants.FontSizes.scoreBoardSmall;
+            timeOverText.text = pressTriggerToRestart;
             yield return new WaitForSeconds(3f);
         }
     }
