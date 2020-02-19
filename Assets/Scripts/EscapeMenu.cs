@@ -8,7 +8,6 @@ using Photon.Pun;
 using Photon.Realtime;
 
 public class EscapeMenu : MonoBehaviourPunCallbacks {
-    private Camera playerCam;
     private bool isEscaped = false;
     public Canvas pauseMenuCanvas;
 
@@ -36,19 +35,6 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
                     laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
                 }
             }
-            Camera[] cams = FindObjectsOfType<Camera>();
-            foreach (Camera c in cams) {
-                PhotonView pv = c.GetComponentInParent<PhotonView>();
-                if (pv == null || !c.isActiveAndEnabled) {
-                    continue;
-                } else {
-                    playerCam = c;
-                    break;
-                }
-            }
-            pauseMenuCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-            pauseMenuCanvas.worldCamera = playerCam;
-            pauseMenuCanvas.planeDistance = 3f;
         }
         pauseMenuCanvas.gameObject.SetActive(false);
     }
