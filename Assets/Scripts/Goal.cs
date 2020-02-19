@@ -178,8 +178,8 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
             StartCoroutine(ShowGoalHitFor(0.5f));
         } else {
             GoalState state = (GoalState)stateToSwitch;
-            if (state == GoalState.STATIONARY) {
-                SwitchGoalMaterial(stationaryMat);
+            if (state == GoalState.FOLLOWING) {
+                SwitchGoalMaterial(followingMat);
             }
         }
     }
