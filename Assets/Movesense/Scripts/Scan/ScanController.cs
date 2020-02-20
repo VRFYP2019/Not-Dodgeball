@@ -210,8 +210,8 @@ public class ScanController : MonoBehaviour {
     void OnGUI() {
 #if UNITY_ANDROID && !UNITY_EDITOR
             if (!Permission.HasUserAuthorizedPermission(Permission.CoarseLocation)) {
-                // The user denied permission to use the location, return to lobby
-                ChangeSceneController.LoadSceneByName("LobbyScene");
+                // The user denied permission to use the location, deny the user permission to play
+                Application.Quit();
             }
 #endif
     }

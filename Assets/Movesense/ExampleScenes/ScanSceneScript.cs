@@ -26,7 +26,7 @@ public class ScanSceneScript : MonoBehaviour {
 
     private void OnApplicationPause(bool pauseStatus) {
         if (pauseStatus && ScanController.IsInitialized) {
-            buttonScan.GetComponentInChildren<TMP_Text>().text = "Start scanning";
+            buttonScan.GetComponentInChildren<Text>().text = "Start scanning";
             ScanController.StopScan();
         }
     }
@@ -94,17 +94,14 @@ public class ScanSceneScript : MonoBehaviour {
 
         ChangeSceneController.LoadSceneByName("SubscriptionScene");
     }
-    public void OnClickButtonReturnToLobby() {
-        ChangeSceneController.LoadSceneByName("LobbyScene");
-    }
 
     void OnScanControllerCallbackEvent(object sender, ScanController.EventArgs e) {
         switch (e.Type) {
             case ScanController.EventType.SYSTEM_SCANNING:
-                buttonScan.GetComponentInChildren<TMP_Text>().text = "Stop scanning";
+                buttonScan.GetComponentInChildren<Text>().text = "Stop scanning";
                 break;
             case ScanController.EventType.SYSTEM_NOT_SCANNING:
-                buttonScan.GetComponentInChildren<TMP_Text>().text = "Start scanning";
+                buttonScan.GetComponentInChildren<Text>().text = "Start scanning";
                 break;
             case ScanController.EventType.NEW_DEVICE:           // a new sensor was found
             case ScanController.EventType.RSSI:                 // RSSI of a sensor has changed and the MovesenseDevice sortorder has been updated
@@ -212,7 +209,7 @@ public class ScanSceneScript : MonoBehaviour {
                 fontColor = Color.red;
             }
 
-            TMP_Text[] scanElementTexts = ScanElements[i].GetComponentsInChildren<TMP_Text>();
+            Text[] scanElementTexts = ScanElements[i].GetComponentsInChildren<Text>();
             foreach (var text in scanElementTexts) {
                 if (isColorizedScan) text.color = fontColor;
                 if (text.name == "Text Serial") {
