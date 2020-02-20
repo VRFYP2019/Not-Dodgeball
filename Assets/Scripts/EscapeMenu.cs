@@ -11,6 +11,10 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     private bool isEscaped = false;
     public Canvas pauseMenuCanvas;
 
+    #if UNITY_EDITOR
+    private Camera playerCam;
+    #endif
+
     [Header("Desktop")]
     [SerializeField]
     private GameObject[] desktopObjects = null;
@@ -36,6 +40,23 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
                 }
             }
         }
+
+        #if UNITY_EDITOR
+        Camera[] cams = FindObjectsOfType<Camera>();
+        foreach (Camera c in cams) {
+            PhotonView pv = c.GetComponentInParent<PhotonView>();
+            if (pv == null || !c.isActiveAndEnabled) {
+                continue;
+            } else {
+                playerCam = c;
+                break;
+            }
+        }
+        pauseMenuCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        pauseMenuCanvas.worldCamera = playerCam;
+        GetComponent<VRFollowCanvas>().enabled = false;
+        #endif
+
         pauseMenuCanvas.gameObject.SetActive(false);
     }
 
@@ -52,13 +73,19 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     #endregion
 
     private bool TogglePause() {
+        #if !UNITY_EDITOR
+        if (!isEscaped) {
+            laserLineRenderer.enabled = true;
+        } else {
+            laserLineRenderer.enabled = false;
+        }
+        #endif
+
         if (!isEscaped) {
             pauseMenuCanvas.gameObject.SetActive(true);
-            laserLineRenderer.enabled = true;
             return true;
         } else {
             pauseMenuCanvas.gameObject.SetActive(false);
-            laserLineRenderer.enabled = false;
             return false;
         }
     }
