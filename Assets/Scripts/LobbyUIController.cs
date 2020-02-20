@@ -28,8 +28,7 @@ public class LobbyUIController : MonoBehaviour {
             currMenu.localScale = new Vector3(
                 currMenu.localScale.x - 0.05f,
                 1,
-                1
-            );
+                1);
             yield return new WaitForEndOfFrame();
         }
 
@@ -39,8 +38,7 @@ public class LobbyUIController : MonoBehaviour {
             targetMenu.localScale = new Vector3(
                 targetMenu.localScale.x + 0.05f,
                 1,
-                1
-            );
+                1);
             yield return new WaitForEndOfFrame();
         }
     }
