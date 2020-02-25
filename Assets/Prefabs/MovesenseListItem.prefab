@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1253132021569897964}
   - component: {fileID: 9150975377407249092}
   m_Layer: 0
-  m_Name: PlayerReadyButton
+  m_Name: ConnectButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,7 +137,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: 60
   m_MinHeight: -1
-  m_PreferredWidth: 75
+  m_PreferredWidth: 100
   m_PreferredHeight: -1
   m_FlexibleWidth: 0
   m_FlexibleHeight: -1
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 2797530572733101855}
   - component: {fileID: 1710348924925957005}
   m_Layer: 0
-  m_Name: Text
+  m_Name: Text Connect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

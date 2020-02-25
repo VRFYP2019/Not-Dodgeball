@@ -652,7 +652,7 @@ GameObject:
   - component: {fileID: 159977148}
   - component: {fileID: 159977147}
   m_Layer: 0
-  m_Name: ConnectionInfoPanel
+  m_Name: MovesenseInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

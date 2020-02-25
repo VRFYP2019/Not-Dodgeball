@@ -75,25 +75,6 @@ public class ScanSceneScript : MonoBehaviour {
             Debug.LogError(TAG + "OnClickButtonConnect, MovesenseController is NOT initialized. Did you forget to add MovesenseController object in the scene?");
         }
     }
-    public void OnClickButtonSubscriptions() {
-        if (isButtonSubscriptionsPressed) {
-            isButtonSubscriptionsPressed = true;
-            return;
-        }
-#pragma warning disable CS0162
-        if (isLogging) Debug.Log(TAG + "onClickButtonSubscriptions");
-#pragma warning restore CS0162
-
-        // detach events
-        ScanController.Event -= OnScanControllerCallbackEvent;
-        MovesenseController.Event -= OnMovesenseControllerCallbackEvent;
-
-        ScanController.StopScan();
-
-        MovesenseDevice.RemoveUnconnected();
-
-        ChangeSceneController.LoadSceneByName("SubscriptionScene");
-    }
 
     void OnScanControllerCallbackEvent(object sender, ScanController.EventArgs e) {
         switch (e.Type) {
@@ -203,6 +184,10 @@ public class ScanSceneScript : MonoBehaviour {
 
             Text[] scanElementTexts = ScanElements[i].GetComponentsInChildren<Text>();
             foreach (var text in scanElementTexts) {
+                if (text.name == "Text Connect") {
+                    text.text = device.IsConnected ? "Disconnect" : "Connect";
+                    continue;   // don't change colour for button text
+                }
                 if (isColorizedScan) text.color = fontColor;
                 if (text.name == "Text Serial") {
                     text.text = device.Serial;
@@ -221,6 +206,7 @@ public class ScanSceneScript : MonoBehaviour {
 
             // change OnClickButtonConnect-methodparameters
             Button scanElementButton = ScanElements[i].GetComponentInChildren<Button>();
+            scanElementButton.interactable = !device.IsConnecting;
 
             scanElementButton.onClick.RemoveAllListeners();
 
