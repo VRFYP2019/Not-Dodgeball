@@ -160,16 +160,9 @@ public class ScanSceneScript : MonoBehaviour {
 #pragma warning restore CS0162
             for (int i = scanElementsCount; i < scannedDevices; i++) {
                 GameObject ScanElementClone = Instantiate(ScanElement, scrollViewContentScan) as GameObject;
-                // Positioning
-                RectTransform ScanElementRect = ScanElementClone.GetComponent<RectTransform>();
-                if (scanElementHeight == 0) scanElementHeight = ScanElementRect.sizeDelta.y;
-
-                // change position
-                ScanElementRect.anchoredPosition = new Vector2(0, -scanElementHeight / 2 - (i * scanElementHeight));
 
                 ScanElements.Add(ScanElementClone);
             }
-            scrollViewContentScan.sizeDelta = new Vector2(0, scanElementHeight * scannedDevices);
         } else if (scanElementsCount > scannedDevices) {
 #pragma warning disable CS0162
             if (isLogging) Debug.Log(TAG + "RefreshScrollViewContentScan, destroy clones");
@@ -178,7 +171,6 @@ public class ScanSceneScript : MonoBehaviour {
                 Destroy(ScanElements[i]);
                 ScanElements.RemoveAt(i);
             }
-            scrollViewContentScan.sizeDelta = new Vector2(0, scanElementHeight * scannedDevices);
         }
 
         // Debug.Log(TAG + "RefreshScrollViewContentScan, assign properties");
