@@ -26,6 +26,13 @@ public class HandController : MonoBehaviour {
                 -spawnerHand.transform.localScale.x,
                 spawnerHand.transform.localScale.y,
                 spawnerHand.transform.localScale.z);
+            HandScreen handScreen = spawnerHand.GetComponentInChildren<HandScreen>();
+            // Flip the screen back if there is one (dummy bot does not have one)
+            if (handScreen != null) {
+                Vector3 screenScale = spawnerHand.GetComponentInChildren<HandScreen>().transform.localScale;
+                spawnerHand.GetComponentInChildren<HandScreen>().transform.localScale = new Vector3(
+                    -screenScale.x, screenScale.y, screenScale.z);
+            }
         }
         hasBeenInit = true;
     }

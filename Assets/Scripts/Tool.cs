@@ -26,6 +26,10 @@ public class Tool : MonoBehaviourPunCallbacks {
                 -follower.transform.localScale.y,
                 follower.transform.localScale.z);
             follower.FlipCollider();
+            // Flip the screen back
+            Vector3 screenScale = follower.GetComponentInChildren<HandScreen>().transform.localScale;
+            follower.GetComponentInChildren<HandScreen>().transform.localScale = new Vector3(
+                screenScale.x, -screenScale.y, screenScale.z);
         }
         follower.SetFollowTarget(this);
     }
