@@ -28,7 +28,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
     [Header("Desktop")]
     [SerializeField]
     private GameObject[] desktopObjects = null;
-    
+
     [Header("OVR")]
     [SerializeField]
     private GameObject[] oculusObjects = null;
@@ -96,7 +96,6 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             sum += heartrate;
         }
         int aveThatSecond = (int)Mathf.Round(sum / (float)heartRateBuffer.Count);
-        Debug.Log("Average heart rate this second: " + aveThatSecond);
         aveHeartRates.Add(aveThatSecond);
         heartRateBuffer.Clear();
         isCalculating = false;
@@ -160,19 +159,16 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
 
     public void ToggleNextPanel() {
         if (genderPanel.activeInHierarchy) {
-            Debug.Log("Gender OUT");
             genderPanel.SetActive(false);
             agePanel.SetActive(true);
             return;
         }
         if (agePanel.activeInHierarchy) {
-            Debug.Log("Age OUT");
             agePanel.SetActive(false);
             weightPanel.SetActive(true);
             return;
         }
         if (weightPanel.activeInHierarchy) {
-            Debug.Log("Weight OUT");
             weightPanel.SetActive(false);
             caloriePanel.SetActive(true);
 
@@ -181,7 +177,6 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             return;
         }
         if (caloriePanel.activeInHierarchy) {
-            Debug.Log("All Out OUT");
             caloriePanel.SetActive(false);
             calorieCanvas.gameObject.SetActive(false);
 

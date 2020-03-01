@@ -5619,6 +5619,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenuCanvas: {fileID: 122563619}
+  calorieCanvas: {fileID: 1729658119}
   desktopObjects:
   - {fileID: 384055799}
   oculusObjects:
@@ -6549,7 +6550,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1513628789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9678,7 +9679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayTransform: {fileID: 0}
-  m_Cursor: {fileID: 0}
+  m_Cursor: {fileID: 170615506}
   joyPadClickButton: 1
   gazeClickKey: 32
   performSphereCastForGazepointer: 0
