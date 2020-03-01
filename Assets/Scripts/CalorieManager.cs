@@ -81,7 +81,6 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         }
     }
 
-    // Update is called once per frame
     void Update() {
         if (isMovesenseConncted && !isCalculating) {
             heartRateBuffer.Add(MovesenseSubscriber.instance.heartRate);
@@ -125,8 +124,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         bool isPlayerMale = GetComponent<GenderSelection>().IsPlayerMale();
         int weight = GetComponent<WeightSelection>().GetPlayerWeight();
 
-        //int calories = 0;
-        int calories = age + weight; // for debugging w/o heartrate
+        int calories = 0;
         if (isMovesenseConncted) {
             if (isPlayerMale) {
                 //Calories Burned = [(Age x 0.2017) — (Weight x 0.09036) + (Heart Rate x 0.6309) — 55.0969] x Time / 4.184
