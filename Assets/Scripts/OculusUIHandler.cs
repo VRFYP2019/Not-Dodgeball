@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OculusUIHandler : MonoBehaviour {
     public static OculusUIHandler instance;
@@ -61,7 +62,7 @@ public class OculusUIHandler : MonoBehaviour {
             }
 
             playerCam = c;
-            if (pv != null && pv.IsMine) {   // if there is a photonview, that's the camera we want for sure
+            if (pv != null) {   // if there is a photonview, that's the camera we want
                 break;
             }
         }
@@ -73,6 +74,19 @@ public class OculusUIHandler : MonoBehaviour {
                 vRFollowCanvas.enabled = false;
             }
         }
+        #endif
+
+        if (SceneManager.GetActiveScene().buildIndex == 1) {
+            GameManager.Instance.RestartEvent.AddListener(CloseAllUI);
+        }
+    }
+
+    private void CloseAllUI() {
+        foreach (Canvas canvas in canvases) {
+            canvas.gameObject.SetActive(false);
+        }
+        #if !UNITY_EDITOR
+        laserLineRenderer.enabled = false;
         #endif
     }
 }

@@ -12,6 +12,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         weightPanel,
         caloriePanel;
     public Text caloriesBurntText;
+    public Canvas rematchCanvas;
 
     private bool isMovesenseConncted = false;
     private float matchTime = 0.0f;
@@ -134,10 +135,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         if (caloriePanel.activeInHierarchy) {
             caloriePanel.SetActive(false);
             calorieCanvas.gameObject.SetActive(false);
-
-            #if !UNITY_EDITOR
-            OculusUIHandler.instance.laserLineRenderer.enabled = false;
-            #endif
+            rematchCanvas.gameObject.SetActive(true);
             return;
         }
     }
