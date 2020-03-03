@@ -10,6 +10,7 @@ using Photon.Realtime;
 public class EscapeMenu : MonoBehaviourPunCallbacks {
     private bool isEscaped = false;
     public Canvas pauseMenuCanvas;
+    public Canvas calorieCanvas;
 
     #if UNITY_EDITOR
     private Camera playerCam;
@@ -62,7 +63,10 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
 
     void Update() {
         if (Input.GetKeyDown ("escape") || OVRInput.GetDown(OVRInput.Button.Start)) {
-            isEscaped = TogglePause();
+            // Cannot open the escape menu if calorie stats is open
+            if (!calorieCanvas.gameObject.activeInHierarchy) {
+                isEscaped = TogglePause();
+            }
         }
     }
     
