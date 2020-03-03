@@ -210,16 +210,13 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             playerListEntries = new Dictionary<int, GameObject>();
         }
 
-        // Update targetPlayer's ready status for local player if in lobby scene
-        if (SceneManagerHelper.ActiveSceneBuildIndex == 0) {
-            if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
-                if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
-                    entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
-                }
+        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
+            if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
+                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
             }
-            if (PhotonNetwork.IsMasterClient) {
-                StartGameButton.interactable = CheckPlayersReady();
-            }
+        }
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.interactable = CheckPlayersReady();
         }
     }
 
@@ -336,6 +333,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     // Set all players to not ready
     public void UnreadyPlayers() {
-        // NOT IMPLEMENTED
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
+            PhotonHashtable props = new PhotonHashtable() { { "PLAYER_READY_KEY", false } };
+            p.SetCustomProperties(props);
+        }
     }
 }
