@@ -41,4 +41,9 @@ public class WeightSelection : MonoBehaviour {
         playerWeight = int.Parse(input);
         Debug.Log("Player is " + playerWeight + " kg!");
     }
+
+    // For setting weight via script
+    public void SetPlayerWeight(int weight) {
+        playerWeight = weight;
+    }
 }

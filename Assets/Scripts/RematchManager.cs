@@ -16,7 +16,11 @@ public class RematchManager : MonoBehaviour {
         #if !UNITY_EDITOR
         OculusUIHandler.instance.laserLineRenderer.enabled = false;
         #endif
-        NetworkController.Instance.PlayerLeaveRoom();
+        if (NetworkController.Instance != null) {
+            NetworkController.Instance.PlayerLeaveRoom();
+        } else {    // Probably lobby not loaded/built
+            Application.Quit();
+        }
     }
 
     public void Restart() {
@@ -25,6 +29,8 @@ public class RematchManager : MonoBehaviour {
         #endif
         rematchCanvas.gameObject.SetActive(false);
         GameManager.Instance.Restart();
-        NetworkController.Instance.UnreadyPlayers();
+        if (NetworkController.Instance != null) {
+            NetworkController.Instance.UnreadyPlayers();
+        }
     }
 }

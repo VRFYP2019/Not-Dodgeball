@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class CalorieManager : MonoBehaviourPunCallbacks {
     public Canvas calorieCanvas;
-    public GameObject 
+    public GameObject
+        useLastSavedPanel,
         genderPanel,
         agePanel,
         weightPanel,
@@ -76,7 +77,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         }
     }
 
-    public int calculateCalories() {
+    public int CalculateCalories() {
         isCalculating = true;
         int age = GetComponent<AgeSelection>().GetPlayerAge();
         bool isPlayerMale = GetComponent<GenderSelection>().IsPlayerMale();
@@ -102,7 +103,16 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
 
     public void ShowCalorieUI() {
         Debug.Log("CalorieManager: Match over showing calorie UI");
-        genderPanel.SetActive(true);
+
+        // If prefs are present, show last saved panel
+        if (PlayerPrefs.HasKey("isPlayerMale")) {
+            useLastSavedPanel.SetActive(true);
+            genderPanel.SetActive(false);
+        } else {
+            useLastSavedPanel.SetActive(false);
+            genderPanel.SetActive(true);
+
+        }
         agePanel.SetActive(false);
         weightPanel.SetActive(false);
         caloriePanel.SetActive(false);
@@ -114,6 +124,22 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
     }
 
     public void ToggleNextPanel() {
+        bool useLastSaved = false;
+        if (useLastSavedPanel.activeInHierarchy) {
+            useLastSavedPanel.SetActive(false);
+            useLastSaved = GetComponent<LastSavedProfileSelection>().IsUseLastSaved();
+            if (useLastSaved) { // skip to calorie panel directly
+                caloriePanel.SetActive(true);
+                // Disable re-saving to prevent user confusion
+                caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(false);
+                int caloriesBurnt = CalculateCalories();
+                caloriesBurntText.text = caloriesBurnt.ToString();
+            } else {
+                genderPanel.SetActive(true);
+                caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(true);
+            }
+            return;
+        }
         if (genderPanel.activeInHierarchy) {
             genderPanel.SetActive(false);
             agePanel.SetActive(true);
@@ -128,11 +154,18 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             weightPanel.SetActive(false);
             caloriePanel.SetActive(true);
 
-            int caloriesBurnt = calculateCalories();
+            int caloriesBurnt = CalculateCalories();
             caloriesBurntText.text = caloriesBurnt.ToString();
             return;
         }
         if (caloriePanel.activeInHierarchy) {
+            // If last saved profile was chosen, no re-saving
+            if (!useLastSaved) {
+                ProfileSavingSelection psp = GetComponent<ProfileSavingSelection>();
+                if (psp.IsSaveProfile()) {
+                    psp.SaveProfile();
+                }
+            }
             caloriePanel.SetActive(false);
             calorieCanvas.gameObject.SetActive(false);
             rematchCanvas.gameObject.SetActive(true);
