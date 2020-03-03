@@ -11,22 +11,18 @@ public class ScoreBoard : MonoBehaviour {
     public Text player1ScoreText, player2ScoreText, timeLeftText;
     public GameObject timeOverPanel;
     public bool isTimeOver;
-    private IEnumerator restartPromptCoroutine;
     private static readonly string timeOver = "TIME OVER";
-    private static readonly string pressTriggerToRestart = "PRESS TRIGGER TO RESTART";
 
     // Start is called before the first frame update
     void Start() {
-        restartPromptCoroutine = TimeOverRestartPrompt();
         Init();
-        GameManager.Instance.RestartEvent.AddListener(Restart);
+        GameManager.Instance.RestartEvent.AddListener(Init);
         GameManager.Instance.TimeOverEvent.AddListener(TimeOverHandler);
     }
 
     public void Init() {
         player1ScoreText.text = "0";
         player2ScoreText.text = "0";
-        timeLeftText.fontSize = Constants.FontSizes.scoreBoardNormal;
         isTimeOver = false;
         timeOverPanel.SetActive(false);
     }
@@ -63,24 +59,7 @@ public class ScoreBoard : MonoBehaviour {
 
     public void TimeOverHandler() {
         isTimeOver = true;
-        StartCoroutine(restartPromptCoroutine);
+        timeOverPanel.GetComponentInChildren<Text>().text = timeOver;
         timeOverPanel.SetActive(true);
-    }
-
-    public void Restart() {
-        StopCoroutine(restartPromptCoroutine);
-        Init();
-    }
-
-    private IEnumerator TimeOverRestartPrompt() {
-        Text timeOverText = timeOverPanel.GetComponentInChildren<Text>();
-        while (true) {
-            timeOverText.fontSize = Constants.FontSizes.scoreBoardNormal;
-            timeOverText.text = timeOver;
-            yield return new WaitForSeconds(3f);
-            timeOverText.fontSize = Constants.FontSizes.scoreBoardSmall;
-            timeOverText.text = pressTriggerToRestart;
-            yield return new WaitForSeconds(3f);
-        }
     }
 }
