@@ -89,6 +89,7 @@ public class VRFollowCanvas : MonoBehaviour {
 
     // Determines if this RectTransform is fully visible from the specified camera.
     private bool IsFullyVisibleFrom(RectTransform rectTransform, Camera camera) {
-        return CountCornersVisibleFrom(rectTransform, camera) == 4; // True if all 4 corners are visible
+        return CountCornersVisibleFrom(rectTransform, camera) == 4 // True if all 4 corners are visible
+            && Vector3.Dot(rectTransform.forward, camera.transform.forward) > 0.5f; // True if at least half aligned
     }
 }
