@@ -1,0 +1,67 @@
+﻿using Photon.Pun;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class OculusUIHandler : MonoBehaviour {
+    public static OculusUIHandler instance;
+    public Canvas[] canvases;
+
+    #if UNITY_EDITOR
+    private Camera playerCam;
+    #endif
+
+    [Header("Desktop")]
+    [SerializeField]
+    private GameObject[] desktopObjects = null;
+
+    [Header("OVR")]
+    [SerializeField]
+    private GameObject[] oculusObjects = null;
+    [HideInInspector]
+    public LineRenderer laserLineRenderer = null;
+
+    private void Awake() {
+        instance = this;
+    }
+
+    // Start is called before the first frame update
+    void Start() {
+        if (OVRPlugin.productName != null && OVRPlugin.productName.StartsWith("Oculus")) {
+            foreach (GameObject go in desktopObjects) {
+                go.SetActive(false);
+            }
+            foreach (GameObject go in oculusObjects) {
+                go.SetActive(true);
+
+                // UIHelpers must be the first go in oculusObjects
+                if (laserLineRenderer == null) {
+                    laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
+                }
+            }
+        }
+
+        #if UNITY_EDITOR
+        Camera[] cams = FindObjectsOfType<Camera>();
+        foreach (Camera c in cams) {
+            PhotonView pv = c.GetComponentInParent<PhotonView>();
+            if (!c.isActiveAndEnabled) {    // if camera is inactive or disabled, skip
+                continue;
+            }
+
+            playerCam = c;
+            if (pv != null && pv.IsMine) {   // if there is a photonview, that's the camera we want for sure
+                break;
+            }
+        }
+        foreach (Canvas canvas in canvases) {
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.worldCamera = playerCam;
+            VRFollowCanvas vRFollowCanvas = canvas.GetComponentInParent<VRFollowCanvas>();
+            if (vRFollowCanvas != null) {
+                vRFollowCanvas.enabled = false;
+            }
+        }
+        #endif
+    }
+}

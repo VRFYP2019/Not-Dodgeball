@@ -21,51 +21,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
     private List<int?> aveHeartRates = new List<int?>();
     private bool isCalculating = false;
 
-    #if UNITY_EDITOR
-    private Camera playerCam;
-    #endif
-
-    [Header("Desktop")]
-    [SerializeField]
-    private GameObject[] desktopObjects = null;
-
-    [Header("OVR")]
-    [SerializeField]
-    private GameObject[] oculusObjects = null;
-    private LineRenderer laserLineRenderer = null;
-
     void Start() {
-        if (OVRPlugin.productName != null && OVRPlugin.productName.StartsWith("Oculus")) {
-            foreach (GameObject go in desktopObjects) {
-                go.SetActive(false);
-            }
-            foreach (GameObject go in oculusObjects) {
-                go.SetActive(true);
-
-                // UIHelpers must be the first go in oculusObjects
-                if (laserLineRenderer == null) {
-                    laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
-                }
-            }
-        }
-
-        #if UNITY_EDITOR
-        Camera[] cams = FindObjectsOfType<Camera>();
-        foreach (Camera c in cams) {
-            PhotonView pv = c.GetComponentInParent<PhotonView>();
-            if (pv == null || !c.isActiveAndEnabled) {
-                continue;
-            } else {
-                playerCam = c;
-                break;
-            }
-        }
-        calorieCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        calorieCanvas.worldCamera = playerCam;
-        GetComponent<VRFollowCanvas>().enabled = false;
-        #endif
-
-        calorieCanvas.gameObject.SetActive(false);
         GameManager.Instance.TimeOverEvent.AddListener(ShowCalorieUI);
         // If player connected a movesense device
         if (MovesenseSubscriber.instance != null && MovesenseSubscriber.instance.heartRate != null) {
@@ -79,6 +35,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             Debug.Log("CalorieManager: Movesense is NOT CONNECTED, not recording heartrate");
             isMovesenseConncted = false;
         }
+        calorieCanvas.gameObject.SetActive(false);
     }
 
     void Update() {
@@ -151,7 +108,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         calorieCanvas.gameObject.SetActive(true);
 
         #if !UNITY_EDITOR
-        laserLineRenderer.enabled = true;
+        OculusUIHandler.instance.laserLineRenderer.enabled = true;
         #endif
     }
 
@@ -179,7 +136,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             calorieCanvas.gameObject.SetActive(false);
 
             #if !UNITY_EDITOR
-            laserLineRenderer.enabled = false;
+            OculusUIHandler.instance.laserLineRenderer.enabled = false;
             #endif
             return;
         }
