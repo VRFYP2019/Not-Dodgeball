@@ -21,6 +21,17 @@ public class OculusUIHandler : MonoBehaviour {
     [HideInInspector]
     public LineRenderer laserLineRenderer = null;
 
+    public bool IsAnyUIOpen {
+        get {
+            foreach (Canvas canvas in canvases) {
+                if (canvas.isActiveAndEnabled) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     private void Awake() {
         instance = this;
     }

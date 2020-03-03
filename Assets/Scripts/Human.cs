@@ -44,6 +44,12 @@ public class Human : Player {
     // Update is called once per frame
     protected override void Update() {
         base.Update();
+
+        // if any UI open, short circuit
+        if (OculusUIHandler.instance.IsAnyUIOpen) {
+            return;
+        }
+
         // if game ended and trigger pressed, restart the game
         if (GameManager.Instance.isGameEnded) {
             if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
