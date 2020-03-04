@@ -12,52 +12,9 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     public Canvas pauseMenuCanvas;
     public Canvas calorieCanvas;
 
-    #if UNITY_EDITOR
-    private Camera playerCam;
-    #endif
-
-    [Header("Desktop")]
-    [SerializeField]
-    private GameObject[] desktopObjects = null;
-
-    [Header("OVR")]
-    [SerializeField]
-    private GameObject[] oculusObjects = null;
-    private LineRenderer laserLineRenderer = null;
-
     private readonly byte LeaveGameEvent = 2;
 
     void Start() {
-        if (OVRPlugin.productName != null && OVRPlugin.productName.StartsWith("Oculus")) {
-            foreach (GameObject go in desktopObjects) {
-                go.SetActive(false);
-            }
-            foreach (GameObject go in oculusObjects) {
-                go.SetActive(true);
-
-                // UIHelpers must be the first go in oculusObjects
-                if (laserLineRenderer == null) {
-                    laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
-                }
-            }
-        }
-
-        #if UNITY_EDITOR
-        Camera[] cams = FindObjectsOfType<Camera>();
-        foreach (Camera c in cams) {
-            PhotonView pv = c.GetComponentInParent<PhotonView>();
-            if (pv == null || !c.isActiveAndEnabled) {
-                continue;
-            } else {
-                playerCam = c;
-                break;
-            }
-        }
-        pauseMenuCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        pauseMenuCanvas.worldCamera = playerCam;
-        GetComponent<VRFollowCanvas>().enabled = false;
-        #endif
-
         pauseMenuCanvas.gameObject.SetActive(false);
     }
 
@@ -79,9 +36,9 @@ public class EscapeMenu : MonoBehaviourPunCallbacks {
     private bool TogglePause() {
         #if !UNITY_EDITOR
         if (!isEscaped) {
-            laserLineRenderer.enabled = true;
+            OculusUIHandler.instance.laserLineRenderer.enabled = true;
         } else {
-            laserLineRenderer.enabled = false;
+            OculusUIHandler.instance.laserLineRenderer.enabled = false;
         }
         #endif
 

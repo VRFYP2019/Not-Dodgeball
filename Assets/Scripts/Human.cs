@@ -44,23 +44,10 @@ public class Human : Player {
     // Update is called once per frame
     protected override void Update() {
         base.Update();
-        // if game ended and trigger pressed, restart the game
-        if (GameManager.Instance.isGameEnded) {
-            if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {
-                if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)
-                    || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) {
-                    GameManager.Instance.Restart();
-                }
-            } else if (GameManager.Instance.playerPlatform == PlayerPlatform.EDITOR) {
-                if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)) {
-                    GameManager.Instance.Restart();
-                }
 
-            } else if (GameManager.Instance.playerPlatform == PlayerPlatform.STEAMVR) {
-                if (trigger.GetStateDown(SteamVR_Input_Sources.Any)) {
-                    GameManager.Instance.Restart();
-                }
-            }
+        // if any UI open, short circuit
+        if (OculusUIHandler.instance.IsAnyUIOpen) {
+            return;
         }
 
         if (GameManager.Instance.playerPlatform == PlayerPlatform.OCULUS) {

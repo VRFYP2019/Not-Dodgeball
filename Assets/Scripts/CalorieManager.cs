@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 public class CalorieManager : MonoBehaviourPunCallbacks {
     public Canvas calorieCanvas;
-    public GameObject 
+    public GameObject
+        useLastSavedPanel,
         genderPanel,
         agePanel,
         weightPanel,
         caloriePanel;
     public Text caloriesBurntText;
+    public Canvas rematchCanvas;
 
     private bool isMovesenseConncted = false;
     private float matchTime = 0.0f;
@@ -21,51 +23,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
     private List<int?> aveHeartRates = new List<int?>();
     private bool isCalculating = false;
 
-    #if UNITY_EDITOR
-    private Camera playerCam;
-    #endif
-
-    [Header("Desktop")]
-    [SerializeField]
-    private GameObject[] desktopObjects = null;
-
-    [Header("OVR")]
-    [SerializeField]
-    private GameObject[] oculusObjects = null;
-    private LineRenderer laserLineRenderer = null;
-
     void Start() {
-        if (OVRPlugin.productName != null && OVRPlugin.productName.StartsWith("Oculus")) {
-            foreach (GameObject go in desktopObjects) {
-                go.SetActive(false);
-            }
-            foreach (GameObject go in oculusObjects) {
-                go.SetActive(true);
-
-                // UIHelpers must be the first go in oculusObjects
-                if (laserLineRenderer == null) {
-                    laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
-                }
-            }
-        }
-
-        #if UNITY_EDITOR
-        Camera[] cams = FindObjectsOfType<Camera>();
-        foreach (Camera c in cams) {
-            PhotonView pv = c.GetComponentInParent<PhotonView>();
-            if (pv == null || !c.isActiveAndEnabled) {
-                continue;
-            } else {
-                playerCam = c;
-                break;
-            }
-        }
-        calorieCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        calorieCanvas.worldCamera = playerCam;
-        GetComponent<VRFollowCanvas>().enabled = false;
-        #endif
-
-        calorieCanvas.gameObject.SetActive(false);
         GameManager.Instance.TimeOverEvent.AddListener(ShowCalorieUI);
         // If player connected a movesense device
         if (MovesenseSubscriber.instance != null && MovesenseSubscriber.instance.heartRate != null) {
@@ -79,6 +37,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             Debug.Log("CalorieManager: Movesense is NOT CONNECTED, not recording heartrate");
             isMovesenseConncted = false;
         }
+        calorieCanvas.gameObject.SetActive(false);
     }
 
     void Update() {
@@ -118,7 +77,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         }
     }
 
-    public int calculateCalories() {
+    public int CalculateCalories() {
         isCalculating = true;
         int age = GetComponent<AgeSelection>().GetPlayerAge();
         bool isPlayerMale = GetComponent<GenderSelection>().IsPlayerMale();
@@ -144,18 +103,43 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
 
     public void ShowCalorieUI() {
         Debug.Log("CalorieManager: Match over showing calorie UI");
-        genderPanel.SetActive(true);
+
+        // If prefs are present, show last saved panel
+        if (PlayerPrefs.HasKey("isPlayerMale")) {
+            useLastSavedPanel.SetActive(true);
+            genderPanel.SetActive(false);
+        } else {
+            useLastSavedPanel.SetActive(false);
+            genderPanel.SetActive(true);
+
+        }
         agePanel.SetActive(false);
         weightPanel.SetActive(false);
         caloriePanel.SetActive(false);
         calorieCanvas.gameObject.SetActive(true);
 
         #if !UNITY_EDITOR
-        laserLineRenderer.enabled = true;
+        OculusUIHandler.instance.laserLineRenderer.enabled = true;
         #endif
     }
 
     public void ToggleNextPanel() {
+        bool useLastSaved = false;
+        if (useLastSavedPanel.activeInHierarchy) {
+            useLastSavedPanel.SetActive(false);
+            useLastSaved = GetComponent<LastSavedProfileSelection>().IsUseLastSaved();
+            if (useLastSaved) { // skip to calorie panel directly
+                caloriePanel.SetActive(true);
+                // Disable re-saving to prevent user confusion
+                caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(false);
+                int caloriesBurnt = CalculateCalories();
+                caloriesBurntText.text = caloriesBurnt.ToString();
+            } else {
+                genderPanel.SetActive(true);
+                caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(true);
+            }
+            return;
+        }
         if (genderPanel.activeInHierarchy) {
             genderPanel.SetActive(false);
             agePanel.SetActive(true);
@@ -170,17 +154,21 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             weightPanel.SetActive(false);
             caloriePanel.SetActive(true);
 
-            int caloriesBurnt = calculateCalories();
+            int caloriesBurnt = CalculateCalories();
             caloriesBurntText.text = caloriesBurnt.ToString();
             return;
         }
         if (caloriePanel.activeInHierarchy) {
+            // If last saved profile was chosen, no re-saving
+            if (!useLastSaved) {
+                ProfileSavingSelection psp = GetComponent<ProfileSavingSelection>();
+                if (psp.IsSaveProfile()) {
+                    psp.SaveProfile();
+                }
+            }
             caloriePanel.SetActive(false);
             calorieCanvas.gameObject.SetActive(false);
-
-            #if !UNITY_EDITOR
-            laserLineRenderer.enabled = false;
-            #endif
+            rematchCanvas.gameObject.SetActive(true);
             return;
         }
     }

@@ -41,4 +41,9 @@ public class AgeSelection : MonoBehaviour {
         playerAge = int.Parse(input);
         Debug.Log("Player is " + playerAge + " years old!");
     }
+
+    // For setting age via script
+    public void SetPlayerAge(int age) {
+        playerAge = age;
+    }
 }

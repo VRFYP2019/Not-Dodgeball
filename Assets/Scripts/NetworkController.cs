@@ -62,15 +62,16 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        AssignRefs();
+        UnreadyPlayers();
         if (scene.buildIndex == 0) {
-            AssignRefs();
             string LocalNickname = PhotonNetwork.LocalPlayer.NickName;
             PlayerNameInput.text = (LocalNickname.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : LocalNickname;
-            if (isReturnToRoom) {
-                isReturnToRoom = false;
-                OnLeftRoom(); // To clear player entries
-                OnJoinedRoom();
-            }
+        }
+        if (isReturnToRoom || scene.buildIndex == 1) {
+            isReturnToRoom = false;
+            OnLeftRoom(); // To clear player entries
+            OnJoinedRoom();
         }
     }
 
@@ -144,9 +145,11 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public override void OnJoinedRoom() {
-        ConnectionStatusText.text = "In Room: " + PhotonNetwork.CurrentRoom.Name;
-        LobbyInfoPanel.SetActive(false);
-        RoomInfoPanel.SetActive(true);
+        if (SceneManager.GetActiveScene().buildIndex == 0) {
+            ConnectionStatusText.text = "In Room: " + PhotonNetwork.CurrentRoom.Name;
+            LobbyInfoPanel.SetActive(false);
+            RoomInfoPanel.SetActive(true);
+        }
 
         if (playerListEntries == null) {
             playerListEntries = new Dictionary<int, GameObject>();
@@ -207,16 +210,13 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             playerListEntries = new Dictionary<int, GameObject>();
         }
 
-        // Update targetPlayer's ready status for local player if in lobby scene
-        if (SceneManagerHelper.ActiveSceneBuildIndex == 0) {
-            if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
-                if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
-                    entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
-                }
+        if (playerListEntries.TryGetValue(targetPlayer.ActorNumber, out GameObject entry)) {
+            if (changedProps.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
+                entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
             }
-            if (PhotonNetwork.IsMasterClient) {
-                StartGameButton.interactable = CheckPlayersReady();
-            }
+        }
+        if (PhotonNetwork.IsMasterClient) {
+            StartGameButton.interactable = CheckPlayersReady();
         }
     }
 
@@ -329,5 +329,13 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         }
 
         return true;
+    }
+
+    // Set all players to not ready
+    public void UnreadyPlayers() {
+        foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
+            PhotonHashtable props = new PhotonHashtable() { { "PLAYER_READY_KEY", false } };
+            p.SetCustomProperties(props);
+        }
     }
 }
