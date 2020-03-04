@@ -29,9 +29,9 @@ public class RematchManager : MonoBehaviour {
     }
 
     public void Restart() {
-#if !UNITY_EDITOR
+        #if !UNITY_EDITOR
         OculusUIHandler.instance.laserLineRenderer.enabled = false;
-#endif
+        #endif
         rematchCanvas.gameObject.SetActive(false);
         GameManager.Instance.Restart();
         if (NetworkController.Instance != null) {
