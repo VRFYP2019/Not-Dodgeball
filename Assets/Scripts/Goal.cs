@@ -10,12 +10,38 @@ using Utils;
 // Goalpost MUST be a child of the VR camera
 // Goalpost cannot move outside the bounds of the room
 public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
-    private static readonly float X_OFFSET = 0f, Y_OFFSET = 0f, Z_OFFSET_PLAYER_ONE = -1.25f, Z_OFFSET_PLAYER_TWO = 1.25f;
+    [SerializeField]
+    private GoalType goalType;
+    enum GoalType {
+        REGULAR,
+        HORIZONTAL_WALL,
+        VERITCAL_WALL
+    }
+    private static readonly float
+        X_OFFSET = 0f,
+        Y_OFFSET = 0f,
+        Z_OFFSET_PLAYER_ONE = -1.25f,
+        Z_OFFSET_PLAYER_TWO = 1.25f,
+        Z_P1 = -12.65f, // for wall
+        Z_P2 = 3.65f; // for wall
+    private static readonly float
+        X_MIN = -2f,
+        X_MAX = 2f,
+        X_FIXED = 0.0f, // for H wall
+        Y_MIN = 0.5f,
+        Y_MAX = 3.5f,
+        Y_FIXED = 2f, // for V wall
+        Z_MIN = -12f,
+        Z_MAX = 3f;
+    private static readonly float
+        PLAYER_1_ROTATION = 180f,
+        PLAYER_2_ROTATION = 0;
     private static readonly float SNAP_THRESHOLD = 1.5f;
-    private static readonly float X_MIN = -2f, X_MAX = 2f, Y_MIN = 0.5f, Y_MAX = 3.5f, Z_MIN = -12f, Z_MAX =3f;
-    private static readonly float PLAYER_1_ROTATION = 180f, PLAYER_2_ROTATION = 0;
-
-    private Vector3 parentPos, newPos, lastSafePos;
+    private Vector3
+        wallPos, // keep wallgoals on the wall
+        parentPos,
+        newPos,
+        lastSafePos;
     private float yRotation;
     private float zOffset;
     private GoalState goalState;
@@ -54,18 +80,36 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
-    private void InitRotationAndOffset() {
+    private void InitRegularGoal() {
         if (playerNumber == PlayerNumber.ONE) {
             yRotation = PLAYER_1_ROTATION;
             zOffset = Z_OFFSET_PLAYER_ONE;
         } else {
-            zOffset = Z_OFFSET_PLAYER_TWO;
             yRotation = PLAYER_2_ROTATION;
+            zOffset = Z_OFFSET_PLAYER_TWO;
+        }
+    }
+
+    private void InitWallGoal() {
+        if (playerNumber == PlayerNumber.ONE) {
+            yRotation = PLAYER_1_ROTATION;
+            wallPos = new Vector3(0f, 2f, Z_P1);
+        } else {
+            yRotation = PLAYER_2_ROTATION;
+            wallPos = new Vector3(0f, 2f, Z_P2);
         }
     }
 
     public void ResetGoal() {
-        InitRotationAndOffset();
+        switch (goalType) {
+            case GoalType.REGULAR:
+                InitRegularGoal();
+                break;
+            case GoalType.VERITCAL_WALL:
+            case GoalType.HORIZONTAL_WALL:
+                InitWallGoal();
+                break;
+        }
         goalState = GoalState.FOLLOWING;
     }
 
@@ -94,12 +138,21 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     // Update is called once per frame
     void Update() {
-        HandleGoalPosition();
+        switch (goalType) {
+            case GoalType.REGULAR:
+                HandleRegularGoalPosition();
+                break;
+            case GoalType.VERITCAL_WALL:
+                HandleVerticalWallGoalPosition();
+                break;
+            case GoalType.HORIZONTAL_WALL:
+                HandleHorizontalWallGoalPosition();
+                break;
+        }
     }
 
-    private void HandleGoalPosition() {
+    private void HandleRegularGoalPosition() {
         parentPos = transform.parent.position;
-        
         if (goalState == GoalState.FOLLOWING) {
             // Prevent goal from exceeding room bounds
             newPos.x = Mathf.Clamp(parentPos.x + X_OFFSET, X_MIN, X_MAX);
@@ -115,7 +168,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
             lastSafePos = newPos;
             UpdateGoalPosition(newPos);
 
-            if (CheckForSnap()) {
+            if (CheckForSnap(GoalType.REGULAR)) {
                 SwitchGoalState(GoalState.FOLLOWING);
             }
 
@@ -124,6 +177,51 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         }
     }
 
+    private void HandleVerticalWallGoalPosition() {
+        parentPos = transform.parent.position;
+        if (goalState == GoalState.FOLLOWING) {
+            // Prevent goal from exceeding room bounds
+            newPos = wallPos;
+            newPos.x = Mathf.Clamp(parentPos.x, X_MIN, X_MAX);
+            lastSafePos = newPos;
+            UpdateGoalPosition(newPos);
+
+        } else if (goalState == GoalState.TRANSITION) {
+            newPos.x = Mathf.Clamp(Mathf.Lerp(lastSafePos.x, parentPos.x, Time.deltaTime), X_MIN, X_MAX);
+            lastSafePos = newPos;
+            UpdateGoalPosition(newPos);
+
+            if (CheckForSnap(GoalType.VERITCAL_WALL)) {
+                SwitchGoalState(GoalState.FOLLOWING);
+            }
+
+        } else if (goalState == GoalState.STATIONARY) {
+            UpdateGoalPosition(lastSafePos);
+        }
+    }
+
+    private void HandleHorizontalWallGoalPosition() {
+        parentPos = transform.parent.position;
+        if (goalState == GoalState.FOLLOWING) {
+            // Prevent goal from exceeding room bounds
+            newPos = wallPos;
+            newPos.y = Mathf.Clamp(parentPos.y, Y_MIN, Y_MAX);
+            lastSafePos = newPos;
+            UpdateGoalPosition(newPos);
+
+        } else if (goalState == GoalState.TRANSITION) {
+            newPos.x = Mathf.Clamp(Mathf.Lerp(lastSafePos.y, parentPos.y, Time.deltaTime), Y_MIN, Y_MAX);
+            lastSafePos = newPos;
+            UpdateGoalPosition(newPos);
+
+            if (CheckForSnap(GoalType.HORIZONTAL_WALL)) {
+                SwitchGoalState(GoalState.FOLLOWING);
+            }
+
+        } else if (goalState == GoalState.STATIONARY) {
+            UpdateGoalPosition(lastSafePos);
+        }
+    }
     private void UpdateGoalPosition(Vector3 pos) {
         //transform.localPosition = pos;
         transform.position = pos;
@@ -131,12 +229,24 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     // Returns true the goals currPos is within the threshold
-    private bool CheckForSnap() {
-        float distToPlayer = Vector3.Distance(parentPos, transform.position);
+    private bool CheckForSnap(GoalType type) {
+        float distToPlayer = 0f;
+        switch (type) {
+            case GoalType.REGULAR:
+                distToPlayer = Vector3.Distance(parentPos, transform.position);
+                break;
+            case GoalType.VERITCAL_WALL:
+                distToPlayer = Mathf.Abs(parentPos.x - transform.position.x);
+                break;
+            case GoalType.HORIZONTAL_WALL:
+                distToPlayer = Mathf.Abs(parentPos.y - transform.position.y);
+                break;
+        }
+
         if (distToPlayer <= SNAP_THRESHOLD) {
             return true;
         }
-         return false;
+        return false;
     }
 
     void OnTriggerEnter(Collider col) {
