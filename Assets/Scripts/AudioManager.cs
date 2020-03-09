@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour {
     public AudioFile[] audioSources;
     public Dictionary<string,AudioFile> audioFiles;
     static AudioSource musicPlayer;
+    int currBgm;
 
     void Awake () { 
         InitInstance();
@@ -16,7 +17,12 @@ public class AudioManager : MonoBehaviour {
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        StartRandomMusic();
+        if (scene.buildIndex == 0) {
+            PlayLobbyMusic();
+        } else if (scene.buildIndex == 1) {
+            PlayRandomMusic();
+            GameManager.Instance.RestartEvent.AddListener(PlayRandomMusic);
+        }
     }
 
     private void InitInstance() {
@@ -54,23 +60,33 @@ public class AudioManager : MonoBehaviour {
         s.source.PlayOneShot(s.audioClip, s.volume);
     }
 
-    private void StartRandomMusic() {
-        int bgmToPlay = Random.Range(1, 4);
+    private void PlayLobbyMusic() {
+        PlayMusic("sportsbgm3");
+        currBgm = 3;
+    }
+
+    private void PlayRandomMusic() {
+        int bgmToPlay = Random.Range(0, 3);
+        while (bgmToPlay == currBgm) {
+            bgmToPlay = Random.Range(0, 3);
+        }
+        currBgm = bgmToPlay;
         switch (bgmToPlay) {
+            case 0:
+                PlayMusic("sportsbgm0");
+                break;
             case 1:
                 PlayMusic("sportsbgm1");
                 break;
             case 2:
                 PlayMusic("sportsbgm2");
                 break;
-            case 3:
-                PlayMusic("sportsbgm3");
-                break;
         }
     }
 
     public static void PlayMusic (string name) {
         if (!Instance.audioFiles.ContainsKey(name)) {
+            Debug.Log("Music file " + name + " not found");
             return;
         }
 
