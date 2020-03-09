@@ -11952,17 +11952,17 @@ PrefabInstance:
     - target: {fileID: 7597881489384870255, guid: a0deaeb5b05cc0047a1f7aeef0d9bd42,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.5182257
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7597881489384870255, guid: a0deaeb5b05cc0047a1f7aeef0d9bd42,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.078475
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7597881489384870255, guid: a0deaeb5b05cc0047a1f7aeef0d9bd42,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.7791724
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7597881489384870255, guid: a0deaeb5b05cc0047a1f7aeef0d9bd42,
         type: 3}
@@ -12745,6 +12745,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6584613948626515278, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
+        type: 3}
+      propertyPath: m_Name
+      value: OculusUIHandler
+      objectReference: {fileID: 0}
     - target: {fileID: 6584613948626515276, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12799,11 +12804,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6584613948626515278, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
-        type: 3}
-      propertyPath: m_Name
-      value: OculusUIHandler
       objectReference: {fileID: 0}
     - target: {fileID: 6584613948626515279, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
         type: 3}

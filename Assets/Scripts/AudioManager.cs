@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour {
     public static AudioManager Instance = null;
@@ -14,9 +15,14 @@ public class AudioManager : MonoBehaviour {
         InitAudioFiles();
     }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        StartRandomMusic();
+    }
+
     private void InitInstance() {
         if (Instance == null) {
             Instance = this;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         } else if (Instance != this) {
             Destroy (gameObject);
         }
@@ -46,17 +52,36 @@ public class AudioManager : MonoBehaviour {
 
         AudioFile s = Instance.audioFiles[name];
         s.source.PlayOneShot(s.audioClip, s.volume);
-    } 
+    }
+
+    private void StartRandomMusic() {
+        int bgmToPlay = Random.Range(1, 4);
+        switch (bgmToPlay) {
+            case 1:
+                PlayMusic("sportsbgm1");
+                break;
+            case 2:
+                PlayMusic("sportsbgm2");
+                break;
+            case 3:
+                PlayMusic("sportsbgm3");
+                break;
+        }
+    }
 
     public static void PlayMusic (string name) {
-        if (musicPlayer.clip == null || musicPlayer.clip.name != name) {
-            musicPlayer.clip = Instance.audioFiles[name].audioClip;
-            musicPlayer.Stop ();
-            musicPlayer.loop = true;
-            musicPlayer.Play ();
-        } else {
-            musicPlayer.loop = true;
-            musicPlayer.Play ();
+        if (!Instance.audioFiles.ContainsKey(name)) {
+            return;
+        }
+
+        AudioFile s = Instance.audioFiles[name];
+        if (musicPlayer == null) {
+            musicPlayer = s.source;
+            musicPlayer.Play();
+        } else if (musicPlayer != s.source) {
+            musicPlayer.Stop();
+            musicPlayer = s.source;
+            musicPlayer.Play();
         }
     }
 
