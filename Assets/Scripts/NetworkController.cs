@@ -26,6 +26,12 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         RoomInfoContent,
         PlayerListEntryPrefab;
 
+    private Toggle
+        RegGoalToggle,
+        VWallGoalToggle,
+        HWallGoalToggle;
+
+    private Slider RoundDurationSlider;
     private Button StartGameButton;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
@@ -89,6 +95,11 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         RoomInfoContent = NetworkUIRefs.Instance.RoomInfoContent;
         StartGameButton = NetworkUIRefs.Instance.StartGameButton;
         PlayerListEntryPrefab = NetworkUIRefs.Instance.PlayerListEntryPrefab;
+
+        RegGoalToggle = NetworkUIRefs.Instance.RegGoalToggle;
+        VWallGoalToggle = NetworkUIRefs.Instance.VWallGoalToggle;
+        HWallGoalToggle = NetworkUIRefs.Instance.HWallGoalToggle;
+        RoundDurationSlider = NetworkUIRefs.Instance.RoundDurationSlider;
     }
 
     public void OnEvent(EventData photonEvent) {
@@ -168,8 +179,10 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         if (PhotonNetwork.IsMasterClient) {
             StartGameButton.gameObject.SetActive(true);
             StartGameButton.interactable = CheckPlayersReady();
+            SetRoomSettingsUI(true);
         } else {
             StartGameButton.gameObject.SetActive(false);
+            SetRoomSettingsUI(false);
         }
 
         PhotonHashtable props = new PhotonHashtable {{"PLAYER_LOADED_LEVEL_KEY", false}};
@@ -202,6 +215,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         if (PhotonNetwork.IsMasterClient) {
             StartGameButton.gameObject.SetActive(true);
             StartGameButton.interactable = CheckPlayersReady();
+            SetRoomSettingsUI(true);
         }
     }
 
@@ -217,6 +231,32 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         }
         if (PhotonNetwork.IsMasterClient) {
             StartGameButton.interactable = CheckPlayersReady();
+        }
+    }
+
+    public override void OnRoomPropertiesUpdate(PhotonHashtable changedProps) {
+        // Update Room Settings UI to match Host's/Room's settings
+        if (!PhotonNetwork.IsMasterClient) {
+            if (changedProps.TryGetValue("RoomGoalType", out object temp)) {
+                if (temp is byte) {
+                    GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType) , temp);
+                    switch (type) {
+                        case GoalType.REGULAR:
+                            RegGoalToggle.isOn = true;
+                        break;
+                        case GoalType.VERITCAL_WALL:
+                            VWallGoalToggle.isOn = true;
+                        break;
+                        case GoalType.HORIZONTAL_WALL:
+                            HWallGoalToggle.isOn = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (changedProps.TryGetValue("RoomRoundDuration", out object roomRoundDuration)) {
+            // TODO: update text to show round duration time in minutes
         }
     }
 
@@ -336,6 +376,41 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             PhotonHashtable props = new PhotonHashtable() { { "PLAYER_READY_KEY", false } };
             p.SetCustomProperties(props);
+        }
+    }
+
+    private void SetRoomSettingsUI(bool isHost) {
+        RegGoalToggle.interactable = isHost;
+        VWallGoalToggle.interactable = isHost;
+        HWallGoalToggle.interactable = isHost;
+        RoundDurationSlider.gameObject.SetActive(isHost);
+    }
+
+    public void HostChangedRoomGoalType() {
+        if (RegGoalToggle.isOn) {
+            SetRoomGoalType(GoalType.REGULAR);
+        } else if (VWallGoalToggle.isOn) {
+            SetRoomGoalType(GoalType.VERITCAL_WALL);
+        } else if (HWallGoalToggle.isOn) {
+            SetRoomGoalType(GoalType.HORIZONTAL_WALL);
+        }
+    }
+
+    private void SetRoomGoalType(GoalType type) {
+        if (PhotonNetwork.IsMasterClient) {
+            Debug.Log ("Room Goal Type Changed:" + type);
+            PhotonHashtable setRoomProperties = new PhotonHashtable();
+            setRoomProperties.Add("RoomGoalType", (byte)type);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(setRoomProperties);
+        }
+    }
+
+    public void SetRoomRoundDuration(int minutes) {
+        if (PhotonNetwork.IsMasterClient) {
+            Debug.Log ("Room Round Duration Changed:" + minutes); // TODO: need x60 to get gameDuration
+            PhotonHashtable setRoomProperties = new PhotonHashtable();
+            setRoomProperties.Add("RoomRoundDuration", minutes);
+            PhotonNetwork.CurrentRoom.SetCustomProperties(setRoomProperties);
         }
     }
 }

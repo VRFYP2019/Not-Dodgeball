@@ -1,22 +1,25 @@
-﻿using Photon.Pun;
-using Photon.Realtime;
-using ExitGames.Client.Photon;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
+
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
+
 // Manages the goalpost position and keeps track of score for that player
 // Goalpost MUST be a child of the VR camera
 // Goalpost cannot move outside the bounds of the room
+public enum GoalType {
+    REGULAR = 0,
+    HORIZONTAL_WALL = 1,
+    VERITCAL_WALL = 2
+}
+
 public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
-    [SerializeField]
     private GoalType goalType;
-    enum GoalType {
-        REGULAR,
-        HORIZONTAL_WALL,
-        VERITCAL_WALL
-    }
     private static readonly float
         X_OFFSET = 0f,
         Y_OFFSET = 0f,
@@ -68,6 +71,18 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         } else {
             playerNumber = PlayerNumber.TWO;
         }
+        PhotonHashtable hash = PhotonNetwork.CurrentRoom.CustomProperties;
+        object temp;
+        if (hash.TryGetValue("RoomGoalType", out temp)) {
+            if (temp is byte) {
+                goalType = (GoalType)temp;
+            } else {
+                Debug.Log("RoomGoalType: unexpected custom property value type");
+            }
+        }  else  {
+            Debug.Log("RoomGoalType: custom property not found");
+        }
+        Debug.Log ("Curr room goaltype:" + goalType);
         ResetGoal();
         GameManager.Instance.RestartEvent.AddListener(ResetGoal);
     }
