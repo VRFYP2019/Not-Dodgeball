@@ -75,11 +75,12 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         object temp;
         if (hash.TryGetValue("RoomGoalType", out temp)) {
             if (temp is byte) {
-                goalType = (GoalType)temp;
+                goalType = (GoalType)System.Enum.ToObject(typeof(GoalType), temp);
+                Debug.Log("goalType for this game: " + goalType);
             } else {
                 Debug.Log("RoomGoalType: unexpected custom property value type");
             }
-        }  else  {
+        } else {
             Debug.Log("RoomGoalType: custom property not found");
         }
         Debug.Log ("Curr room goaltype:" + goalType);

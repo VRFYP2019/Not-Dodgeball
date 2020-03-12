@@ -74,10 +74,38 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             string LocalNickname = PhotonNetwork.LocalPlayer.NickName;
             PlayerNameInput.text = (LocalNickname.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : LocalNickname;
         }
-        if (isReturnToRoom || scene.buildIndex == 1) {
+        if (isReturnToRoom) {
             isReturnToRoom = false;
             OnLeftRoom(); // To clear player entries
             OnJoinedRoom();
+        }
+        if (scene.buildIndex == 1) { // For reset game UI
+            foreach (GameObject entry in playerListEntries.Values) {
+                Destroy(entry.gameObject);
+            }
+
+            playerListEntries.Clear();
+            playerListEntries = new Dictionary<int, GameObject>();
+
+            // Create and add PlayerListEntryPrefabs for every player in the room to scrollview
+            foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
+                GameObject entry = CreateEntry(p);
+
+                if (p.CustomProperties.TryGetValue("PLAYER_READY_KEY", out object isPlayerReady)) {
+                    entry.GetComponent<PlayerListEntry>().SetPlayerReady((bool)isPlayerReady);
+                }
+
+                playerListEntries.Add(p.ActorNumber, entry);
+            }
+            if (PhotonNetwork.IsMasterClient) {
+                StartGameButton.gameObject.SetActive(true);
+                StartGameButton.interactable = CheckPlayersReady();
+            } else {
+                StartGameButton.gameObject.SetActive(false);
+            }
+
+            PhotonHashtable props = new PhotonHashtable { { "PLAYER_LOADED_LEVEL_KEY", false } };
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
     }
 
@@ -387,11 +415,11 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public void HostChangedRoomGoalType() {
-        if (RegGoalToggle.isOn) {
+        if (RegGoalToggle != null && RegGoalToggle.isOn) {
             SetRoomGoalType(GoalType.REGULAR);
-        } else if (VWallGoalToggle.isOn) {
+        } else if (VWallGoalToggle != null && VWallGoalToggle.isOn) {
             SetRoomGoalType(GoalType.VERITCAL_WALL);
-        } else if (HWallGoalToggle.isOn) {
+        } else if (HWallGoalToggle != null && HWallGoalToggle.isOn) {
             SetRoomGoalType(GoalType.HORIZONTAL_WALL);
         }
     }
