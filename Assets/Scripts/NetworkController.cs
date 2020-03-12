@@ -215,6 +215,23 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
         PhotonHashtable props = new PhotonHashtable {{"PLAYER_LOADED_LEVEL_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomGoalType", out object temp)) {
+            if (temp is byte) {
+                GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType) , temp);
+                switch (type) {
+                    case GoalType.REGULAR:
+                        RegGoalToggle.isOn = true;
+                    break;
+                    case GoalType.VERITCAL_WALL:
+                        VWallGoalToggle.isOn = true;
+                    break;
+                    case GoalType.HORIZONTAL_WALL:
+                        HWallGoalToggle.isOn = true;
+                    break;
+                }
+            }
+        }
     }
 
     public override void OnPlayerEnteredRoom(PhotonPlayer newPlayer) {
