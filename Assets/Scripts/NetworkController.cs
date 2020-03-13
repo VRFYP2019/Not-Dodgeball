@@ -40,6 +40,8 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     private bool isReturnToRoom = false;
 
+    private readonly GoalType defaultGoalType = GoalType.REGULAR;
+
     void Awake() {
         InitInstance();
         PhotonNetwork.AutomaticallySyncScene = true;
@@ -188,6 +190,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             ConnectionStatusText.text = "In Room: " + PhotonNetwork.CurrentRoom.Name;
             LobbyInfoPanel.SetActive(false);
             RoomInfoPanel.SetActive(true);
+            SetRoomGoalType(defaultGoalType);
         }
 
         if (playerListEntries == null) {
@@ -432,11 +435,11 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public void HostChangedRoomGoalType() {
-        if (RegGoalToggle != null && RegGoalToggle.isOn) {
+        if (RegGoalToggle.isOn) {
             SetRoomGoalType(GoalType.REGULAR);
-        } else if (VWallGoalToggle != null && VWallGoalToggle.isOn) {
+        } else if (VWallGoalToggle.isOn) {
             SetRoomGoalType(GoalType.VERITCAL_WALL);
-        } else if (HWallGoalToggle != null && HWallGoalToggle.isOn) {
+        } else if (HWallGoalToggle.isOn) {
             SetRoomGoalType(GoalType.HORIZONTAL_WALL);
         }
     }
