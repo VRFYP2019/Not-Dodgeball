@@ -55,4 +55,8 @@ public class NetworkUIRefs : MonoBehaviour {
     public void PlayerStartGame() {
         NetworkController.Instance.PlayerStartGame();
     }
+
+    public void HostChangedRoomGoalType() {
+        NetworkController.Instance.HostChangedRoomGoalType();
+    }
 }

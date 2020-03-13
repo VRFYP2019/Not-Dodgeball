@@ -4432,7 +4432,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: HostChangedRoomGoalType
         m_Mode: 1
         m_Arguments:
@@ -7143,7 +7143,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: HostChangedRoomGoalType
         m_Mode: 1
         m_Arguments:
@@ -8513,7 +8513,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1393912425}
+      - m_Target: {fileID: 6470032}
         m_MethodName: HostChangedRoomGoalType
         m_Mode: 1
         m_Arguments:
