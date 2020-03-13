@@ -19,6 +19,7 @@ public enum GoalType {
 }
 
 public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
+    [SerializeField]
     private GoalType goalType;
     private static readonly float
         X_OFFSET = 0f,
@@ -66,30 +67,19 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         hitMat = null;
 
     void Start() {
-        if (GetComponentInParent<Player>() != null) {
-            playerNumber = GetComponentInParent<Player>().playerNumber;
-        } else {
-            playerNumber = PlayerNumber.TWO;
-        }
-        PhotonHashtable hash = PhotonNetwork.CurrentRoom.CustomProperties;
-        object temp;
-        if (hash.TryGetValue("RoomGoalType", out temp)) {
-            if (temp is byte) {
-                goalType = (GoalType)System.Enum.ToObject(typeof(GoalType), temp);
-                Debug.Log("goalType for this game: " + goalType);
-            } else {
-                Debug.Log("RoomGoalType: unexpected custom property value type");
-            }
-        } else {
-            Debug.Log("RoomGoalType: custom property not found");
-        }
-        Debug.Log ("Curr room goaltype:" + goalType);
-        ResetGoal();
         GameManager.Instance.RestartEvent.AddListener(ResetGoal);
+        DisableIfNotMine();
+    }
+
+    public void DisableIfNotMine() {
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
+            enabled = false;
+        }
     }
 
     public void OnEnable() {
         PhotonNetwork.AddCallbackTarget(this);
+        DisableIfNotMine();
     }
 
     public void OnDisable() {
@@ -120,10 +110,15 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         switch (goalType) {
             case GoalType.REGULAR:
                 InitRegularGoal();
+                HandleRegularGoalPosition();
                 break;
             case GoalType.VERITCAL_WALL:
+                InitWallGoal();
+                HandleVerticalWallGoalPosition();
+                break;
             case GoalType.HORIZONTAL_WALL:
                 InitWallGoal();
+                HandleHorizontalWallGoalPosition();
                 break;
         }
         goalState = GoalState.FOLLOWING;
@@ -226,7 +221,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
             UpdateGoalPosition(newPos);
 
         } else if (goalState == GoalState.TRANSITION) {
-            newPos.x = Mathf.Clamp(Mathf.Lerp(lastSafePos.y, parentPos.y, Time.deltaTime), Y_MIN, Y_MAX);
+            newPos.y = Mathf.Clamp(Mathf.Lerp(lastSafePos.y, parentPos.y, Time.deltaTime), Y_MIN, Y_MAX);
             lastSafePos = newPos;
             UpdateGoalPosition(newPos);
 
@@ -238,10 +233,11 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
             UpdateGoalPosition(lastSafePos);
         }
     }
+
     private void UpdateGoalPosition(Vector3 pos) {
         //transform.localPosition = pos;
         transform.position = pos;
-        transform.eulerAngles = new Vector3 (0, yRotation, 0);
+        transform.eulerAngles = new Vector3 (0, yRotation, goalType == GoalType.HORIZONTAL_WALL ? 90f : 0);
     }
 
     // Returns true the goals currPos is within the threshold
@@ -322,9 +318,18 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
         SwitchGoalMaterial(stationaryMat);
     }
 
-    // Used for cases where this script will be disabled but the number is still needed
-    // i.e. multiplayer
-    public void SetPlayerNumber(PlayerNumber playerNumber) {
-        this.playerNumber = playerNumber;
+    [PunRPC]
+    private void Goal_SetPlayerNumberAndResetGoal(int playerNumber) {
+        this.playerNumber = (PlayerNumber)playerNumber;
+        ResetGoal();
+    }
+
+    public void SetPlayerNumberAndResetGoal(PlayerNumber playerNumber) {
+        if (PhotonNetwork.IsConnected) {
+            photonView.RPC("Goal_SetPlayerNumberAndResetGoal", RpcTarget.All, (int)playerNumber);
+        } else {
+            this.playerNumber = playerNumber;
+            ResetGoal();
+        }
     }
 }

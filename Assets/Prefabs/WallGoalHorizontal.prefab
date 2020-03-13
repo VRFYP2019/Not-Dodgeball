@@ -79,6 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   goalType: 1
+  playerNumber: 0
   sparkPrefab: {fileID: 526120672898192366, guid: c3869f00f3b3b9941ab0140aff89ca6d,
     type: 3}
   goalSidesMR:

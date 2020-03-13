@@ -10,6 +10,10 @@ public class Player : MonoBehaviourPunCallbacks {
     protected HandController leftHandController;
     protected HandController rightHandController;
 
+    private void Awake() {
+        GetComponentInChildren<GoalSwitcher>(true).GoalInitEvent.AddListener(SetGoalPlayerNum);
+    }
+
     // Start is called before the first frame update
     protected virtual void Start() {
         HandController[] handControllers = GetComponentsInChildren<HandController>();
@@ -28,10 +32,16 @@ public class Player : MonoBehaviourPunCallbacks {
         }
     }
 
+    private void SetGoalPlayerNum() {
+        foreach (Goal goal in GetComponentsInChildren<Goal>(true)) {
+            goal.SetPlayerNumberAndResetGoal(playerNumber);
+        }
+    }
+
     [PunRPC]
     public void Player_SetPlayerNumber(int num) {
         playerNumber = (PlayerNumber)num;
-        GetComponentInChildren<Goal>(true).SetPlayerNumber((PlayerNumber)num);
+        SetGoalPlayerNum();
     }
 
     public void SetPlayerNumber(PlayerNumber playerNumber) {
