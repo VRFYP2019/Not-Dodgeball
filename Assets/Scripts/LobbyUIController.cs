@@ -7,7 +7,8 @@ public class LobbyUIController : MonoBehaviour {
     [SerializeField]
     private RectTransform
         networkMenu = null,
-        movesenseMenu = null;
+        movesenseMenu = null,
+        settingsMenu = null;
 
     private RectTransform currMenu;
 
@@ -21,6 +22,10 @@ public class LobbyUIController : MonoBehaviour {
 
     public void GoToMovesenseMenu() {
         StartCoroutine(GoToTargetMenu(movesenseMenu));
+    }
+
+    public void GoToSettingsMenu() {
+        StartCoroutine(GoToTargetMenu(settingsMenu));
     }
 
     IEnumerator GoToTargetMenu(RectTransform targetMenu) {

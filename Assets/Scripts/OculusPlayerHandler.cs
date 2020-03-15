@@ -7,20 +7,26 @@ using static OVRPlugin;
 // Script to handle Oculus players because they think they're so special
 public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
     [SerializeField]
+    private GameObject[] goals = null;
+    [SerializeField]
     private GameObject
-        goal = null,
         oVRCameraRig = null,
         leftHand = null,
         rightHand = null;
 
     void Awake() {
-        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
-            goal.transform.parent = transform;
-            goal.GetComponent<Goal>().enabled = false;
-        } else {
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
             oVRCameraRig.SetActive(true);
             oVRCameraRig.GetComponent<OVRManager>().enabled = true;
             oVRCameraRig.GetComponent<OVRCameraRig>().enabled = true;
+        }
+    }
+
+    private void Start() {
+        // Force invoke since it would not be enabled for Oculus and Start() would not be called
+        GetComponentInChildren<GoalSwitcher>(true).SwitchGoals();
+        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
+            ReparentGoals();
         }
     }
 
@@ -31,6 +37,12 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
             leftHand.transform.localRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.LTouch);
             rightHand.transform.localPosition = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RTouch);
             rightHand.transform.localRotation = OVRInput.GetLocalControllerRotation(OVRInput.Controller.RTouch);
+        }
+    }
+
+    void ReparentGoals() {
+        foreach (GameObject goal in goals) {
+            goal.transform.parent = transform;
         }
     }
 }

@@ -31,18 +31,20 @@ MonoBehaviour:
   RpcList:
   - Ball_SetParent
   - Ball_SetPlayerNumber
+  - Ball_SetPosition
   - Ball_SetState
+  - Ball_SetUseGravity
   - ClickRpc
   - DestroyRpc
   - GameManager_Restart
+  - Goal_SetMaterial
+  - Goal_SetPlayerNumberAndResetGoal
   - Player_SetPlayerNumber
   - ScoreManager_AddScore
   - ScoreManager_ResetScores
   - Spawner_SetState
+  - ToolFollower_FlipCollider
   - ToolFollower_SetAlpha
   - ToolFollower_SetState
-  - ToolFollower_FlipCollider
-  - Ball_SetUseGravity
-  - Ball_SetPosition
   DisableAutoOpenWizard: 1
   ShowSettings: 1
