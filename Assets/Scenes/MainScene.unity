@@ -3389,6 +3389,10 @@ MonoBehaviour:
   StartGameButton: {fileID: 2125927785}
   PlayerListEntryPrefab: {fileID: 3390346581760645234, guid: 1054345d8404df44dac8b433b6f477bd,
     type: 3}
+  RegGoalToggle: {fileID: 0}
+  VWallGoalToggle: {fileID: 0}
+  HWallGoalToggle: {fileID: 0}
+  RoundDurationSlider: {fileID: 0}
 --- !u!4 &495172118
 Transform:
   m_ObjectHideFlags: 0
@@ -9310,7 +9314,7 @@ PrefabInstance:
     - target: {fileID: 4165734954415435632, guid: bda1cbdccc2441144bc7eaf09e59eec7,
         type: 3}
       propertyPath: gameDuration
-      value: 20
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bda1cbdccc2441144bc7eaf09e59eec7, type: 3}
@@ -12745,6 +12749,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6584613948626515278, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
+        type: 3}
+      propertyPath: m_Name
+      value: OculusUIHandler
+      objectReference: {fileID: 0}
     - target: {fileID: 6584613948626515276, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -12799,11 +12808,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6584613948626515278, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
-        type: 3}
-      propertyPath: m_Name
-      value: OculusUIHandler
       objectReference: {fileID: 0}
     - target: {fileID: 6584613948626515279, guid: 5bd5559dc1ef73a429ff57993df5b7d2,
         type: 3}
