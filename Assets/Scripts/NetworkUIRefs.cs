@@ -25,6 +25,13 @@ public class NetworkUIRefs : MonoBehaviour {
     public Button StartGameButton;
     public GameObject PlayerListEntryPrefab;
 
+    [Header("Host Interactables")]
+    public Toggle
+        RegGoalToggle,
+        VWallGoalToggle,
+        HWallGoalToggle;
+    public Slider RoundDurationSlider;
+
     private void Awake() {
         if (Instance == null) {
             Instance = this;
@@ -47,5 +54,9 @@ public class NetworkUIRefs : MonoBehaviour {
 
     public void PlayerStartGame() {
         NetworkController.Instance.PlayerStartGame();
+    }
+
+    public void HostChangedRoomGoalType() {
+        NetworkController.Instance.HostChangedRoomGoalType();
     }
 }
