@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7597881489384870241}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.5182257, y: -1.078475, z: -0.7791724}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -62,3 +62,27 @@ MonoBehaviour:
     source: {fileID: 0}
     isLooping: 0
     playOnAwake: 0
+  - audioName: sportsbgm0
+    audioClip: {fileID: 8300000, guid: 11f190fc4c20c4d4780791a3a62a49a6, type: 3}
+    volume: 1
+    source: {fileID: 0}
+    isLooping: 1
+    playOnAwake: 1
+  - audioName: sportsbgm1
+    audioClip: {fileID: 8300000, guid: 372d644f468de4c49bc0b44cf94118a2, type: 3}
+    volume: 1
+    source: {fileID: 0}
+    isLooping: 1
+    playOnAwake: 1
+  - audioName: sportsbgm2
+    audioClip: {fileID: 8300000, guid: c3bd56ff55fa9544c970bba9b479a6e1, type: 3}
+    volume: 1
+    source: {fileID: 0}
+    isLooping: 1
+    playOnAwake: 1
+  - audioName: sportsbgm3
+    audioClip: {fileID: 8300000, guid: 1604ae73eae2b4b48b9a6157030932e9, type: 3}
+    volume: 1
+    source: {fileID: 0}
+    isLooping: 1
+    playOnAwake: 1
