@@ -2807,6 +2807,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cff98ee266a1724f8c170c1c47a5e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  leaveGameButton: {fileID: 1095172498}
+  restartGameButton: {fileID: 2125927785}
 --- !u!1 &384055799
 GameObject:
   m_ObjectHideFlags: 0
@@ -6339,7 +6341,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 377827013}
-        m_MethodName: LeaveRoomAlone
+        m_MethodName: OnLeavePressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

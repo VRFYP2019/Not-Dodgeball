@@ -10,6 +10,7 @@ using Photon.Realtime;
 using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 using PhotonPlayer = Photon.Realtime.Player;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     public static NetworkController Instance;
@@ -39,7 +40,8 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     private Dictionary<int, GameObject> playerListEntries;
 
     private bool isReturnToRoom = false;
-
+    
+    public UnityEvent readyToLeaveEvent;
     private readonly GoalType defaultGoalType = GoalType.REGULAR;
 
     void Awake() {
@@ -134,6 +136,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     public void OnEvent(EventData photonEvent) {
         byte LeaveGameEvent = 2;
+        byte ReadyToLeaveEvent = 3;
         byte eventCode = photonEvent.Code;
 
         if (eventCode == LeaveGameEvent) {
@@ -158,6 +161,10 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
                 PhotonNetwork.DestroyAll();
                 PhotonNetwork.LoadLevel(0); // ensure sync is true
             }
+        } else if (eventCode == ReadyToLeaveEvent) {
+            Debug.Log("Event received: Ready To Leave Game Event");
+            readyToLeaveEvent.Invoke();
+            DisableReadyButtons();
         }
     }
 
@@ -424,6 +431,12 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         foreach (PhotonPlayer p in PhotonNetwork.PlayerList) {
             PhotonHashtable props = new PhotonHashtable() { { "PLAYER_READY_KEY", false } };
             p.SetCustomProperties(props);
+        }
+    }
+    
+    public void DisableReadyButtons() {
+        foreach (GameObject entry in playerListEntries.Values) {
+            entry.GetComponentInChildren<Button>().gameObject.SetActive(false);
         }
     }
 
