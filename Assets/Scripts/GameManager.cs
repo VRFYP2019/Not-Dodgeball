@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR;
 using Utils;
+using PhotonHashtable = ExitGames.Client.Photon.Hashtable;
 
 public class GameManager : MonoBehaviourPunCallbacks {
     public static GameManager Instance;
@@ -30,6 +31,20 @@ public class GameManager : MonoBehaviourPunCallbacks {
     }
 
     private void Start() {
+        if (PhotonNetwork.IsConnected) {
+            PhotonHashtable hash = PhotonNetwork.CurrentRoom.CustomProperties;
+            object temp;
+            if (hash.TryGetValue("RoomRoundDuration", out temp)) {
+                if (!(temp is byte)) {
+                    gameDuration = (int)temp * 60;
+                    Debug.Log("duration for this game: " + gameDuration + " seconds");
+                } else {
+                    Debug.Log("RoomRoundDuration: unexpected custom property value type");
+                }
+            } else {
+                Debug.Log("RoomRoundDuration: custom property not found");
+            }
+        }
         timeLeft = gameDuration;
     }
 
