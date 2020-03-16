@@ -31,6 +31,7 @@ public class NetworkUIRefs : MonoBehaviour {
         VWallGoalToggle,
         HWallGoalToggle;
     public Slider RoundDurationSlider;
+    public Text RoundDurationText;
 
     private void Awake() {
         if (Instance == null) {
@@ -58,5 +59,10 @@ public class NetworkUIRefs : MonoBehaviour {
 
     public void HostChangedRoomGoalType() {
         NetworkController.Instance.HostChangedRoomGoalType();
+    }
+
+    // OnValueChanged of sliders can only send float, not int
+    public void SetRoomRoundDuration(float minutes) {
+        NetworkController.Instance.SetRoomRoundDuration((int)minutes);
     }
 }

@@ -33,6 +33,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         HWallGoalToggle;
 
     private Slider RoundDurationSlider;
+    private Text RoundDurationText;
     private Button StartGameButton;
 
     private Dictionary<string, RoomInfo> cachedRoomList;
@@ -43,6 +44,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     
     public UnityEvent readyToLeaveEvent;
     private readonly GoalType defaultGoalType = GoalType.REGULAR;
+    private readonly int defaultRoomDuration = 2;
 
     void Awake() {
         InitInstance();
@@ -132,6 +134,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         VWallGoalToggle = NetworkUIRefs.Instance.VWallGoalToggle;
         HWallGoalToggle = NetworkUIRefs.Instance.HWallGoalToggle;
         RoundDurationSlider = NetworkUIRefs.Instance.RoundDurationSlider;
+        RoundDurationText = NetworkUIRefs.Instance.RoundDurationText;
     }
 
     public void OnEvent(EventData photonEvent) {
@@ -198,6 +201,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             LobbyInfoPanel.SetActive(false);
             RoomInfoPanel.SetActive(true);
             SetRoomGoalType(defaultGoalType);
+            SetRoomRoundDuration(defaultRoomDuration);
         }
 
         if (playerListEntries == null) {
@@ -226,7 +230,8 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         PhotonHashtable props = new PhotonHashtable {{"PLAYER_LOADED_LEVEL_KEY", false}};
         PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomGoalType", out object temp)) {
+        object temp;
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomGoalType", out temp)) {
             if (temp is byte) {
                 GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType) , temp);
                 switch (type) {
@@ -241,6 +246,11 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
                     break;
                 }
             }
+        }
+        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomRoundDuration", out temp)) {
+            int duration = (int)temp;
+            RoundDurationText.text = duration.ToString() + (duration == 1 ? " minute" : " minutes");
+            RoundDurationSlider.value = duration;
         }
     }
 
@@ -290,28 +300,30 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public override void OnRoomPropertiesUpdate(PhotonHashtable changedProps) {
+        object temp;
         // Update Room Settings UI to match Host's/Room's settings
         if (!PhotonNetwork.IsMasterClient) {
-            if (changedProps.TryGetValue("RoomGoalType", out object temp)) {
+            if (changedProps.TryGetValue("RoomGoalType", out temp)) {
                 if (temp is byte) {
-                    GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType) , temp);
+                    GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType), temp);
                     switch (type) {
                         case GoalType.REGULAR:
                             RegGoalToggle.isOn = true;
-                        break;
+                            break;
                         case GoalType.VERITCAL_WALL:
                             VWallGoalToggle.isOn = true;
-                        break;
+                            break;
                         case GoalType.HORIZONTAL_WALL:
                             HWallGoalToggle.isOn = true;
-                        break;
+                            break;
                     }
                 }
             }
         }
-
-        if (changedProps.TryGetValue("RoomRoundDuration", out object roomRoundDuration)) {
-            // TODO: update text to show round duration time in minutes
+        if (changedProps.TryGetValue("RoomRoundDuration", out temp)) {
+            int duration = (int)temp;
+            RoundDurationText.text = duration.ToString() + (duration == 1 ? " minute" : " minutes");
+            RoundDurationSlider.value = duration;
         }
     }
 
@@ -468,7 +480,6 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
 
     public void SetRoomRoundDuration(int minutes) {
         if (PhotonNetwork.IsMasterClient) {
-            Debug.Log ("Room Round Duration Changed:" + minutes); // TODO: need x60 to get gameDuration
             PhotonHashtable setRoomProperties = new PhotonHashtable();
             setRoomProperties.Add("RoomRoundDuration", minutes);
             PhotonNetwork.CurrentRoom.SetCustomProperties(setRoomProperties);
