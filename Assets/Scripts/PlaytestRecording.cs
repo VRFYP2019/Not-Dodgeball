@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Android;
 
 public class PlaytestRecording : MonoBehaviour {
-    string  fileName = "PlayTestLog.txt";
+    string fileName = "PlayTestLog.txt";
     private static int
         numThrows,
         numHits,
         numGoalsScored,
         caloriesBurnt;
+    private static GoalType goalType;
+
     // Start is called before the first frame update
     void Start() {
         ResetLog();
@@ -22,7 +25,7 @@ public class PlaytestRecording : MonoBehaviour {
         numHits = 0;
         numGoalsScored = 0;
         caloriesBurnt = 0;
-
+        // do not reset goalType
     }
 
     public static void RecordHit() {
@@ -41,8 +44,24 @@ public class PlaytestRecording : MonoBehaviour {
         caloriesBurnt = cal;
     }
 
+    public static void RecordGoalType(GoalType type) {
+        goalType = type;
+    }
+
     private void WriteLog() {
-        string path = "Assets/Resources/" + fileName;
+        string path;
+        #if UNITY_EDITOR
+        path = "Assets/Resources/" + fileName;
+        #elif UNITY_ANDROID
+        if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite)) {
+            Debug.Log("No write permission. Not recording log for this game");
+            return;
+        } else {
+            path = Application.persistentDataPath + "/" + fileName;
+        }
+        #else
+        path = Application.persistentDataPath + "/" + fileName;
+        #endif
 
         //Write some text to the test.txt file
         StreamWriter sw = new StreamWriter(path, true);
@@ -56,6 +75,7 @@ public class PlaytestRecording : MonoBehaviour {
         sw.WriteLine("2. Number of Balls Hit:" + numHits);
         sw.WriteLine("3. Number of Goals Scored:" + numGoalsScored);
         sw.WriteLine("4. Number of Calories Burnt:" + caloriesBurnt);
+        sw.WriteLine("5. Type of Goal:" + goalType.ToString());
 
         sw.Write("\n");
         sw.WriteLine("Timestamp: " + System.DateTime.Now);

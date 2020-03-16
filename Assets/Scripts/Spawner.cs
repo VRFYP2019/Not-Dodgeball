@@ -36,6 +36,7 @@ public class Spawner : MonoBehaviour {
         anim.SetTrigger("throw");
         currentBall.OnDetachFromHand();
         currentBall = null;
+        PlaytestRecording.RecordThrow();
         // Have a slight delay so that the ball does not immediately hit the tool
         StartCoroutine(DelayAndSwitchToTool(spawnDelay));
     }
