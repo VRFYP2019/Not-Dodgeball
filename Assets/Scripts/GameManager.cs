@@ -35,12 +35,8 @@ public class GameManager : MonoBehaviourPunCallbacks {
             PhotonHashtable hash = PhotonNetwork.CurrentRoom.CustomProperties;
             object temp;
             if (hash.TryGetValue("RoomRoundDuration", out temp)) {
-                if (!(temp is byte)) {
-                    gameDuration = (int)temp * 60;
-                    Debug.Log("duration for this game: " + gameDuration + " seconds");
-                } else {
-                    Debug.Log("RoomRoundDuration: unexpected custom property value type");
-                }
+                gameDuration = (int)temp * 60;
+                Debug.Log("duration for this game: " + gameDuration + " seconds");
             } else {
                 Debug.Log("RoomRoundDuration: custom property not found");
             }

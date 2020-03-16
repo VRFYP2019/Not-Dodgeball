@@ -248,9 +248,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             }
         }
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomRoundDuration", out temp)) {
-            if (temp is byte) {
-                RoundDurationText.text = ((int)temp).ToString() + " minutes";
-            }
+            int duration = (int)temp;
+            RoundDurationText.text = duration.ToString() + (duration == 1 ? " minute" : " minutes");
+            RoundDurationSlider.value = duration;
         }
     }
 
@@ -300,9 +300,10 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     public override void OnRoomPropertiesUpdate(PhotonHashtable changedProps) {
+        object temp;
         // Update Room Settings UI to match Host's/Room's settings
         if (!PhotonNetwork.IsMasterClient) {
-            if (changedProps.TryGetValue("RoomGoalType", out object temp)) {
+            if (changedProps.TryGetValue("RoomGoalType", out temp)) {
                 if (temp is byte) {
                     GoalType type = (GoalType)System.Enum.ToObject(typeof(GoalType), temp);
                     switch (type) {
@@ -319,9 +320,10 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
                 }
             }
         }
-        if (changedProps.TryGetValue("RoomRoundDuration", out object roomRoundDuration)) {
-            int duration = (int)roomRoundDuration;
+        if (changedProps.TryGetValue("RoomRoundDuration", out temp)) {
+            int duration = (int)temp;
             RoundDurationText.text = duration.ToString() + (duration == 1 ? " minute" : " minutes");
+            RoundDurationSlider.value = duration;
         }
     }
 
