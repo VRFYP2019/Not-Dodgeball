@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Android;
 
 public class PlaytestRecording : MonoBehaviour {
-    string fileName = "PlayTestLog.txt";
+    private static readonly string fileName = "PlayTestLog.txt";
     private static int
         numThrows,
         numHits,
@@ -16,7 +16,6 @@ public class PlaytestRecording : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         ResetLog();
-        GameManager.Instance.TimeOverEvent.AddListener(WriteLog);
         GameManager.Instance.RestartEvent.AddListener(ResetLog);
     }
 
@@ -48,7 +47,7 @@ public class PlaytestRecording : MonoBehaviour {
         goalType = type;
     }
 
-    private void WriteLog() {
+    public static void WriteLog() {
         string path;
         #if UNITY_EDITOR
         path = "Assets/Resources/" + fileName;
