@@ -10,7 +10,11 @@ public class MovesenseSubscriber : MonoBehaviour {
     public bool isConnected = false;
 
     private void Awake() {
-        instance = this;
+        if (instance == null) {
+            instance = this;
+        } else if (instance != this) {
+            Destroy(gameObject);
+        }
     }
     // Start is called before the first frame update
     void Start() {
