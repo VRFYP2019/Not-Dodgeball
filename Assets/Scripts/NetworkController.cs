@@ -248,7 +248,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
             }
         }
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("RoomRoundDuration", out temp)) {
-            if (temp is byte) {
+            if (temp is int) {
                 RoundDurationText.text = ((int)temp).ToString() + " minutes";
             }
         }
