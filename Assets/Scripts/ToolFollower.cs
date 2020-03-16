@@ -141,6 +141,9 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
                 Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
             }
         }
+        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
+            PlaytestRecording.RecordHit();
+        }
     }
 
     // Reset position once collision ends

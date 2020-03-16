@@ -101,6 +101,12 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         return calories;
     }
 
+    private void OnCaloriesCalculated(int caloriesBurnt) {
+        PlaytestRecording.RecordCaloriesBurnt(caloriesBurnt);
+        PlaytestRecording.WriteLog();
+        caloriesBurntText.text = caloriesBurnt.ToString();
+    }
+
     public void ShowCalorieUI() {
         Debug.Log("CalorieManager: Match over showing calorie UI");
 
@@ -133,7 +139,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
                 // Disable re-saving to prevent user confusion
                 caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(false);
                 int caloriesBurnt = CalculateCalories();
-                caloriesBurntText.text = caloriesBurnt.ToString();
+                OnCaloriesCalculated(caloriesBurnt);
             } else {
                 genderPanel.SetActive(true);
                 caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(true);
@@ -155,7 +161,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             caloriePanel.SetActive(true);
 
             int caloriesBurnt = CalculateCalories();
-            caloriesBurntText.text = caloriesBurnt.ToString();
+            OnCaloriesCalculated(caloriesBurnt);
             return;
         }
         if (caloriePanel.activeInHierarchy) {

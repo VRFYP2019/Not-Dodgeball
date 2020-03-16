@@ -279,6 +279,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
                         StartCoroutine(ShowGoalHitFor(0.5f));
                         Instantiate(sparkPrefab, col.transform.position, Quaternion.identity);
                     }
+                    PlaytestRecording.RecordGoalScored();
                 }
             }
         }

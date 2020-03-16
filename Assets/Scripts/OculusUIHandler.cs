@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Android;
 using UnityEngine.SceneManagement;
 
 public class OculusUIHandler : MonoBehaviour {
@@ -49,6 +50,11 @@ public class OculusUIHandler : MonoBehaviour {
                 // UIHelpers must be the first go in oculusObjects
                 if (laserLineRenderer == null) {
                     laserLineRenderer = go.GetComponentInChildren<LineRenderer>();
+                }
+            }
+            if (SceneManager.GetActiveScene().buildIndex == 0) {
+                if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite)) {
+                    Permission.RequestUserPermission(Permission.ExternalStorageWrite);
                 }
             }
         }

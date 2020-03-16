@@ -49,5 +49,6 @@ public class GoalSwitcher : MonoBehaviour {
                 break;
         }
         GoalInitEvent.Invoke();
+        PlaytestRecording.RecordGoalType(goalType);
     }
 }
