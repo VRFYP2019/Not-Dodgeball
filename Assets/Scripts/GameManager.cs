@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviourPunCallbacks {
             }
         }
         timeLeft = gameDuration;
+        PlaytestRecording.RecordRoundDuration((int)gameDuration / 60);
     }
 
     private void Update() {

@@ -10,7 +10,8 @@ public class PlaytestRecording : MonoBehaviour {
         numThrows,
         numHits,
         numGoalsScored,
-        caloriesBurnt;
+        caloriesBurnt,
+        roundDuration;
     private static GoalType goalType;
 
     // Start is called before the first frame update
@@ -47,6 +48,10 @@ public class PlaytestRecording : MonoBehaviour {
         goalType = type;
     }
 
+    public static void RecordRoundDuration(int duration) {
+        roundDuration = duration;
+    }
+
     public static void WriteLog() {
         string path;
         #if UNITY_EDITOR
@@ -75,6 +80,7 @@ public class PlaytestRecording : MonoBehaviour {
         sw.WriteLine("3. Number of Goals Scored:" + numGoalsScored);
         sw.WriteLine("4. Number of Calories Burnt:" + caloriesBurnt);
         sw.WriteLine("5. Type of Goal:" + goalType.ToString());
+        sw.WriteLine("6. Round Duration:" + roundDuration + (roundDuration == 1 ? " minute" : " minutes"));
 
         sw.Write("\n");
         sw.WriteLine("Timestamp: " + System.DateTime.Now);
