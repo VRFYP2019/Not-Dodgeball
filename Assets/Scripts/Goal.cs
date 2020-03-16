@@ -262,7 +262,9 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
     }
 
     void OnTriggerEnter(Collider col) {
-        if (isActiveAndEnabled) {
+        if (!isActiveAndEnabled // case 1: 2 players, handle on thrower's side (receiver's goal is disabled)
+            || !PhotonNetwork.IsConnected   // case 2: not connected, both goals are on
+            || PhotonNetwork.CurrentRoom.PlayerCount < 2) { // case 3: only one player, both goals are on
             if (col.gameObject.layer == LayerMask.NameToLayer("Ball")) {
                 // Prevent own goal
                 if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
