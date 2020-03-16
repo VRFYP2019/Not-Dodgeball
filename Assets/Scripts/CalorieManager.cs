@@ -133,6 +133,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
                 // Disable re-saving to prevent user confusion
                 caloriePanel.GetComponentInChildren<Toggle>(true).gameObject.SetActive(false);
                 int caloriesBurnt = CalculateCalories();
+                PlaytestRecording.RecordCaloriesBurnt(caloriesBurnt);
                 caloriesBurntText.text = caloriesBurnt.ToString();
             } else {
                 genderPanel.SetActive(true);

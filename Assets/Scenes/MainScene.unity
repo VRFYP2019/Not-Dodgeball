@@ -11231,6 +11231,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1910841520}
   m_CullTransparentMesh: 0
+--- !u!1 &1935334469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1935334471}
+  - component: {fileID: 1935334470}
+  m_Layer: 0
+  m_Name: PlayTestLogger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1935334470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935334469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8be1d0956a33934093ef61cb2179bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1935334471
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935334469}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.282414, y: 6.737579, z: -5.6916056}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1935457002
 GameObject:
   m_ObjectHideFlags: 0
@@ -11592,11 +11635,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1372180345}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: d57ec60e928915b469ce636395c98408,
-        type: 3}
-      propertyPath: m_Name
-      value: spawnerhandblend
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: d57ec60e928915b469ce636395c98408,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -11651,6 +11689,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: d57ec60e928915b469ce636395c98408,
+        type: 3}
+      propertyPath: m_Name
+      value: spawnerhandblend
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d57ec60e928915b469ce636395c98408, type: 3}
