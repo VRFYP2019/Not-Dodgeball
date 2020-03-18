@@ -26,6 +26,9 @@ namespace TalesFromTheRift
 				keyboard.transform.SetParent(canvas.transform, false);
 				keyboard.inputObject = inputObject;
 			}
+            if (inputObject != null && inputObject.GetComponent<InputField>() != null) {
+                inputObject.GetComponent<InputField>().text = "";
+            }
 			return keyboard;
 		}
 		
