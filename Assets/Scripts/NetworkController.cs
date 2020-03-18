@@ -66,7 +66,9 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         AssignRefs();
         ConnectionStatusText.text = "Connecting";
 
-        PlayerNameInput.text = "Player " + Random.Range(1000, 10000);
+        PlayerNameInput.text = (PlayerPrefs.HasKey("playerName")) ?
+                 PlayerPrefs.GetString("playerName") :
+                 "Player " + Random.Range(1000, 10000);
         PhotonNetwork.ConnectUsingSettings();
         LobbyInfoPanel.SetActive(false);
         RoomInfoPanel.SetActive(false);
@@ -351,6 +353,7 @@ public class NetworkController : MonoBehaviourPunCallbacks, IOnEventCallback {
         string playerName = PlayerNameInput.text;
         playerName = (playerName.Equals(string.Empty)) ? "Player " + Random.Range(1000, 10000) : playerName;
         PlayerNameInput.text = playerName;
+        PlayerPrefs.SetString("playerName", playerName);
         PhotonNetwork.LocalPlayer.NickName = playerName;
     }
 		
