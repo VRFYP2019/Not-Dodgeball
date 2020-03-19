@@ -86,14 +86,14 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         int calories = 0;
         if (isMovesenseConncted) {
             if (isPlayerMale) {
-                //Calories Burned = [(Age x 0.2017) — (Weight x 0.09036) + (Heart Rate x 0.6309) — 55.0969] x Time / 4.184
+                //Calories Burned = [(Age x 0.2017) — (Weight x 0.1988) + (Heart Rate x 0.6309) — 55.0969] x Time / 4.184
                 foreach (int heartrate in aveHeartRates) { // since ave heart rate is for 1 second
-                    calories += (int)Mathf.Round((((float)age * 0.2017f) - ((float)weight * 0.09036f) + ((float)heartrate * 0.6309f)) / 4.184f);
+                    calories += (int)Mathf.Round((((float)age * 0.2017f) - ((float)weight * 0.1988f) + ((float)heartrate * 0.6309f)) / 4.184f);
                 }
             } else {
-                //Calories Burned = [(Age x 0.074) — (Weight x 0.05741) + (HeartRate x 0.4472) — 20.4022] x Time / 4.184
+                //Calories Burned = [(Age x 0.074) — (Weight x 0.1263) + (HeartRate x 0.4472) — 20.4022] x Time / 4.184
                 foreach (int heartrate in aveHeartRates) { // since ave heart rate is for 1 second
-                    calories += (int)Mathf.Round((((float)age * 0.074f) - ((float)weight * 0.05741f) + ((float)heartrate * 0.4472f)) / 4.184f);
+                    calories += (int)Mathf.Round((((float)age * 0.074f) - ((float)weight * 0.1263f) + ((float)heartrate * 0.4472f)) / 4.184f);
                 }
             }
         }
