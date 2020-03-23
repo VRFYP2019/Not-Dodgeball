@@ -9,6 +9,8 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
     [SerializeField]
     private GameObject[] goals = null;
     [SerializeField]
+    private GameObject hatAnchor = null;
+    [SerializeField]
     private GameObject
         oVRCameraRig = null,
         leftHand = null,
@@ -27,6 +29,7 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
         GetComponentInChildren<GoalSwitcher>(true).SwitchGoals();
         if (PhotonNetwork.IsConnected && !photonView.IsMine) {
             ReparentGoals();
+            ReparentHatAnchor();
         }
     }
 
@@ -44,5 +47,9 @@ public class OculusPlayerHandler : MonoBehaviourPunCallbacks {
         foreach (GameObject goal in goals) {
             goal.transform.parent = transform;
         }
+    }
+
+    void ReparentHatAnchor() {
+        hatAnchor.transform.parent = transform;
     }
 }
