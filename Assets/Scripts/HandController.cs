@@ -5,7 +5,7 @@ using Utils;
 
 // Controls what the hand is doing, i.e. spawning or smacking
 public class HandController : MonoBehaviour {
-    private Tool tool;
+    private Bat bat;
     private Spawner spawnerHand;
     public HandObject currHandObject;
     public HandSide handSide;
@@ -19,7 +19,7 @@ public class HandController : MonoBehaviour {
     }
 
     private void Init() {
-        tool = GetComponentInChildren<Tool>();
+        bat = GetComponentInChildren<Bat>();
         spawnerHand = GetComponentInChildren<Spawner>(true);
         if (handSide == HandSide.RIGHT) {
             spawnerHand.transform.localScale = new Vector3(
@@ -33,12 +33,23 @@ public class HandController : MonoBehaviour {
                 spawnerHand.GetComponentInChildren<HandScreen>().transform.localScale = new Vector3(
                     -screenScale.x, screenScale.y, screenScale.z);
             }
+            bat.transform.localScale = new Vector3(
+                bat.transform.localScale.x,
+                -bat.transform.localScale.y,
+                bat.transform.localScale.z);
+            handScreen = bat.GetComponentInChildren<HandScreen>();
+            // Flip the screen back if there is one (dummy bot does not have one)
+            if (handScreen != null) {
+                Vector3 screenScale = bat.GetComponentInChildren<HandScreen>().transform.localScale;
+                bat.GetComponentInChildren<HandScreen>().transform.localScale = new Vector3(
+                    screenScale.x, -screenScale.y, screenScale.z);
+            }
         }
         hasBeenInit = true;
     }
 
     public void Switch() {
-        if (tool.gameObject.activeInHierarchy) {
+        if (bat.gameObject.activeInHierarchy) {
             SwitchToSpawnerHand();
         } else {
             SwitchToTool();
@@ -51,8 +62,7 @@ public class HandController : MonoBehaviour {
             Init();
         }
         spawnerHand.RestartState();
-        tool.SetState(true);
-        tool.SetFollowerActive(true);
+        bat.SetState(true);
         spawnerHand.SetState(false);
     }
 
@@ -64,8 +74,7 @@ public class HandController : MonoBehaviour {
 
     public void SwitchToSpawnerHand() {
         currHandObject = HandObject.SPAWNER;
-        tool.SetFollowerActive(false);
-        tool.SetState(false);
+        bat.SetState(false);
         spawnerHand.SetState(true);
         spawnerHand.PutNextBallInHand();
     }
