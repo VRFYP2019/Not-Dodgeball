@@ -12,6 +12,7 @@ public class PlaytestRecording : MonoBehaviour {
         numGoalsScored,
         caloriesBurnt,
         roundDuration;
+    private static float distHeadMoved;
     private static GoalType goalType;
 
     // Start is called before the first frame update
@@ -25,6 +26,7 @@ public class PlaytestRecording : MonoBehaviour {
         numHits = 0;
         numGoalsScored = 0;
         caloriesBurnt = 0;
+        distHeadMoved = 0.0f;
         // do not reset goalType
     }
 
@@ -52,6 +54,10 @@ public class PlaytestRecording : MonoBehaviour {
         roundDuration = duration;
     }
 
+    public static void RecordDistHeadMoved(float dist) {
+        distHeadMoved = dist;
+    }
+
     public static void WriteLog() {
         string path;
         #if UNITY_EDITOR
@@ -72,6 +78,7 @@ public class PlaytestRecording : MonoBehaviour {
         sw.Write("\n");
         sw.WriteLine("===== Playtest Log =====");
         sw.WriteLine("------------------------");
+        sw.WriteLine("Timestamp: " + System.DateTime.Now);
         sw.Write("\n");
 
         // Log stuff here
@@ -81,9 +88,9 @@ public class PlaytestRecording : MonoBehaviour {
         sw.WriteLine("4. Number of Calories Burnt:" + caloriesBurnt);
         sw.WriteLine("5. Type of Goal:" + goalType.ToString());
         sw.WriteLine("6. Round Duration:" + roundDuration + (roundDuration == 1 ? " minute" : " minutes"));
+        sw.WriteLine("7. Total Head Distance Moved:" + distHeadMoved);
 
         sw.Write("\n");
-        sw.WriteLine("Timestamp: " + System.DateTime.Now);
         sw.WriteLine("------------------------");
         sw.WriteLine("========================");
         sw.Close();
