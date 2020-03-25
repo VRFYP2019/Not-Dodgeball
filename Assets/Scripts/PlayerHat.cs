@@ -7,12 +7,6 @@ using Photon.Pun;
 public class PlayerHat : MonoBehaviourPunCallbacks {
     private Vector3 parentPos;
 
-    void Start() {
-        if (PhotonNetwork.IsConnected && !photonView.IsMine) {
-            enabled = false;
-        }
-    }
-
     void Update() {
         UpdateHatPosition();
     }
