@@ -405,6 +405,7 @@ GameObject:
   - component: {fileID: 71325662277021726}
   - component: {fileID: 71325662270504422}
   - component: {fileID: 2938179647455093370}
+  - component: {fileID: 4108917926560050796}
   m_Layer: 0
   m_Name: CenterEyeAnchor
   m_TagString: MainCamera
@@ -501,6 +502,18 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &4108917926560050796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71325662272433692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 949b100c2b38fad45945dcfb8a30e0b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &71325662272433694
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,16 +920,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 71325662272139836}
     m_Modifications:
-    - target: {fileID: 2550220587479786621, guid: 68133f0ebc3140b419b63fd9ee0e7709,
-        type: 3}
-      propertyPath: m_Name
-      value: GoalPost
-      objectReference: {fileID: 0}
-    - target: {fileID: 2550220587479786621, guid: 68133f0ebc3140b419b63fd9ee0e7709,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5659996650303444035, guid: 68133f0ebc3140b419b63fd9ee0e7709,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -972,6 +975,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2550220587479786621, guid: 68133f0ebc3140b419b63fd9ee0e7709,
+        type: 3}
+      propertyPath: m_Name
+      value: GoalPost
+      objectReference: {fileID: 0}
+    - target: {fileID: 2550220587479786621, guid: 68133f0ebc3140b419b63fd9ee0e7709,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 68133f0ebc3140b419b63fd9ee0e7709, type: 3}
 --- !u!1 &8928527379286783484 stripped
@@ -1002,6 +1015,11 @@ PrefabInstance:
         type: 3}
       propertyPath: vibration.actionPath
       value: /actions/default/out/Haptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368452946636138963, guid: 4c4aaf52cbbb82147ac9b92d3dd72593,
+        type: 3}
+      propertyPath: m_Name
+      value: LeftHand
       objectReference: {fileID: 0}
     - target: {fileID: 7965826471793230937, guid: 4c4aaf52cbbb82147ac9b92d3dd72593,
         type: 3}
@@ -1163,6 +1181,11 @@ PrefabInstance:
         type: 3}
       propertyPath: vibration.actionPath
       value: /actions/default/out/Haptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368452946636138963, guid: 4c4aaf52cbbb82147ac9b92d3dd72593,
+        type: 3}
+      propertyPath: m_Name
+      value: RightHand
       objectReference: {fileID: 0}
     - target: {fileID: 7965826471793230937, guid: 4c4aaf52cbbb82147ac9b92d3dd72593,
         type: 3}
@@ -1379,16 +1402,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 71325662272139836}
     m_Modifications:
-    - target: {fileID: 1183598243859830188, guid: fc9f29be05bff9041aa4224b9daf0148,
-        type: 3}
-      propertyPath: m_Name
-      value: WallGoalHorizontal
-      objectReference: {fileID: 0}
-    - target: {fileID: 1183598243859830188, guid: fc9f29be05bff9041aa4224b9daf0148,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 9044513101925885330, guid: fc9f29be05bff9041aa4224b9daf0148,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1443,6 +1456,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1183598243859830188, guid: fc9f29be05bff9041aa4224b9daf0148,
+        type: 3}
+      propertyPath: m_Name
+      value: WallGoalHorizontal
+      objectReference: {fileID: 0}
+    - target: {fileID: 1183598243859830188, guid: fc9f29be05bff9041aa4224b9daf0148,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fc9f29be05bff9041aa4224b9daf0148, type: 3}
