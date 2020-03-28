@@ -78,7 +78,7 @@ public class PlaytestRecording : MonoBehaviour {
         sw.Write("\n");
         sw.WriteLine("===== Playtest Log =====");
         sw.WriteLine("------------------------");
-        sw.WriteLine("Timestamp: " + System.DateTime.Now);
+        sw.WriteLine("Timestamp: " + System.DateTime.Now.ToString("F"));
         sw.Write("\n");
 
         // Log stuff here
