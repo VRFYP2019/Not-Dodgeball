@@ -192,15 +192,15 @@ GameObject:
   m_Component:
   - component: {fileID: 5074962685495742340}
   - component: {fileID: 6725829415033737101}
-  - component: {fileID: 8708538194331347239}
-  - component: {fileID: 7865661914775355842}
+  - component: {fileID: 5440718642654977316}
+  - component: {fileID: 6773819661001326987}
   m_Layer: 8
   m_Name: GoalIndicatorTR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5074962685495742340
 Transform:
   m_ObjectHideFlags: 0
@@ -209,7 +209,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2809895560583239129}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.5, z: -0.5}
+  m_LocalPosition: {x: 0.5, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4465194431200479737}
@@ -227,7 +227,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6487f88b6b59d01468a91590e249bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8708538194331347239
+  goalType: 2
+  playerHead: {fileID: 0}
+--- !u!114 &5440718642654977316
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,14 +244,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 7865661914775355842}
+  ObservedComponents: []
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7865661914775355842
+--- !u!114 &6773819661001326987
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -365,15 +366,15 @@ GameObject:
   m_Component:
   - component: {fileID: 1209380945776258585}
   - component: {fileID: 2887549285048160861}
-  - component: {fileID: 5149575671704404757}
-  - component: {fileID: 2876185722279022658}
+  - component: {fileID: 7731831143257926021}
+  - component: {fileID: 6984168216005508274}
   m_Layer: 8
   m_Name: GoalIndicatorBL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1209380945776258585
 Transform:
   m_ObjectHideFlags: 0
@@ -400,7 +401,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6487f88b6b59d01468a91590e249bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5149575671704404757
+  goalType: 2
+  playerHead: {fileID: 0}
+--- !u!114 &7731831143257926021
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -415,14 +418,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 2876185722279022658}
+  ObservedComponents: []
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2876185722279022658
+--- !u!114 &6984168216005508274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -538,15 +540,15 @@ GameObject:
   m_Component:
   - component: {fileID: 4434921213863467448}
   - component: {fileID: 8499703945713646488}
-  - component: {fileID: 140210598374271675}
-  - component: {fileID: 683436673380210672}
+  - component: {fileID: 1301323989708276803}
+  - component: {fileID: 2726864570514656645}
   m_Layer: 8
   m_Name: GoalIndicatorBR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4434921213863467448
 Transform:
   m_ObjectHideFlags: 0
@@ -573,7 +575,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6487f88b6b59d01468a91590e249bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &140210598374271675
+  goalType: 2
+  playerHead: {fileID: 0}
+--- !u!114 &1301323989708276803
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -588,14 +592,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 683436673380210672}
+  ObservedComponents: []
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &683436673380210672
+--- !u!114 &2726864570514656645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -698,7 +701,6 @@ MonoBehaviour:
   - {fileID: 6733667804745326739}
   - {fileID: 2665846565528081385}
   followingMat: {fileID: 2100000, guid: 85d8e1af79d92f74398661f34bcf0ef5, type: 2}
-  stationaryMat: {fileID: 2100000, guid: fc54cad22d1ea2a45b1ef6240ef664e4, type: 2}
   hitMat: {fileID: 2100000, guid: 476fadb7d5abec4479cd603f6c7154d4, type: 2}
 --- !u!114 &3045467696002908939
 MonoBehaviour:
@@ -747,15 +749,15 @@ GameObject:
   m_Component:
   - component: {fileID: 2958512222769913621}
   - component: {fileID: 3668921935798983032}
-  - component: {fileID: 6737712107622944694}
-  - component: {fileID: 593134289300524093}
+  - component: {fileID: 2763643275368560580}
+  - component: {fileID: 7766151962933413080}
   m_Layer: 8
   m_Name: GoalIndicatorTL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2958512222769913621
 Transform:
   m_ObjectHideFlags: 0
@@ -764,7 +766,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7160475272578346188}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0.5, z: -0.5}
+  m_LocalPosition: {x: -0.5, y: 0, z: -0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4465194431200479737}
@@ -782,7 +784,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6487f88b6b59d01468a91590e249bb5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6737712107622944694
+  goalType: 2
+  playerHead: {fileID: 0}
+--- !u!114 &2763643275368560580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -797,14 +801,13 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 3
+  Synchronization: 0
   OwnershipTransfer: 0
-  ObservedComponents:
-  - {fileID: 593134289300524093}
+  ObservedComponents: []
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &593134289300524093
+--- !u!114 &7766151962933413080
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

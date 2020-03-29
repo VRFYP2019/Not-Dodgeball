@@ -3,19 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoalIndicator : MonoBehaviour {
+public class GoalIndicator : MonoBehaviourPunCallbacks {
     private static readonly int LENGTH_LINERENDERER = 3;
+    private static readonly float LENGTH_OFFSET = 1.5f;
+    [SerializeField]
+    private GoalType goalType;
     private LineRenderer goalIndicator;
-    private PhotonView pv;
+    [SerializeField]
+    private Transform playerHead = null;
 
     void Start() {
-        pv = GetComponent<PhotonView>();
-        if (!PhotonNetwork.IsConnected || pv.IsMine) {
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
             InitGoalIndicator();
         }
     }
 
     private void InitGoalIndicator() {
+        if (playerHead == null) {
+            playerHead = Camera.main.transform;
+        }
+
         goalIndicator = gameObject.AddComponent<LineRenderer>();
         goalIndicator.material = new Material(Shader.Find("Sprites/Default"));
         goalIndicator.widthMultiplier = 0.025f;
@@ -35,14 +42,25 @@ public class GoalIndicator : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (!PhotonNetwork.IsConnected || pv.IsMine) {
-            DrawGoalIndicator();
+        if (!PhotonNetwork.IsConnected || photonView.IsMine) {
+            if (goalType == GoalType.REGULAR) {
+                DrawRegGoalIndicator();
+            } else if (goalType == GoalType.HORIZONTAL_WALL || goalType == GoalType.VERITCAL_WALL) {
+                DrawWallGoalIndicator();
+            }
         }
     }
 
-    private void DrawGoalIndicator() {
+    private void DrawRegGoalIndicator() {
         goalIndicator.positionCount = 2;
         goalIndicator.SetPosition(0, this.transform.position);
         goalIndicator.SetPosition(1, -this.transform.forward * LENGTH_LINERENDERER + this.transform.position);
+    }
+
+    private void DrawWallGoalIndicator() {
+        float lengthToRender = Vector3.Distance(playerHead.position, this.transform.position) + LENGTH_OFFSET;
+        goalIndicator.positionCount = 2;
+        goalIndicator.SetPosition(0, this.transform.position);
+        goalIndicator.SetPosition(1, -this.transform.forward * lengthToRender + this.transform.position);
     }
 }
