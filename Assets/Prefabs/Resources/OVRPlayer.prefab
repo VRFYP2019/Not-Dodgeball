@@ -746,7 +746,7 @@ MonoBehaviour:
     actionPath: /actions/default/in/InteractUI
     needsReinit: 0
   localScripts:
-  - {fileID: 0}
+  - {fileID: 4108917926560050796}
   - {fileID: 6674366615824283496}
   - {fileID: 220778438965194230}
   - {fileID: 7798023449863762142}

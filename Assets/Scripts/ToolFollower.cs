@@ -133,16 +133,19 @@ public class ToolFollower : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallb
                 ((ToolHuman)tool).TriggerHapticFeedback(0.1f, 100, 30);
             }
         }
-        if (velocity.magnitude > velocityLowerThreshold
-            && collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
-            if (PhotonNetwork.IsConnected) {
-                PhotonNetwork.Instantiate(sparkPrefab.name, collision.GetContact(0).point, Quaternion.identity);
-            } else {
-                Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
-            }
-        }
+
         if (collision.collider.gameObject.layer == LayerMask.NameToLayer("Ball")) {
-            PlaytestRecording.RecordHit();
+            if (velocity.magnitude > velocityLowerThreshold) {
+                if (PhotonNetwork.IsConnected) {
+                    PhotonNetwork.Instantiate(sparkPrefab.name, collision.GetContact(0).point, Quaternion.identity);
+                } else {
+                    Instantiate(sparkPrefab, collision.GetContact(0).point, Quaternion.identity);
+                }
+            }
+
+            if (!PhotonNetwork.IsConnected || photonView.IsMine) {
+                PlaytestRecording.RecordHit();
+            }
         }
     }
 
