@@ -24,7 +24,7 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
     private bool isCalculating = false;
 
     void Start() {
-        GameManager.Instance.TimeOverEvent.AddListener(ShowCalorieUI);
+        GameManager.Instance.TimeOverEvent.AddListener(ShowGameOverUI);
         // If player connected a movesense device
         if (MovesenseSubscriber.instance != null && MovesenseSubscriber.instance.heartRate != null) {
             Debug.Log("CalorieManager: Movesense is CONNECTED, recording heartrate");
@@ -107,6 +107,19 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         caloriesBurntText.text = caloriesBurnt.ToString();
     }
 
+    public void ShowGameOverUI() {
+        if (isMovesenseConncted) {
+            ShowCalorieUI();
+        } else {
+            ShowRematchUI();
+            // ensure other data recording attached to TimeOverEvent is done before writing to log
+            StartCoroutine(WriteLogAfterFrame());
+        }
+        #if !UNITY_EDITOR
+        OculusUIHandler.instance.laserLineRenderer.enabled = true;
+        #endif
+    }
+
     public void ShowCalorieUI() {
         Debug.Log("CalorieManager: Match over showing calorie UI");
 
@@ -123,10 +136,6 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
         weightPanel.SetActive(false);
         caloriePanel.SetActive(false);
         calorieCanvas.gameObject.SetActive(true);
-
-        #if !UNITY_EDITOR
-        OculusUIHandler.instance.laserLineRenderer.enabled = true;
-        #endif
     }
 
     public void ToggleNextPanel() {
@@ -174,8 +183,17 @@ public class CalorieManager : MonoBehaviourPunCallbacks {
             }
             caloriePanel.SetActive(false);
             calorieCanvas.gameObject.SetActive(false);
-            rematchCanvas.gameObject.SetActive(true);
+            ShowRematchUI();
             return;
         }
+    }
+
+    public void ShowRematchUI() {
+        rematchCanvas.gameObject.SetActive(true);
+    }
+
+    IEnumerator WriteLogAfterFrame() {
+        yield return new WaitForEndOfFrame();
+        PlaytestRecording.WriteLog();
     }
 }
