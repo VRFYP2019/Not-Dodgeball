@@ -52,7 +52,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
         hasBeenInit = true;
     }
 
-    private void InitLists() {
+    public void InitLists() {
         for (int i = 0; i < numFramesToConsider; i++) {
             boundsLists[i] = new List<Collider>();
         }
@@ -159,6 +159,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     // There should only be a need to set it to false from outside
     public void SetCountTimeLivedToFalse() {
         countTimeLived = false;
+        timeLived = 0;
     }
 
     private bool IsDead() {
