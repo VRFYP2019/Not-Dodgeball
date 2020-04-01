@@ -90,7 +90,7 @@ public class PlaytestRecording : MonoBehaviour {
         // Log stuff here
         sw.WriteLine("1. Number of Balls Thrown:" + numThrows);
         sw.WriteLine("2. Number of Balls Hit:" + numHits);
-        sw.WriteLine("3. Number of Balls Missed" + numMiss);
+        sw.WriteLine("3. Number of Balls Missed: " + numMiss);
         sw.WriteLine("4. Number of Goals Scored:" + numGoalsScored);
         sw.WriteLine("5. Number of Calories Burnt:" + caloriesBurnt);
         sw.WriteLine("6. Type of Goal:" + goalType.ToString());
