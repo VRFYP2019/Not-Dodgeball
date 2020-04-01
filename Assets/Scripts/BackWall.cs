@@ -25,6 +25,7 @@ public class BackWall : MonoBehaviour {
             // Prevent own goal
             if (col.gameObject.GetComponent<Ball>().GetPlayerNumber() != playerNumber) {
                 BallManager.LocalInstance.PutBallInQueue(col.GetComponent<Ball>());
+                PlaytestRecording.RecordMiss();
             }
         }
     }

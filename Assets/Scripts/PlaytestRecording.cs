@@ -9,6 +9,7 @@ public class PlaytestRecording : MonoBehaviour {
     private static int
         numThrows,
         numHits,
+        numMiss,
         numGoalsScored,
         caloriesBurnt,
         roundDuration;
@@ -24,6 +25,7 @@ public class PlaytestRecording : MonoBehaviour {
     private void ResetLog() {
         numThrows = 0;
         numHits = 0;
+        numMiss = 0;
         numGoalsScored = 0;
         caloriesBurnt = 0;
         distHeadMoved = 0.0f;
@@ -36,6 +38,10 @@ public class PlaytestRecording : MonoBehaviour {
 
     public static void RecordThrow() {
         numThrows++;
+    }
+
+    public static void RecordMiss() {
+        numMiss++;
     }
 
     public static void RecordGoalScored() {
@@ -84,11 +90,12 @@ public class PlaytestRecording : MonoBehaviour {
         // Log stuff here
         sw.WriteLine("1. Number of Balls Thrown:" + numThrows);
         sw.WriteLine("2. Number of Balls Hit:" + numHits);
-        sw.WriteLine("3. Number of Goals Scored:" + numGoalsScored);
-        sw.WriteLine("4. Number of Calories Burnt:" + caloriesBurnt);
-        sw.WriteLine("5. Type of Goal:" + goalType.ToString());
-        sw.WriteLine("6. Round Duration:" + roundDuration + (roundDuration == 1 ? " minute" : " minutes"));
-        sw.WriteLine("7. Total Head Distance Moved:" + distHeadMoved);
+        sw.WriteLine("3. Number of Balls Missed" + numMiss);
+        sw.WriteLine("4. Number of Goals Scored:" + numGoalsScored);
+        sw.WriteLine("5. Number of Calories Burnt:" + caloriesBurnt);
+        sw.WriteLine("6. Type of Goal:" + goalType.ToString());
+        sw.WriteLine("7. Round Duration:" + roundDuration + (roundDuration == 1 ? " minute" : " minutes"));
+        sw.WriteLine("8. Total Head Distance Moved:" + distHeadMoved);
 
         sw.Write("\n");
         sw.WriteLine("------------------------");
