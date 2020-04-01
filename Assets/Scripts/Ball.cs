@@ -30,7 +30,7 @@ public class Ball : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback {
     private readonly static int numFramesToConsider = 3;
     private readonly static float boundListUpdateInterval = 0.33f;   // interval to update lists
     private bool countTimeLived = false;    // set true if active
-    private readonly static float timeToLive = 10;  // kill self in 10 seconds
+    private readonly static float timeToLive = 5;  // kill self in 5 seconds
     private float timeLived = 0;
 
     public AudioClip defaultCollisionSound;
