@@ -128,6 +128,7 @@ public class Goal : MonoBehaviourPunCallbacks, IOnEventCallback {
                 BallManager.LocalInstance.AddBallsToQueue(2);
             } else {
                 AudioManager.PlaySoundOnce("goalbuzz");
+                BallManager.LocalInstance.AddBallsToQueue(1);
             }
         }
     }

@@ -66,6 +66,7 @@ public class BallManager : MonoBehaviour {
     public void PutBallInPool(Ball ball) {
         ball.SetCountTimeLivedToFalse();
         ball.SetState(false);
+        ball.InitLists();
         ball.SetParent(ballPool);
     }
 
@@ -73,6 +74,7 @@ public class BallManager : MonoBehaviour {
     public void PutBallInQueue(Ball ball) {
         ball.SetCountTimeLivedToFalse();
         ball.SetState(false);
+        ball.InitLists();
         ball.SetParent(playerBallQueue);
     }
 

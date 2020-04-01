@@ -102,7 +102,8 @@ GameObject:
   - component: {fileID: 832769044182359403}
   - component: {fileID: 832769044182359400}
   - component: {fileID: 832769044182359401}
-  - component: {fileID: 832769044182359190}
+  - component: {fileID: 889562554208885931}
+  - component: {fileID: 4367576782930395630}
   m_Layer: 11
   m_Name: Wall Short Side B
   m_TagString: Untagged
@@ -169,7 +170,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &832769044182359190
+--- !u!114 &889562554208885931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832769044182359191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4370f9d884cea49b85e2f6bcc3cce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNumber: 1
+--- !u!65 &4367576782930395630
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -193,7 +207,8 @@ GameObject:
   - component: {fileID: 832769044903573917}
   - component: {fileID: 832769044903573914}
   - component: {fileID: 832769044903573915}
-  - component: {fileID: 832769044903573912}
+  - component: {fileID: 3527214804358735806}
+  - component: {fileID: 8463719002954394666}
   m_Layer: 11
   m_Name: Wall Short Side A
   m_TagString: Untagged
@@ -260,7 +275,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &832769044903573912
+--- !u!114 &3527214804358735806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 832769044903573913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f4370f9d884cea49b85e2f6bcc3cce7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerNumber: 0
+--- !u!65 &8463719002954394666
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
